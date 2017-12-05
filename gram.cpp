@@ -1,10 +1,17 @@
 #include "lexical.h"
 #include "vars.h"
+#include "gram.h"
+#include "item.h"
 #include <iostream>
 
 using namespace std;
 
 Symbol symbol;
+VAR_MAP global_vars;
+CONST_MAP global_consts;
+FUNC_MAP funcs;
+string name;
+Type type;
 bool skip_type_ident = false;
 void item();
 void factor();
@@ -15,13 +22,19 @@ typedef enum {
 }State;
 
 void output_info(string info) {
-    cout << info << endl;
+    // cout << info << endl;
 }
 
-void mate(Symbol sym) {
+void record_name() {
+    token[token_len] = 0;
+    name = token;
+}
+
+void mate(Symbol sym, void (*handle_ptr)() = NULL) {
     if (symbol != sym) {
         error((string)"got " + symbol2string(symbol) + " expected " + symbol2string(sym));
     } else {
+        if ((*handle_ptr) != NULL) (*handle_ptr)();
         getsym();
     }
 }
@@ -87,6 +100,16 @@ void factor() {
             getsym();
             expr();
             mate(RPAR); // ')'
+            break;
+
+        case ADD:
+            getsym();
+            mate(INTCON);
+            break;
+
+        case SUB:
+            getsym();
+            mate(INTCON);
             break;
 
         case INTCON:
@@ -304,27 +327,65 @@ void statement() {
         error((string)"unexpected symbol " + symbol2string(symbol) + " in the beginning of [statement]");
         break;
     }
-
 }
 
-int declare_const() {
+bool defined(string name) {
+    CONST_MAP::iterator itc = global_consts.find(name);
+    if (itc != global_consts.end()) {
+        error("redefinition of '" + name + "\'");
+        return true;
+    }
+    VAR_MAP::iterator itv = global_vars.find(name);
+    if (itv != global_vars.end()) {
+        error("redefinition of '" + name + "\'");
+        return true;
+    }
+    return false;
+}
+
+void put_global_const(string name, Type type, int value) {
+    if (!defined(name))
+    global_consts.insert(CONST_MAP::value_type(name, new ConstItem(name, type, value)));
+}
+
+void put_global_var(string name, Type type, int len = 0) {
+    if (!defined(name))
+    global_vars.insert(VAR_MAP::value_type(name, new VarItem(name, type, len)));
+}
+
+void declare_const(FuncItem* func = NULL) {
     while (symbol == CONSTSY) {
         getsym();
         switch (symbol) {
         case INTSY:
             getsym();
             do {
-                mate(IDENT);
+                mate(IDENT, &record_name);  // record name
                 mate(ASS);
                 if (symbol == ZERO) {
                     getsym();
+                    if (func == NULL) {
+                        put_global_const(name, INT, 0);
+                    } else {
+                        func->put_const(name, INT, 0);
+                    }
+
                 } else {
+                    int sign = 1;
                     if (symbol == ADD) {
+                        sign = 1;
                         getsym();
                     } else if (symbol == SUB) {
+                        sign = -1;
                         getsym();
                     }
                     mate(INTCON);
+                    if (func == NULL) {
+                        put_global_const(name, INT, sign * num);
+                    } else {
+                        func->put_const(name, INT, sign * num);
+                    }
+
                 }
                 if (symbol != COMMA) {
                     break;
@@ -335,9 +396,15 @@ int declare_const() {
         case CHARSY:
             getsym();
             do {
-                mate(IDENT);
+                mate(IDENT, &record_name);
                 mate(ASS);
                 mate(CHARCON);
+                if (func == NULL) {
+                    put_global_const(name, CHAR, num);
+                } else {
+                    func->put_const(name, CHAR, num);
+                }
+
                 if (symbol != COMMA) {
                     break;
                 }
@@ -351,42 +418,56 @@ int declare_const() {
     }
 }
 
-void declare_var() {
-    const int is_char = 0;
-    const int is_int = 1;
-    int type = -1;
+
+
+void declare_var(FuncItem* func = NULL) {
+    bool is_first = true;
     while (true) {
+        is_first = true;
         switch (symbol) {
         case INTSY:
-            type = is_int;
+            type = INT;
             break;
         case CHARSY:
-            type = is_char;
+            type = CHAR;
             break;
         default:
             return;
         }
         getsym();
+
         do {
-            mate(IDENT);
-            // array
-            switch (symbol) {
-            // '['
-            case LBKT:
+            mate(IDENT, &record_name);
+            // array '['
+            if (is_first) {
+                if (LPAR == symbol || LBRACE == symbol) {
+                    if (func == NULL) {
+                        skip_type_ident = true;
+                        return;
+                    } else {
+                        break;
+                    }
+                }
+                is_first = false;
+            }
+            if (LBKT == symbol) {
                 getsym();
                 mate(INTCON);
+                if (func == NULL) {
+                    put_global_var(name, type, num);
+                } else {
+                    func->put_var(name, type, num);
+                }
                 mate(RBKT); // ']'
-                break;
 
-            // '(' (function)
-            case LPAR:
-            // '{' (function)
-            case LBRACE:
-                skip_type_ident = true;
-                return;
-            default:
-                break;
+            } else {
+                if (func == NULL) {
+                    put_global_var(name, type);
+                } else {
+                    func->put_var(name, type);
+                }
             }
+
             if (COMMA != symbol) {  // ','
                 break;
             }
@@ -396,10 +477,10 @@ void declare_var() {
     }
 }
 
-void comp_statement() {
+void comp_statement(FuncItem* func) {
     mate(LBRACE);   // '{'
-    declare_const();
-    declare_var();
+    declare_const(func);
+    declare_var(func);
     while (symbol != RBRACE) {  // '}'
         statement();
     }
@@ -410,10 +491,10 @@ void declare_func() {
     const int is_voi = 0;
     const int is_int = 1;
     const int is_char = 2;
-    int type = -1;
     int got_main;
+    FuncItem* this_func = NULL;
     while (true) {
-        // cout << "=== NEW FUNCTION ===" << endl;
+        // // cout << "=== NEW FUNCTION ===" << endl;
         if (skip_type_ident) {
             skip_type_ident = false;
         } else {
@@ -424,42 +505,48 @@ void declare_func() {
                     getsym();
                     mate(LPAR);
                     mate(RPAR); // '()'
-                    comp_statement();
+                    this_func = new FuncItem("main", VOID);
+                    funcs.insert(FUNC_MAP::value_type("main", this_func));
+                    comp_statement(this_func);
                     continue;
                 } else {
-                    type = is_voi;
+                    type = VOID;
                 }
                 break;
             case INTSY:
                 getsym();
-                type = is_int;
+                type = INT;
                 break;
             case CHARSY:
                 getsym();
-                type = is_char;
+                type = CHAR;
                 break;
             default:
                 error((string)"unexpected return type " + symbol2string(symbol));
-                type = -1;
                 return;
             }
-            mate(IDENT);
+            mate(IDENT, &record_name);
         }
+        this_func = new FuncItem(name, type);
+        funcs.insert(FUNC_MAP::value_type(name, this_func));
 
         if (symbol == LPAR) {
             getsym();
             do {
                 switch (symbol) {
                 case INTSY:
+                    type = INT;
                     getsym();
                     break;
                 case CHARSY:
+                    type = CHAR;
                     getsym();
                     break;
                 default:
                     error((string)"Unexpected parameter type " + symbol2string(symbol));
                 }
-                mate(IDENT);
+                mate(IDENT, &record_name);
+                this_func->put_para(name, type);
                 if (symbol != COMMA) { // ','
                     break;
                 }
@@ -468,16 +555,16 @@ void declare_func() {
             mate(RPAR);
         }
 
-        comp_statement();
+        comp_statement(this_func);
     }
 }
 
 int gram_main() {
     getsym();
-    cout << "=== CONST BEGIN ===" << endl;
+     cout << "=== CONST BEGIN ===" << endl;
     declare_const();
-    cout << "=== VAR BEGIN ===" << endl;
+     cout << "=== VAR BEGIN ===" << endl;
     declare_var();
-    cout << "=== FUNC BEGIN ===" << endl;
+     cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
 }

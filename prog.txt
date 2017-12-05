@@ -10,7 +10,7 @@ int foo1(int m, char n){
 	int a1, a2;
 	int i;
 	printf("N/M: ");
-	i = 0;
+	i = -0;
 	if (m == 0)
 	if (n == 0)
 	while(i < j) {
@@ -19,7 +19,7 @@ int foo1(int m, char n){
 		if (a1 > a2){
 			printf("Test 01");
 			while (a1 > a1-a2){
-				a1 = a1 - 3;
+				a1 = a1 -- 3;
 				a2 = a2 - 1; 
 				printf("M = ", a1);
 			}
@@ -42,6 +42,7 @@ int foo1(int m, char n){
 		}else {
 			n = m;
 		}
+	i = i*-2;
 	return (n-m);
 }
 

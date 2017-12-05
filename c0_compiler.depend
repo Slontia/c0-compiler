@@ -41,3 +41,46 @@
 	<iostream>
 	<fstream>
 
+1512464007 source:d:\projects\console\c0-compiler\lexical.cpp
+	<iostream>
+	<string.h>
+	<cstdlib>
+	"vars.h"
+
+1512460946 d:\projects\console\c0-compiler\vars.h
+	<iostream>
+	<fstream>
+
+1512460946 source:d:\projects\console\c0-compiler\main.cpp
+	<iostream>
+	"lexical.h"
+	"gram.h"
+	"vars.h"
+
+1512460946 d:\projects\console\c0-compiler\lexical.h
+	<iostream>
+	<fstream>
+	"vars.h"
+
+1512478692 d:\projects\console\c0-compiler\gram.h
+	<iostream>
+	<fstream>
+	<map>
+	<vector>
+
+1512494642 source:d:\projects\console\c0-compiler\gram.cpp
+	"lexical.h"
+	"vars.h"
+	"gram.h"
+	"item.h"
+	<iostream>
+
+1512492109 d:\projects\console\c0-compiler\item.h
+	<iostream>
+	<map>
+	<vector>
+
+1512493444 source:d:\projects\console\c0-compiler\item.cpp
+	"item.h"
+	<iostream>
+

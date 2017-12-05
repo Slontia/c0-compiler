@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="gram.cpp" />
 		<Unit filename="gram.h" />
+		<Unit filename="item.cpp" />
+		<Unit filename="item.h" />
 		<Unit filename="lexical.cpp" />
 		<Unit filename="lexical.h" />
 		<Unit filename="main.cpp" />
