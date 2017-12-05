@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1511623654 source:d:\projects\console\c0_compiler\lexical.cpp
+	<iostream>
+	<string.h>
+	<fstream>
+	<cstdlib>
+
+1511623402 source:d:\projects\console\c0_compiler\main.cpp
+	<iostream>
+	"lexical.h"
+
+1511623338 d:\projects\console\c0_compiler\lexical.h
+
+1512099261 source:c:\users\65486_000\desktop\15061183\c0_compiler\lexical.cpp
+	<iostream>
+	<string.h>
+	<cstdlib>
+	"vars.h"
+
+1512094402 source:c:\users\65486_000\desktop\15061183\c0_compiler\main.cpp
+	<iostream>
+	"lexical.h"
+	"gram.h"
+	"vars.h"
+
+1512098164 c:\users\65486_000\desktop\15061183\c0_compiler\lexical.h
+	<iostream>
+	<fstream>
+	"vars.h"
+
+1512140085 source:c:\users\65486_000\desktop\15061183\c0_compiler\gram.cpp
+	"lexical.h"
+	"vars.h"
+	<iostream>
+
+1512093233 c:\users\65486_000\desktop\15061183\c0_compiler\gram.h
+	<iostream>
+	<fstream>
+
+1512096705 c:\users\65486_000\desktop\15061183\c0_compiler\vars.h
+	<iostream>
+	<fstream>
+
