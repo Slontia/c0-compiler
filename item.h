@@ -4,20 +4,13 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "vars.h"
 using namespace std;
 
 class Item;
 class VarItem;
 class ConstItem;
 class FuncItem;
-
-typedef enum {
-    VOID, CHAR, INT
-} Type;
-
-typedef enum {
-    CONST, VAR, FUNC
-} Kind;
 
 
 string type2string(Type type);
@@ -72,12 +65,11 @@ public:
 
 
 class FuncItem : public Item {
-private:
+public:
     vector<VarItem*> paras;
     CONST_MAP consts;
     VAR_MAP vars;
 
-public:
     FuncItem(string name, Type type);
 
     void put_para(string name, Type type);
@@ -97,6 +89,8 @@ public:
     bool has_var(string name);
 
     bool para_check(vector<Type> types);
+
+    vector<VarItem*> get_paras();
 };
 
 #endif // ITEM_H_INCLUDED

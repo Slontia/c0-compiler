@@ -1,4 +1,5 @@
 # include "item.h"
+# include "vars.h"
 # include <iostream>
 using namespace std;
 

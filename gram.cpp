@@ -17,6 +17,7 @@
 #include "vars.h"
 #include "gram.h"
 #include "item.h"
+#include "medi.h"
 #include <iostream>
 
 using namespace std;
@@ -325,11 +326,15 @@ void statement() {
         mate(LPAR); // '('
         cond(); // identify condition
         mate(RPAR); // ')'
+
+        lable(this_func);   // set label
         statement();    // statement among if
 
         output_info("Else statement begins!");
         // else block
         mate(ELSY); // 'else'
+
+        lable(this_func);   // set label
         statement();    // statement among else
 
         output_info("Else statement over!");
@@ -361,6 +366,7 @@ void statement() {
                 error((string)"unexpected symbol " + symbol2string(symbol) + " after [case]");
             }
             mate(COLON);    // :
+            lable(this_func);   // set label
             statement();
             if (symbol != CASESY) {
                 break;
@@ -371,6 +377,7 @@ void statement() {
             output_info("Default statement begins!");
             getsym_check();
             mate(COLON);    // :
+            lable(this_func);   // set label
             statement();
         }
         mate(RBRACE);   // ';'
@@ -384,6 +391,7 @@ void statement() {
         mate(LPAR); // '('
         cond(); // identify condition
         mate(RPAR); // ')'
+        lable(this_func);   // set label
         statement();    // statement among if
         output_info("While statement over!");
         break;
@@ -391,9 +399,11 @@ void statement() {
     // '{'
     case LBRACE:
         getsym_check();
+        branchs.push_back(0);
         while (symbol != RBRACE) {
             statement();
         } // '}'
+        branchs.pop_back();
         getsym_check();
         break;
 
@@ -661,6 +671,8 @@ void comp_statement(FuncItem* func) {
     declare_const(func);
     declare_var(func);
     returned = false;
+    branchs.clear();
+    branchs.push_back(0);
     while (symbol != RBRACE) {  // '}'
         statement();
     }
