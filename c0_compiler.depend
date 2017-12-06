@@ -68,7 +68,7 @@
 	<map>
 	<vector>
 
-1512564174 source:d:\projects\console\c0-compiler\gram.cpp
+1512568729 source:d:\projects\console\c0-compiler\gram.cpp
 	"lexical.h"
 	<cstdlib>
 	"vars.h"
@@ -83,5 +83,8 @@
 
 1512549247 source:d:\projects\console\c0-compiler\item.cpp
 	"item.h"
+	<iostream>
+
+1512564895 source:d:\projects\console\c0-compiler\medi.cpp
 	<iostream>
 

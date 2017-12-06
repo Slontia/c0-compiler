@@ -5,7 +5,7 @@
 4. 是否return了               OK
 5. 是否有main函数             OK
 6. 不允许出现函数或过程名与自己内部的局部变量重名的情况   OK
-7. 数组越界判断
+7. 数组越界判断               OK
 8. 调用函数是否正确           OK
 
 标签：[FUNCNAME]_func_[i]_[j]_[k]
@@ -67,13 +67,7 @@ void mate(Symbol sym, void (*handle_ptr)() = NULL) {
 }
 
 void mate_idents() {
-    do {
-        mate(IDENT);
-        if (symbol != COMMA) { // ','
-            break;
-        }
-        getsym_check();
-    } while (true);
+
 }
 
 Type expr(int* value, bool* certain) {
@@ -346,17 +340,22 @@ void statement() {
         output_info("Switch statement begins!");
         getsym_check();
         mate(LPAR); // '('
-        expr(&const_value, &certain); // expression to switch
+        type = expr(&const_value, &certain); // expression to switch
         mate(RPAR); // ')'
         mate(LBRACE);   // '{'
         mate(CASESY);   // case
         // cases
         do {
             output_info("Case statement begins!");
-
             if (symbol == INTCON || symbol == ZERO) {    // int
+                if (type == CHAR) {
+                    error((string)"expected type \'int\', got \'char\'");
+                }
                 getsym_check();
             } else if (symbol == CHARCON) { // char
+                if (type == INT) {
+                    error((string)"expected type \'char\', got \'int\'");
+                }
                 getsym_check();
             } else {
                 error((string)"unexpected symbol " + symbol2string(symbol) + " after [case]");
@@ -440,7 +439,19 @@ void statement() {
         output_info("This is a read statement!");
         getsym_check();
         mate(LPAR);
-        mate_idents();
+        do {
+            mate(IDENT, &record_name);
+            Item* item = get_item(name);
+            if (item == NULL) {
+                error("unexpected identifier \'" + name + "\'");
+            } else if (item->get_kind() != VAR || ((VarItem*)item)->isarray()) {
+                error("can only write to variables");
+            }
+            if (symbol != COMMA) { // ','
+                break;
+            }
+            getsym_check();
+        } while (true);
         mate(RPAR);
         mate(SEMI);
         break;

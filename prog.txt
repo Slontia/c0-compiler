@@ -135,7 +135,7 @@ void scanf_all {
 
 void test_switch(int number) {
 	switch (number) {
-		case '0': {printf("Oh noooooo!");}
+		case 48: {printf("Oh noooooo!");}
 		case 0: printf("Oh yeah!");
 		case 1:;
 		default:
