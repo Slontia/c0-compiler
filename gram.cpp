@@ -406,13 +406,13 @@ void statement() {
             if (item->get_kind() != VAR) {
                 error((string)"assignment of non-var \'" + item->get_name() + "\'");
             }
-            expr();
+            if (expr() == INT && item->get_type() == CHAR) {
+                error((string)"cannot convert 'int' to 'char'");
+            }
         }
         mate(SEMI); // ';'
         break;
-
     }
-
 
     // ;
     case SEMI:

@@ -6,9 +6,11 @@ int i,j,k;
 char x,y,z;
 int array[100];
 
-int foo1(int m, char n){
+int foo1(int m, char n1){
 	int a1, a2;
 	int i;
+	int n;
+	n = n1;
 	printf("N/M: ");
 	i = -0;
 	if (m == 0)
