@@ -1,4 +1,19 @@
+/*
+1. return类型是否正确         OK
+2. 调用函数参数是否正确       OK
+3. 为char赋值是否正确
+4. 是否return了               OK
+5. 是否有main函数             OK
+6. 不允许出现函数或过程名与自己内部的局部变量重名的情况
+7. 数组越界判断
+8. 调用函数是否正确
+
+标签：[FUNCNAME]_func_[i]_[j]_[k]
+
+*/
+
 #include "lexical.h"
+#include <cstdlib>
 #include "vars.h"
 #include "gram.h"
 #include "item.h"
@@ -11,11 +26,13 @@ VAR_MAP global_vars;
 CONST_MAP global_consts;
 FUNC_MAP funcs;
 string name;
+FuncItem* this_func = NULL;
 Type type;
+bool returned;
 bool skip_type_ident = false;
-void item();
-void factor();
-void expr();
+Type item();
+Type factor();
+Type expr();
 
 typedef enum {
     CONST_STATE, VAR_STATE, FUNC_STATE, FUNC_CONST_STATE, FUNC_VAR_STATE, FUNC_STATEMENT_STATE
@@ -30,12 +47,18 @@ void record_name() {
     name = token;
 }
 
+void getsym_check() {
+    if (!getsym()) {
+        error("unfinished program");
+    }
+}
+
 void mate(Symbol sym, void (*handle_ptr)() = NULL) {
     if (symbol != sym) {
         error((string)"got " + symbol2string(symbol) + " expected " + symbol2string(sym));
     } else {
         if ((*handle_ptr) != NULL) (*handle_ptr)();
-        getsym();
+        getsym_check();
     }
 }
 
@@ -45,111 +68,187 @@ void mate_idents() {
         if (symbol != COMMA) { // ','
             break;
         }
-        getsym();
+        getsym_check();
     } while (true);
 }
 
-void expr() {
+Type expr() {
+    Type ex_type;
     if (symbol == ADD || symbol == SUB) {
-        getsym();
+        ex_type = INT;
+        getsym_check();
     }
     do {
-        item();
+        ex_type = item();
         if (symbol == ADD || symbol == SUB) {
-            getsym();
+            ex_type = INT;
+            getsym_check();
         } else {
             break;
         }
     } while (true);
+    return ex_type;
 }
 
-void item() {
+Type item() {
+    Type it_type;
     do {
-        factor();
+        it_type = factor();
         if (symbol == MUL || symbol == DIV) {
-            getsym();
+            it_type = INT;
+            getsym_check();
         } else {
             break;
         }
     } while (true);
+    return it_type;
 }
 
-void factor() {
+VarItem* get_global_var(string name) {
+    VAR_MAP::iterator it = global_vars.find(name);
+    if (it != global_vars.end()) {
+        return it->second;
+    } else {
+        return NULL;
+    }
+}
+
+ConstItem* get_global_const(string name) {
+    CONST_MAP::iterator it = global_consts.find(name);
+    if (it != global_consts.end()) {
+        return it->second;
+    } else {
+        return NULL;
+    }
+}
+
+FuncItem* get_func(string name) {
+    FUNC_MAP::iterator it = funcs.find(name);
+    if (it != funcs.end()) {
+        return it->second;
+    } else {
+        return NULL;
+    }
+}
+
+Item* get_item(string name) {
+    Item* item;
+    if ((item = this_func->get_const(name)) != NULL) return item;
+    if ((item = this_func->get_var(name)) != NULL) return item;
+    if ((item = get_global_const(name)) != NULL) return item;
+    if ((item = get_global_var(name)) != NULL) return item;
+    if ((item = get_func(name)) != NULL) return item;
+    return NULL;
+}
+
+Type factor() {
+    Type fac_type;
+    Item* item = NULL;
     switch(symbol){
         case IDENT:
-            getsym();
+            name = token;
+            if ((item = get_item(name)) == NULL) {
+                error((string)"unexpected sign \'" + name + "\'");
+                break;
+            }
+            fac_type = item->get_type();
+            getsym_check();
+            // is array
             if (symbol == LBKT) { // '['
-                getsym();
+                getsym_check();
+                if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
+                    error((string)"\'" + name + "' is not an array type");
+                } else {
+
+                }
                 expr();
+
+                /* out of range judgment */
+
                 mate(RBKT); // ']'
+
+            // is function
             } else if (symbol == LPAR) {    // '('
-                getsym();
+                getsym_check();
+                vector<Type> para_types;
                 do {
-                    expr();
+                    para_types.push_back(expr());
                     if (symbol != COMMA) { // ','
                         break;
                     }
-                    getsym();
+                    getsym_check();
                 } while (true);
                 mate(RPAR); // ')'
+                if (item->get_kind() != FUNC || !((FuncItem*)item)->para_check(para_types)) {
+                    error((string)"parameters to function \'" + item->get_name() +"\' do not match");
+                } else if (fac_type == VOID) {
+                    error("void value not ignored as it ought to be");
+                } else {
+
+                }
             }
             break;
 
         // '('
         case LPAR:
-            getsym();
-            expr();
+            getsym_check();
+            fac_type = expr();
             mate(RPAR); // ')'
             break;
 
         case ADD:
-            getsym();
+            getsym_check();
+            fac_type = INT;
             mate(INTCON);
             break;
 
         case SUB:
-            getsym();
+            getsym_check();
+            fac_type = INT;
             mate(INTCON);
             break;
 
         case INTCON:
-            getsym();
+            fac_type = INT;
+            getsym_check();
             break;
 
         case CHARCON:
-            getsym();
+            fac_type = CHAR;
+            getsym_check();
             break;
 
         case ZERO:
-            getsym();
+            fac_type = INT;
+            getsym_check();
             break;
 
         default:
             error((string)"unexpected symbol " + symbol2string(symbol) + " in [factor]");
     }
-
+    return fac_type;
 }
 
 void cond() {
     expr();
     switch (symbol){
     case GT:
-        getsym();
+        getsym_check();
         break;
     case GE:
-        getsym();
+        getsym_check();
         break;
     case LT:
-        getsym();
+        getsym_check();
         break;
     case LE:
-        getsym();
+        getsym_check();
         break;
     case EQ:
-        getsym();
+        getsym_check();
         break;
     case NE:
-        getsym();
+        getsym_check();
         break;
     default:
         return; // only expression
@@ -168,7 +267,7 @@ void statement() {
     case IFSY:
         output_info("If statement begins!");
         // if block
-        getsym();
+        getsym_check();
         mate(LPAR); // '('
         cond(); // identify condition
         mate(RPAR); // ')'
@@ -185,8 +284,7 @@ void statement() {
     // switch(expr){case 0:statement [default: statement]}
     case SWTSY:
         output_info("Switch statement begins!");
-
-        getsym();
+        getsym_check();
         mate(LPAR); // '('
         expr(); // expression to switch
         mate(RPAR); // ')'
@@ -197,9 +295,9 @@ void statement() {
             output_info("Case statement begins!");
 
             if (symbol == INTCON || symbol == ZERO) {    // int
-                getsym();
+                getsym_check();
             } else if (symbol == CHARCON) { // char
-                getsym();
+                getsym_check();
             } else {
                 error((string)"unexpected symbol " + symbol2string(symbol) + " after [case]");
             }
@@ -208,11 +306,11 @@ void statement() {
             if (symbol != CASESY) {
                 break;
             }
-            getsym();
+            getsym_check();
         } while (true);
         if (symbol == DFTSY) {
             output_info("Default statement begins!");
-            getsym();
+            getsym_check();
             mate(COLON);    // :
             statement();
         }
@@ -223,7 +321,7 @@ void statement() {
     // while(cond)statement
     case WHILESY:
         output_info("While statement begins!");
-        getsym();
+        getsym_check();
         mate(LPAR); // '('
         cond(); // identify condition
         mate(RPAR); // ')'
@@ -233,36 +331,42 @@ void statement() {
 
     // '{'
     case LBRACE:
-        getsym();
+        getsym_check();
         while (symbol != RBRACE) {
             statement();
         } // '}'
-        getsym();
+        getsym_check();
         break;
 
     // return[(expr)];
     case RTNSY:
         output_info("This is a return statement!");
-        getsym();
+        returned = true;
+        getsym_check();
         if (symbol != SEMI) {
             mate(LPAR);
-            expr();
+            //expr();
+            Type ex_type = expr();
+            if (ex_type != this_func->get_type()) {
+                error((string)"expected return type \'" + type2string(this_func->get_type()) +
+                       "\', actual '" + type2string(ex_type) + "\'");
+            }
             mate(RPAR);
             mate(SEMI);
         } else {
-            getsym();
+            getsym_check();
         }
         break;
 
     // read
     case PRTFST:
         output_info("This is a print statement!");
-        getsym();
+        getsym_check();
         mate(LPAR); // '('
         if (symbol == STRCON) { // string
-            getsym();
+            getsym_check();
             if (symbol == COMMA) {  // ','
-                getsym();
+                getsym_check();
                 expr();
             }
         } else {
@@ -275,7 +379,7 @@ void statement() {
     // write
     case SCFSY:
         output_info("This is a read statement!");
-        getsym();
+        getsym_check();
         mate(LPAR);
         mate_idents();
         mate(RPAR);
@@ -283,22 +387,24 @@ void statement() {
         break;
 
     // assignment | function
-    case IDENT:
-        getsym();
+    case IDENT: {
+        Item* item = get_item(name);
+        getsym_check();
+
         if (symbol == LBKT) {   // '['
-            getsym();
+            getsym_check();
             type = is_var;
             expr();
             mate(RBKT); // ']'
         } else if (symbol == LPAR) { // '('
-            getsym();
+            getsym_check();
             type = is_func;
             do {
                 expr();
                 if (symbol != COMMA) { // ','
                     break;
                 }
-                getsym();
+                getsym_check();
             } while (true);
             mate(RPAR); // ')'
         }
@@ -318,9 +424,12 @@ void statement() {
         mate(SEMI); // ';'
         break;
 
+    }
+
+
     // ;
     case SEMI:
-        getsym();
+        getsym_check();
         break;
 
     default:
@@ -355,15 +464,15 @@ void put_global_var(string name, Type type, int len = 0) {
 
 void declare_const(FuncItem* func = NULL) {
     while (symbol == CONSTSY) {
-        getsym();
+        getsym_check();
         switch (symbol) {
         case INTSY:
-            getsym();
+            getsym_check();
             do {
                 mate(IDENT, &record_name);  // record name
                 mate(ASS);
                 if (symbol == ZERO) {
-                    getsym();
+                    getsym_check();
                     if (func == NULL) {
                         put_global_const(name, INT, 0);
                     } else {
@@ -374,10 +483,10 @@ void declare_const(FuncItem* func = NULL) {
                     int sign = 1;
                     if (symbol == ADD) {
                         sign = 1;
-                        getsym();
+                        getsym_check();
                     } else if (symbol == SUB) {
                         sign = -1;
-                        getsym();
+                        getsym_check();
                     }
                     mate(INTCON);
                     if (func == NULL) {
@@ -390,11 +499,11 @@ void declare_const(FuncItem* func = NULL) {
                 if (symbol != COMMA) {
                     break;
                 }
-                getsym();
+                getsym_check();
             } while (true);
             break;
         case CHARSY:
-            getsym();
+            getsym_check();
             do {
                 mate(IDENT, &record_name);
                 mate(ASS);
@@ -408,7 +517,7 @@ void declare_const(FuncItem* func = NULL) {
                 if (symbol != COMMA) {
                     break;
                 }
-                getsym();
+                getsym_check();
             } while (true);
             break;
         default:
@@ -434,7 +543,7 @@ void declare_var(FuncItem* func = NULL) {
         default:
             return;
         }
-        getsym();
+        getsym_check();
 
         do {
             mate(IDENT, &record_name);
@@ -451,13 +560,14 @@ void declare_var(FuncItem* func = NULL) {
                 is_first = false;
             }
             if (LBKT == symbol) {
-                getsym();
+                getsym_check();
                 mate(INTCON);
                 if (func == NULL) {
                     put_global_var(name, type, num);
                 } else {
                     func->put_var(name, type, num);
                 }
+
                 mate(RBKT); // ']'
 
             } else {
@@ -471,7 +581,7 @@ void declare_var(FuncItem* func = NULL) {
             if (COMMA != symbol) {  // ','
                 break;
             }
-            getsym();
+            getsym_check();
         } while (true);
         mate(SEMI);
     }
@@ -481,44 +591,57 @@ void comp_statement(FuncItem* func) {
     mate(LBRACE);   // '{'
     declare_const(func);
     declare_var(func);
+    returned = false;
     while (symbol != RBRACE) {  // '}'
         statement();
     }
-    getsym();
+    if (!returned && func->get_type() != VOID) {
+        error((string)"non-void return type function without a return statement");
+    }
+    if (func->get_name() == "main") {
+        if (!next_end()) {
+            error("there\'re something behind \'main\'");
+        }
+
+    } else {
+        if (!getsym()) {
+            error("undefined reference \'main\'");
+        }
+    }
+
 }
 
 void declare_func() {
     const int is_voi = 0;
     const int is_int = 1;
     const int is_char = 2;
-    int got_main;
-    FuncItem* this_func = NULL;
+    this_func = NULL;
     while (true) {
-        // // cout << "=== NEW FUNCTION ===" << endl;
         if (skip_type_ident) {
             skip_type_ident = false;
         } else {
             switch (symbol) {
             case VOIDSY:
-                getsym();
+                getsym_check();
                 if (MAINSY == symbol) {
-                    getsym();
+                    getsym_check();
                     mate(LPAR);
                     mate(RPAR); // '()'
                     this_func = new FuncItem("main", VOID);
                     funcs.insert(FUNC_MAP::value_type("main", this_func));
                     comp_statement(this_func);
-                    continue;
+
+                    return; // finish
                 } else {
                     type = VOID;
                 }
                 break;
             case INTSY:
-                getsym();
+                getsym_check();
                 type = INT;
                 break;
             case CHARSY:
-                getsym();
+                getsym_check();
                 type = CHAR;
                 break;
             default:
@@ -531,16 +654,16 @@ void declare_func() {
         funcs.insert(FUNC_MAP::value_type(name, this_func));
 
         if (symbol == LPAR) {
-            getsym();
+            getsym_check();
             do {
                 switch (symbol) {
                 case INTSY:
                     type = INT;
-                    getsym();
+                    getsym_check();
                     break;
                 case CHARSY:
                     type = CHAR;
-                    getsym();
+                    getsym_check();
                     break;
                 default:
                     error((string)"Unexpected parameter type " + symbol2string(symbol));
@@ -550,21 +673,21 @@ void declare_func() {
                 if (symbol != COMMA) { // ','
                     break;
                 }
-                getsym();
+                getsym_check();
             } while (true);
             mate(RPAR);
         }
-
         comp_statement(this_func);
     }
 }
 
 int gram_main() {
-    getsym();
+    getsym_check();
      cout << "=== CONST BEGIN ===" << endl;
     declare_const();
      cout << "=== VAR BEGIN ===" << endl;
     declare_var();
      cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
+     cout << "=== SUCCESS! ===" << endl;
 }

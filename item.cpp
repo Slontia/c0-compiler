@@ -4,6 +4,24 @@ using namespace std;
 
 void error(string info);
 
+string type2string(Type type) {
+    switch (type) {
+    case INT: return "int";
+    case CHAR: return "char";
+    case VOID: return "void";
+    }
+    return NULL;
+}
+
+string kind2string(Kind kind) {
+    switch (kind) {
+        case FUNC: return "function";
+        case CONST: return "constant";
+        case VAR: return "variable";
+    }
+    return NULL;
+}
+
 /* Item */
 
 Item::Item(string name, Type type, Kind kind) {
@@ -13,6 +31,7 @@ Item::Item(string name, Type type, Kind kind) {
 }
 Type Item::get_type() { return type; }
 Kind Item::get_kind() { return kind; }
+string Item::get_name() {return name;}
 
 
 /* Var */
@@ -49,9 +68,9 @@ void FuncItem::put_para(string name, Type type) {
         return;
     }
 
-    VarItem var_item(name, type);
-    vars.insert(VAR_MAP::value_type(name, &var_item));
-    paras.push_back(&var_item);
+    VarItem* var_item = new VarItem(name, type);
+    vars.insert(VAR_MAP::value_type(name, var_item));
+    paras.push_back(var_item);
 }
 
 void FuncItem::put_const(string name, Type type, int value) {
@@ -59,8 +78,8 @@ void FuncItem::put_const(string name, Type type, int value) {
         error("redefinition of '" + name + "\'");
         return;
     }
-    ConstItem const_item(name, type, value);
-    consts.insert(CONST_MAP::value_type(name, &const_item));
+    ConstItem* const_item = new ConstItem(name, type, value);
+    consts.insert(CONST_MAP::value_type(name, const_item));
 }
 
 void FuncItem::put_var(string name, Type type, int len) {
@@ -68,8 +87,8 @@ void FuncItem::put_var(string name, Type type, int len) {
         error("redefinition of '" + name + "\'");
         return;
     }
-    VarItem var_item(name, type, len);
-    vars.insert(VAR_MAP::value_type(name, &var_item));
+    VarItem* var_item = new VarItem(name, type, len);
+    vars.insert(VAR_MAP::value_type(name, var_item));
 }
 
 // if not exists, return null

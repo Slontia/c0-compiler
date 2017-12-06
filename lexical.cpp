@@ -31,6 +31,10 @@ void error(string info) {
 	exit(0);
 }
 
+void suspend_handle() {
+    error("unfinished code");
+}
+
 /*===============================
 |		 char judgement			|
 ===============================*/
@@ -147,6 +151,8 @@ bool is_string_char() {
 	return (cur_c >= 32 && cur_c <= 126 && cur_c != 34);
 }
 
+
+
 /*===============================
 |			read char			|
 ===============================*/
@@ -161,13 +167,21 @@ void retract() {
 	}
 }
 
-void readchar() {
+bool readchar() {
 	cur_c = fgetc(progf);
 	if (OUTPUT_PROG) cout << cur_c;
-	if (cur_c == EOF) {
-        cout << "=== SUCCESS!! ===" << endl;
-		exit(0);
+	return (cur_c != EOF);
+}
+
+bool next_end() {
+	do {
+        readchar();
+	} while (is_blank());
+	if (cur_c != EOF) {
+        retract();
+        return false;
 	}
+    return true;
 }
 
 /*===============================
@@ -364,17 +378,20 @@ void sym_handle(Symbol sym, int num) {
 	//fprintf(outf, "%s %s\n", sym_str, sign);
 }
 
-void getsym() {
-	readchar();
+bool getsym() {
 	clear_token();
-	while (is_blank()) {	// skip blank
-		readchar();
-	}
+	do {
+        readchar();
+	} while (is_blank());
+    if (cur_c == EOF) {
+        return false;
+    }
 
 	if (is_letter()) {
+        bool meet_eof;
 		while (is_letter() || is_digit()) {
 			cat_token();
-			readchar();
+			if (!readchar()) return false;
 		}
 		retract();
 		symbol = reserver();
@@ -388,7 +405,7 @@ void getsym() {
 	    }
 		while (is_digit()) {
 			cat_token();
-			readchar();
+			if (!readchar()) return false;
 		}
 		retract();
 		num = trans_num();
@@ -410,7 +427,7 @@ void getsym() {
 		// mate char
 		symbol = CHARCON;
 		num = -1;
-		readchar();
+		if (!readchar()) return false;
 		if (
 			is_add() || is_sub() || is_mul() || is_div() ||
 			is_letter() || is_digit()
@@ -419,18 +436,18 @@ void getsym() {
 		} else if (is_squo()) {
 		    sym_handle(symbol, num);
 			error("empty char");
-			return;	// is ''
+			return true;	// is ''
 		} else {
 			error("unexpected char");
 		}
 
 		// mate '
-		readchar();
+		if (!readchar()) return false;
 		if (!is_squo()) {
             num = -1;
 			error("multiple chars");
 			do {
-				readchar();
+				if (!readchar()) return false;
 			} while (!is_squo());
 		}
 		sym_handle(symbol, num);
@@ -444,7 +461,7 @@ void getsym() {
 
 		// mate string
 		while (true) {
-			readchar();
+			if (!readchar()) return false;
 			if (is_dquo()) { // "
 				// symbol = STRCON;
 				token[token_len] = 0; // set tailed
@@ -462,7 +479,7 @@ void getsym() {
 
 	} else if (is_excla()) { // !
 		cat_token();
-		readchar();
+		if (!readchar()) return false;
 		if (is_ass()) { // =
 			cat_token();
 			symbol = NE;
@@ -474,7 +491,7 @@ void getsym() {
 		}
 
 	} else if (is_ass()) {
-	    readchar();
+	    if (!readchar()) return false;
 	    if (is_ass()) {
             symbol = EQ;
             sym_handle(symbol, token);
@@ -486,7 +503,7 @@ void getsym() {
 
 	} else if (is_gt()) { // >
 		cat_token();
-		readchar();
+		if (!readchar()) return false;
 		if (is_ass()) { // =
 			cat_token();
 			symbol = GE;
@@ -499,7 +516,7 @@ void getsym() {
 
 	} else if (is_lt()) { // <
 		cat_token();
-		readchar();
+		if (!readchar()) return false;
 		if (is_ass()) { // =
 			cat_token();
 			symbol = LE;
@@ -552,6 +569,7 @@ void getsym() {
 	} else {
 		error("unexpected char");
 	}
+    return true;
 }
 
 int lexical_main(){

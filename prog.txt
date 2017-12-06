@@ -46,7 +46,7 @@ int foo1(int m, char n){
 	return (n-m);
 }
 
-int foo2(int m, int n){}
+int foo2(int m, int n){return (-2);}
 
 void no_meanings {
 	;;;;;;;foo2(a,b);;;;;;;;;;;;;;;;;;;;;;
@@ -88,7 +88,7 @@ int print_null {
 	return (0);
 }
 
-char foo3(int m, int count) {
+int foo3(int m, int count) {
 	if (m < -13){
 		printf("FIFTEEN!");
 		return (1);
@@ -106,7 +106,7 @@ char test_expression {
 	int a_rRay_[100];
 	i = 1;
 	{a_rRay_[5] = 100 + print_null;}
-	printf("HHHH", a_rRay_[_*_+a-'1']/'*'+foo1(a_rRay_[_*_+a-'1'],i)+print_null);
+	printf("HHHH", a_rRay_[_*_+a-'1']/'*'+foo1(a_rRay_[_*_+a-'1'],'1')+print_null);
 	return ('0');
 }
 
@@ -210,7 +210,7 @@ void main() {
 	int times, i;
 
 	scanf(j);
-	printf(foo1(0, 0));
+	printf(foo1(0, '0'));
 	test_expression;
 	print_null;
 	no_meanings;
@@ -227,7 +227,7 @@ void main() {
 	printf(foo3(foo4, 0));
 	printf(foo3(foo3(foo4, 0) , 0));
 
-	printf(foo1(c, e));
+	printf(foo1(c, '0'));
 	scanf_all;
 	no_meanings;
 	foo1(c, d);

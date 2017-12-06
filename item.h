@@ -19,6 +19,10 @@ typedef enum {
     CONST, VAR, FUNC
 } Kind;
 
+
+string type2string(Type type);
+string kind2string(Kind kind);
+
 typedef map<string, VarItem*> VAR_MAP;
 typedef map<string, ConstItem*> CONST_MAP;
 typedef map<string, FuncItem*> FUNC_MAP;
@@ -35,6 +39,8 @@ public:
     Type get_type();
 
     Kind get_kind();
+
+    string get_name();
 };
 
 
