@@ -420,10 +420,6 @@ bool getsym() {
 		sym_handle(symbol, num);
 
 	} else if (is_squo()) {	// record char
-		// mate '
-		// symbol = SQUO;
-		// sym_handle(symbol, cur_c);
-
 		// mate char
 		symbol = CHARCON;
 		num = -1;
@@ -451,23 +447,16 @@ bool getsym() {
 			} while (!is_squo());
 		}
 		sym_handle(symbol, num);
-		// symbol = SQUO;
-		// sym_handle(symbol, cur_c);
 
 	} else if (is_dquo()) {
-		// mate "
 		symbol = STRCON;
-		// sym_handle(symbol, cur_c);
 
 		// mate string
 		while (true) {
 			if (!readchar()) return false;
 			if (is_dquo()) { // "
-				// symbol = STRCON;
 				token[token_len] = 0; // set tailed
 				sym_handle(symbol, token);
-				// symbol = DQUO;
-				// sym_handle(symbol, cur_c);
 				break;
 			} else if (!is_string_char()) {
 				error("unexpected char in string");

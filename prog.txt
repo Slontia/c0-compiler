@@ -10,6 +10,7 @@ int foo1(int m, char n1){
 	int a1, a2;
 	int i;
 	int n;
+	a1 = array[98+1*2*0];
 	n = n1;
 	printf("N/M: ");
 	i = -0;

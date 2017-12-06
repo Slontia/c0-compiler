@@ -16,6 +16,8 @@ extern char token[TOKEN_MAX_LENTH];	// store sign
 extern int token_len;
 extern int num; // currrent integer
 typedef enum {
+	NONE,
+
 	IDENT, INTCON, CHARCON, STRCON, ZERO,
 
 	SQUO, DQUO, COMMA, COLON, SEMI, LPAR, RPAR,

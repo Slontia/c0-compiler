@@ -12,11 +12,7 @@ using namespace std;
 
 class Item;
 
-
-
 extern map<string, Item> global_signs;
-
-
 
 class act_recorder {
 public:

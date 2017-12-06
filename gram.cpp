@@ -1,12 +1,12 @@
 /*
 1. return类型是否正确         OK
 2. 调用函数参数是否正确       OK
-3. 为char赋值是否正确
+3. 为char赋值是否正确         OK
 4. 是否return了               OK
 5. 是否有main函数             OK
-6. 不允许出现函数或过程名与自己内部的局部变量重名的情况
+6. 不允许出现函数或过程名与自己内部的局部变量重名的情况   OK
 7. 数组越界判断
-8. 调用函数是否正确
+8. 调用函数是否正确           OK
 
 标签：[FUNCNAME]_func_[i]_[j]_[k]
 
@@ -30,9 +30,13 @@ FuncItem* this_func = NULL;
 Type type;
 bool returned;
 bool skip_type_ident = false;
-Type item();
-Type factor();
-Type expr();
+
+int const_value;
+bool certain;
+
+Type item(int*, bool*);
+Type factor(int*, bool*);
+Type expr(int*, bool*);
 
 typedef enum {
     CONST_STATE, VAR_STATE, FUNC_STATE, FUNC_CONST_STATE, FUNC_VAR_STATE, FUNC_STATEMENT_STATE
@@ -72,15 +76,34 @@ void mate_idents() {
     } while (true);
 }
 
-Type expr() {
+Type expr(int* value, bool* certain) {
     Type ex_type;
+    int cur_value;
+    bool cur_certain;
+    Symbol cur_op = ADD;
+    *value = 0;
+    *certain = true;
     if (symbol == ADD || symbol == SUB) {
+        cur_op = symbol;
         ex_type = INT;
         getsym_check();
     }
     do {
-        ex_type = item();
+        ex_type = item(&cur_value, &cur_certain);
+        *certain &= cur_certain;
+        if (certain) {
+            switch (cur_op) {
+            case ADD:
+                *value += cur_value;
+                break;
+            case SUB:
+                *value -= cur_value;
+                break;
+            default: error_debug("expr");
+            }
+        }
         if (symbol == ADD || symbol == SUB) {
+            cur_op = symbol;
             ex_type = INT;
             getsym_check();
         } else {
@@ -90,11 +113,29 @@ Type expr() {
     return ex_type;
 }
 
-Type item() {
+Type item(int* value, bool* certain) {
     Type it_type;
+    int cur_value;
+    bool cur_certain;
+    Symbol cur_op = MUL;
+    *value = 1;
+    *certain = true;
     do {
-        it_type = factor();
+        it_type = factor(&cur_value, &cur_certain);
+        *certain &= cur_certain;
+        if (*certain) {
+            switch(cur_op) {
+            case MUL:
+                *value *= cur_value;
+                break;
+            case DIV:
+                *value /= cur_value;
+                break;
+            default: error_debug("item");
+            }
+        }
         if (symbol == MUL || symbol == DIV) {
+            cur_op = symbol;
             it_type = INT;
             getsym_check();
         } else {
@@ -155,9 +196,13 @@ Item* read_ident() {
     if (symbol == LBKT) { // '['
         getsym_check();
         if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
-            error((string)"\'" + name + "' is not an array type");
+            error((string)"\'" + name + "\' is not an array type");
         }
-        expr();
+        expr(&const_value, &certain);
+        int len = ((VarItem*)item)->get_len();
+        if (certain && (const_value < 0 || const_value >= len)) {
+            error((string)"index of array \'" + name + "[]\' out of range");
+        }
         /* out of range judgment */
         mate(RBKT); // ']'
 
@@ -166,7 +211,7 @@ Item* read_ident() {
         getsym_check();
         vector<Type> para_types;
         do {
-            para_types.push_back(expr());
+            para_types.push_back(expr(&const_value, &certain));
             if (symbol != COMMA) { // ','
                 break;
             }
@@ -180,9 +225,10 @@ Item* read_ident() {
     return item;
 }
 
-Type factor() {
+Type factor(int* value, bool* certain) {
     Type fac_type;
     Item* item = NULL;
+    *certain = false;
     switch(symbol){
         case IDENT:
             item = read_ident();
@@ -190,12 +236,16 @@ Type factor() {
             if (item->get_type() == VOID) {
                 error("void value not ignored as it ought to be");
             }
+            if (item->get_kind() == CONST) {
+                *value = ((ConstItem*)item)->get_value();
+                *certain = true;
+            }
             break;
 
-        // '('
+        // '(' function with paras
         case LPAR:
             getsym_check();
-            fac_type = expr();
+            fac_type = expr(value, certain);
             mate(RPAR); // ')'
             break;
 
@@ -203,26 +253,36 @@ Type factor() {
             getsym_check();
             fac_type = INT;
             mate(INTCON);
+            *value = num;
+            *certain = true;
             break;
 
         case SUB:
             getsym_check();
             fac_type = INT;
             mate(INTCON);
+            *value = -1 * num;
+            *certain = true;
             break;
 
         case INTCON:
             fac_type = INT;
+            *value = num;
+            *certain = true;
             getsym_check();
             break;
 
         case CHARCON:
             fac_type = CHAR;
+            *value = num;
+            *certain = true;
             getsym_check();
             break;
 
         case ZERO:
             fac_type = INT;
+            *value = 0;
+            *certain = true;
             getsym_check();
             break;
 
@@ -233,7 +293,7 @@ Type factor() {
 }
 
 void cond() {
-    expr();
+    expr(&const_value, &certain);
     switch (symbol){
     case GT:
         getsym_check();
@@ -256,15 +316,12 @@ void cond() {
     default:
         return; // only expression
     }
-    expr();
+    expr(&const_value, &certain);
 }
 
 
 
 void statement() {
-    const int is_var = 0;
-    const int is_func = 1;
-    int type = -1;
     switch(symbol){
     // if (cond) statement else statement
     case IFSY:
@@ -289,7 +346,7 @@ void statement() {
         output_info("Switch statement begins!");
         getsym_check();
         mate(LPAR); // '('
-        expr(); // expression to switch
+        expr(&const_value, &certain); // expression to switch
         mate(RPAR); // ')'
         mate(LBRACE);   // '{'
         mate(CASESY);   // case
@@ -348,8 +405,7 @@ void statement() {
         getsym_check();
         if (symbol != SEMI) {
             mate(LPAR);
-            //expr();
-            Type ex_type = expr();
+            Type ex_type = expr(&const_value, &certain);
             if (ex_type != this_func->get_type()) {
                 error((string)"expected return type \'" + type2string(this_func->get_type()) +
                        "\', actual '" + type2string(ex_type) + "\'");
@@ -370,10 +426,10 @@ void statement() {
             getsym_check();
             if (symbol == COMMA) {  // ','
                 getsym_check();
-                expr();
+                expr(&const_value, &certain);
             }
         } else {
-            expr();
+            expr(&const_value, &certain);
         }
         mate(RPAR); // ')'
         mate(SEMI);
@@ -406,7 +462,7 @@ void statement() {
             if (item->get_kind() != VAR) {
                 error((string)"assignment of non-var \'" + item->get_name() + "\'");
             }
-            if (expr() == INT && item->get_type() == CHAR) {
+            if (expr(&const_value, &certain) == INT && item->get_type() == CHAR) {
                 error((string)"cannot convert 'int' to 'char'");
             }
         }
@@ -463,6 +519,9 @@ void declare_const(FuncItem* func = NULL) {
                     if (func == NULL) {
                         put_global_const(name, INT, 0);
                     } else {
+                        if (func->get_name() == name) {
+                            error((string)"conflicting declaration with function name");
+                        }
                         func->put_const(name, INT, 0);
                     }
 
@@ -479,6 +538,9 @@ void declare_const(FuncItem* func = NULL) {
                     if (func == NULL) {
                         put_global_const(name, INT, sign * num);
                     } else {
+                        if (func->get_name() == name) {
+                            error((string)"conflicting declaration with function name");
+                        }
                         func->put_const(name, INT, sign * num);
                     }
 
@@ -498,6 +560,9 @@ void declare_const(FuncItem* func = NULL) {
                 if (func == NULL) {
                     put_global_const(name, CHAR, num);
                 } else {
+                    if (func->get_name() == name) {
+                        error((string)"conflicting declaration with function name");
+                    }
                     func->put_const(name, CHAR, num);
                 }
 
@@ -552,6 +617,9 @@ void declare_var(FuncItem* func = NULL) {
                 if (func == NULL) {
                     put_global_var(name, type, num);
                 } else {
+                    if (func->get_name() == name) {
+                        error((string)"conflicting declaration with function name");
+                    }
                     func->put_var(name, type, num);
                 }
 
@@ -561,6 +629,9 @@ void declare_var(FuncItem* func = NULL) {
                 if (func == NULL) {
                     put_global_var(name, type);
                 } else {
+                    if (func->get_name() == name) {
+                        error((string)"conflicting declaration with function name");
+                    }
                     func->put_var(name, type);
                 }
             }
@@ -599,9 +670,6 @@ void comp_statement(FuncItem* func) {
 }
 
 void declare_func() {
-    const int is_voi = 0;
-    const int is_int = 1;
-    const int is_char = 2;
     this_func = NULL;
     while (true) {
         if (skip_type_ident) {
@@ -677,4 +745,5 @@ int gram_main() {
      cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
      cout << "=== SUCCESS! ===" << endl;
+     return 0;
 }
