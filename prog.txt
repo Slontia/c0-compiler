@@ -46,7 +46,7 @@ int foo1(int m, char n){
 	return (n-m);
 }
 
-int foo2(int m, int n){return (-2);}
+int foo2(char m, char n){return (-2);}
 
 void no_meanings {
 	;;;;;;;foo2(a,b);;;;;;;;;;;;;;;;;;;;;;
@@ -230,7 +230,7 @@ void main() {
 	printf(foo1(c, '0'));
 	scanf_all;
 	no_meanings;
-	foo1(c, d);
+	foo1(c, a);
 	print_all;
 
 	init_all_char;

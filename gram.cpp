@@ -141,51 +141,54 @@ Item* get_item(string name) {
     return NULL;
 }
 
+
+Item* read_ident() {
+    Item* item = NULL;
+    name = token;
+    if ((item = get_item(name)) == NULL) {
+        error((string)"unexpected sign \'" + name + "\'");
+        return NULL;
+    }
+    getsym_check();
+
+    // is array
+    if (symbol == LBKT) { // '['
+        getsym_check();
+        if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
+            error((string)"\'" + name + "' is not an array type");
+        }
+        expr();
+        /* out of range judgment */
+        mate(RBKT); // ']'
+
+    // is function with paras
+    } else if (symbol == LPAR) {    // '('
+        getsym_check();
+        vector<Type> para_types;
+        do {
+            para_types.push_back(expr());
+            if (symbol != COMMA) { // ','
+                break;
+            }
+            getsym_check();
+        } while (true);
+        if (item->get_kind() != FUNC || !((FuncItem*)item)->para_check(para_types)) {
+            error((string)"parameters to function \'" + item->get_name() +"\' do not match");
+        }
+        mate(RPAR); // ')'
+    }
+    return item;
+}
+
 Type factor() {
     Type fac_type;
     Item* item = NULL;
     switch(symbol){
         case IDENT:
-            name = token;
-            if ((item = get_item(name)) == NULL) {
-                error((string)"unexpected sign \'" + name + "\'");
-                break;
-            }
+            item = read_ident();
             fac_type = item->get_type();
-            getsym_check();
-            // is array
-            if (symbol == LBKT) { // '['
-                getsym_check();
-                if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
-                    error((string)"\'" + name + "' is not an array type");
-                } else {
-
-                }
-                expr();
-
-                /* out of range judgment */
-
-                mate(RBKT); // ']'
-
-            // is function
-            } else if (symbol == LPAR) {    // '('
-                getsym_check();
-                vector<Type> para_types;
-                do {
-                    para_types.push_back(expr());
-                    if (symbol != COMMA) { // ','
-                        break;
-                    }
-                    getsym_check();
-                } while (true);
-                mate(RPAR); // ')'
-                if (item->get_kind() != FUNC || !((FuncItem*)item)->para_check(para_types)) {
-                    error((string)"parameters to function \'" + item->get_name() +"\' do not match");
-                } else if (fac_type == VOID) {
-                    error("void value not ignored as it ought to be");
-                } else {
-
-                }
+            if (item->get_type() == VOID) {
+                error("void value not ignored as it ought to be");
             }
             break;
 
@@ -388,38 +391,22 @@ void statement() {
 
     // assignment | function
     case IDENT: {
-        Item* item = get_item(name);
-        getsym_check();
-
-        if (symbol == LBKT) {   // '['
-            getsym_check();
-            type = is_var;
-            expr();
-            mate(RBKT); // ']'
-        } else if (symbol == LPAR) { // '('
-            getsym_check();
-            type = is_func;
-            do {
-                expr();
-                if (symbol != COMMA) { // ','
-                    break;
-                }
-                getsym_check();
-            } while (true);
-            mate(RPAR); // ')'
+        Item* item = read_ident();
+        if (item == NULL) {
+            break;  // not found
         }
-
-        /* look up table (func without parameters? var?) */
-        if (symbol == ASS) type = is_var;   // NO
-
-        if (is_func == type) {
+        if (SEMI == symbol) {
             output_info("This is a function invoking statement!");
-        } else if (is_var == type) {
+            if (item->get_kind() != FUNC) {
+                error((string)"meaning less " + kind2string(item->get_kind()) + " \'" + item->get_name() + "\'");
+            }
+        } else if (ASS == symbol) {
             output_info("This is a assign statement!");
-            mate(ASS);
+            getsym_check();
+            if (item->get_kind() != VAR) {
+                error((string)"assignment of non-var \'" + item->get_name() + "\'");
+            }
             expr();
-        } else {
-            error_debug("func or var?");
         }
         mate(SEMI); // ';'
         break;
@@ -433,7 +420,7 @@ void statement() {
         break;
 
     default:
-        error((string)"unexpected symbol " + symbol2string(symbol) + " in the beginning of [statement]");
+        error((string)"unexpected symbol " + symbol2string(symbol) + " in the beginning of the statement");
         break;
     }
 }
