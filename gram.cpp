@@ -1,14 +1,15 @@
 /*
-1. return类型是否正确         OK
-2. 调用函数参数是否正确       OK
-3. 为char赋值是否正确         OK
-4. 是否return了               OK
-5. 是否有main函数             OK
-6. 不允许出现函数或过程名与自己内部的局部变量重名的情况   OK
-7. 数组越界判断               OK
-8. 调用函数是否正确           OK
+1. 声明部分（可以直接标签）
+2. 函数调用部分
+3. 函数返回部分
+4. 表达式
+5. 条件处理
+6. 数组处理
+7. if else 跳转
+8. while 跳转
+9. switch 跳转
+10 free string
 
-标签：[FUNCNAME]_func_[i]_[j]_[k]
 
 */
 
@@ -35,9 +36,9 @@ bool skip_type_ident = false;
 int const_value;
 bool certain;
 
-Type item(int*, bool*);
-Type factor(int*, bool*);
-Type expr(int*, bool*);
+Type item(int*, bool*, string*);
+Type factor(int*, bool*, string*);
+Type expr(int*, bool*, string*);
 
 typedef enum {
     CONST_STATE, VAR_STATE, FUNC_STATE, FUNC_CONST_STATE, FUNC_VAR_STATE, FUNC_STATEMENT_STATE
@@ -71,22 +72,24 @@ void mate_idents() {
 
 }
 
-Type expr(int* value, bool* certain) {
+Type expr(int* value, bool* certain, string* name) {
     Type ex_type;
     int cur_value;
     bool cur_certain;
     Symbol cur_op = ADD;
     *value = 0;
     *certain = true;
+    string* itm_name = new string();
+    bool first_uncertain = true;
     if (symbol == ADD || symbol == SUB) {
         cur_op = symbol;
         ex_type = INT;
         getsym_check();
     }
     do {
-        ex_type = item(&cur_value, &cur_certain);
+        ex_type = item(&cur_value, &cur_certain, itm_name);
         *certain &= cur_certain;
-        if (certain) {
+        if (*certain) {
             switch (cur_op) {
             case ADD:
                 *value += cur_value;
@@ -96,6 +99,12 @@ Type expr(int* value, bool* certain) {
                 break;
             default: error_debug("expr");
             }
+        } else if (first_uncertain) {
+            first_uncertain = false;
+            *name = new_temp();
+            assign_medi(*name, *itm_name);
+        } else {
+            cal_medi(cur_op, *name, *name, *itm_name);
         }
         if (symbol == ADD || symbol == SUB) {
             cur_op = symbol;
@@ -105,18 +114,21 @@ Type expr(int* value, bool* certain) {
             break;
         }
     } while (true);
+    delete(itm_name);
     return ex_type;
 }
 
-Type item(int* value, bool* certain) {
+Type item(int* value, bool* certain, string* name) {
     Type it_type;
     int cur_value;
     bool cur_certain;
     Symbol cur_op = MUL;
     *value = 1;
     *certain = true;
+    string* fac_name = new string();
+    bool first_uncertain = true;
     do {
-        it_type = factor(&cur_value, &cur_certain);
+        it_type = factor(&cur_value, &cur_certain, fac_name);
         *certain &= cur_certain;
         if (*certain) {
             switch(cur_op) {
@@ -128,6 +140,12 @@ Type item(int* value, bool* certain) {
                 break;
             default: error_debug("item");
             }
+        } else if (first_uncertain) {
+            first_uncertain = false;
+            *name = new_temp();
+            assign_medi(*name, *fac_name);
+        } else {
+            cal_medi(cur_op, *name, *name, *fac_name);
         }
         if (symbol == MUL || symbol == DIV) {
             cur_op = symbol;
@@ -137,6 +155,7 @@ Type item(int* value, bool* certain) {
             break;
         }
     } while (true);
+    delete(fac_name);
     return it_type;
 }
 
@@ -193,7 +212,8 @@ Item* read_ident() {
         if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
             error((string)"\'" + name + "\' is not an array type");
         }
-        expr(&const_value, &certain);
+        string* index_name = new string();
+        expr(&const_value, &certain, index_name);
         int len = ((VarItem*)item)->get_len();
         if (certain && (const_value < 0 || const_value >= len)) {
             error((string)"index of array \'" + name + "[]\' out of range");
@@ -205,8 +225,10 @@ Item* read_ident() {
     } else if (symbol == LPAR) {    // '('
         getsym_check();
         vector<Type> para_types;
+        string* name = new string();
         do {
-            para_types.push_back(expr(&const_value, &certain));
+            para_types.push_back(expr(&const_value, &certain, name));
+            push_medi(*name);
             if (symbol != COMMA) { // ','
                 break;
             }
@@ -220,7 +242,7 @@ Item* read_ident() {
     return item;
 }
 
-Type factor(int* value, bool* certain) {
+Type factor(int* value, bool* certain, string* name) {
     Type fac_type;
     Item* item = NULL;
     *certain = false;
@@ -231,16 +253,27 @@ Type factor(int* value, bool* certain) {
             if (item->get_type() == VOID) {
                 error("void value not ignored as it ought to be");
             }
-            if (item->get_kind() == CONST) {
+            switch (item->get_kind()) {
+            case CONST:
                 *value = ((ConstItem*)item)->get_value();
                 *certain = true;
+                break;
+
+            case VAR:
+                *name = item->get_name();
+                break;
+
+            case FUNC:
+                *name = new_temp();
+                return_get_medi(*name);
             }
+
             break;
 
         // '(' function with paras
         case LPAR:
             getsym_check();
-            fac_type = expr(value, certain);
+            fac_type = expr(value, certain, name);
             mate(RPAR); // ')'
             break;
 
@@ -288,30 +321,24 @@ Type factor(int* value, bool* certain) {
 }
 
 void cond() {
-    expr(&const_value, &certain);
+    Symbol cmp_op;
+    string* left_name = new string();
+    expr(&const_value, &certain, left_name);
     switch (symbol){
     case GT:
-        getsym_check();
-        break;
     case GE:
-        getsym_check();
-        break;
     case LT:
-        getsym_check();
-        break;
     case LE:
-        getsym_check();
-        break;
     case EQ:
-        getsym_check();
-        break;
     case NE:
+        cmp_op = symbol;
         getsym_check();
         break;
     default:
         return; // only expression
     }
-    expr(&const_value, &certain);
+    string* right_name = new string();
+    expr(&const_value, &certain, right_name);
 }
 
 
@@ -341,11 +368,12 @@ void statement() {
         break;
 
     // switch(expr){case 0:statement [default: statement]}
-    case SWTSY:
+    case SWTSY: {
         output_info("Switch statement begins!");
         getsym_check();
         mate(LPAR); // '('
-        type = expr(&const_value, &certain); // expression to switch
+        string* switch_name = new string();
+        type = expr(&const_value, &certain, switch_name); // expression to switch
         mate(RPAR); // ')'
         mate(LBRACE);   // '{'
         mate(CASESY);   // case
@@ -383,7 +411,7 @@ void statement() {
         mate(RBRACE);   // ';'
         output_info("Switch statement over!");
         break;
-
+    }
     // while(cond)statement
     case WHILESY:
         output_info("While statement begins!");
@@ -414,7 +442,8 @@ void statement() {
         getsym_check();
         if (symbol != SEMI) {
             mate(LPAR);
-            Type ex_type = expr(&const_value, &certain);
+            string* return_name = new string();
+            Type ex_type = expr(&const_value, &certain, return_name);
             if (ex_type != this_func->get_type()) {
                 error((string)"expected return type \'" + type2string(this_func->get_type()) +
                        "\', actual '" + type2string(ex_type) + "\'");
@@ -435,10 +464,12 @@ void statement() {
             getsym_check();
             if (symbol == COMMA) {  // ','
                 getsym_check();
-                expr(&const_value, &certain);
+                string* print_name = new string();
+                expr(&const_value, &certain, print_name);
             }
         } else {
-            expr(&const_value, &certain);
+            string* print_name = new string();
+            expr(&const_value, &certain, print_name);
         }
         mate(RPAR); // ')'
         mate(SEMI);
@@ -483,9 +514,16 @@ void statement() {
             if (item->get_kind() != VAR) {
                 error((string)"assignment of non-var \'" + item->get_name() + "\'");
             }
-            if (expr(&const_value, &certain) == INT && item->get_type() == CHAR) {
+            string* name = new string();
+            if (expr(&const_value, &certain, name) == INT && item->get_type() == CHAR) {
                 error((string)"cannot convert 'int' to 'char'");
             }
+            if (certain) {
+                assign_medi(item->get_name(), const_value);
+            } else {
+                assign_medi(item->get_name(), *name);
+            }
+
         }
         mate(SEMI); // ';'
         break;

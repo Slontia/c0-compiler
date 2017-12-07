@@ -29,16 +29,22 @@ void lable(FuncItem* func_item);
 
 string new_temp();
 
-void cal(Symbol op, string result, string a1, string a2);
-void cal(Symbol op, string result, string a1, int a2);
+void cal_medi(Symbol op, string result, string a1, string a2);
+void cal_medi(Symbol op, string result, string a1, int a2);
 
-void comp(Symbol op, string a1, string a2);
-void comp(Symbol op, string a1, int a2);
+void comp_medi(Symbol op, string a1, string a2);
+void comp_medi(Symbol op, string a1, int a2);
 
 void jump(Symbol op, string a1, string a2, string label);
 void jump(Symbol op, string a1, int a2, string label);
 
 void array_set(string array_name, string index, string result);
 void array_set(string array_name, int index, string result);
+
+void assign_medi(string n1, string n2);
+void assign_medi(string name, int value);
+
+void push_medi(string name);
+void return_get_medi(string name);
 
 #endif // MEDI_H_INCLUDED

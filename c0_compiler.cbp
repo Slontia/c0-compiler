@@ -39,6 +39,8 @@
 		<Unit filename="lexical.cpp" />
 		<Unit filename="lexical.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="medi.cpp" />
+		<Unit filename="medi.h" />
 		<Unit filename="vars.h" />
 		<Extensions>
 			<code_completion />

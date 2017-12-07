@@ -1,15 +1,28 @@
+# define DEBUG 1
+# define LL
+# if DEBUG
+# define MIPS_LEFT cout << "<===="
+# define MIPS_RIGHT "===>"
+# else
+# define MIPS_LEFT fout
+# define MIPS_RIGHT endl
+# endif // DEBUG
+# define MIPS_OUTPUT(x) MIPS_LEFT << x << MIPS_RIGHT
+
 # include <iostream>
 # include "medi.h"
 # include "vars.h"
 # include "item.h"
+# include "lexical.h"
 # include <vector>
+# include <cstdlib>
 # include <fstream>
 
 using namespace std;
 
 vector<int> branchs;
 int level;
-int temp_count;
+int temp_count = 0;
 
 void init() {
 
@@ -21,11 +34,13 @@ void next_branch() {
 
 string new_temp() {
     string temp_name = "";
-    while (temp_count != 0) {
-        temp_name = (string)"" + (char)('0' + temp_count % 10) + temp_name;
-        temp_count /= 10;
+    int temp_count_cpy = temp_count;
+    while (temp_count_cpy != 0) {
+        temp_name = (string)"" + (char)('0' + temp_count_cpy % 10) + temp_name;
+        temp_count_cpy /= 10;
     }
-    temp_name = "t" + temp_name;
+    if (temp_name == "") temp_name = "0";
+    temp_name = (string)"t" + temp_name;
     temp_count ++;
     return temp_name;
 }
@@ -86,26 +101,41 @@ void declare_global_var_medi(VAR_MAP vars) {
 
 void lable(FuncItem* func_item) {
     branchs[branchs.size()-1] ++;
-    cout << "<=====" << func_item->get_name() << "_L";
+    MIPS_LEFT << "<=====" << func_item->get_name() << "_L";
     vector<int>::iterator it = branchs.begin();
     while(it != branchs.end()) {
         cout << "_" << *it;
         it ++;
     }
-    cout << "=====>";
+    cout << MIPS_RIGHT;
+
+}
+
+void cal_medi(Symbol op, string result, string a1, string a2) {
+    MIPS_OUTPUT(result << " = " << a1 << " " << symbol2string(op) << " " << a2);
+}
+void cal_medi(Symbol op, string result, string a1, int a2) {
+    MIPS_OUTPUT(result << " = " << a1 << " " << symbol2string(op) << " " << a2);
+}
+
+void comp_medi(Symbol op, string a1, string a2) {
 
 }
 
 
+void comp_medi(Symbol op, string a1, int a2);
 
-void cal(Symbol op, string result, string a1, string a2);
-void cal(Symbol op, string result, string a1, int a2);
+void assign_medi(string n1, string n2) {
+    MIPS_OUTPUT(n1 << " = " << n2);
+}
 
-void comp(Symbol op, string a1, string a2);
-void comp(Symbol op, string a1, int a2);
+void assign_medi(string name, int value) {
+    MIPS_OUTPUT(name << " = " << value);
+}
 
-void jump(Symbol op, string a1, string a2, string label);
-void jump(Symbol op, string a1, int a2, string label);
-
-void array_set(string array_name, string index, string result);
-void array_set(string array_name, int index, string result);
+void push_medi(string name) {
+    MIPS_OUTPUT("push " << name);
+}
+void return_get_medi(string name) {
+    MIPS_OUTPUT("get " << name);
+}
