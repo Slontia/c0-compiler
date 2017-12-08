@@ -1,9 +1,23 @@
 
-void main() {
-	int a, b, c,d,e,f;
+int foo(int a) { return (1); }
 
-	a = 1;
-	b = 2;
-	c = 3;
-	d = (a + b) * c;
+void main() {
+	int g; int a;
+	g = 4;
+	
+	if (g == 5) {
+		a = 1;
+	} else {
+		a = 2;
+	}
+
+	while (a == g) {
+		a = g;
+	}
+
+	switch (a) {
+case 0: a= 2;
+case 1: a = 3;
+default: a=4;
+}
 }

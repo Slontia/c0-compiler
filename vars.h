@@ -38,4 +38,6 @@ extern Symbol symbol;
 extern Symbol cur_type;
 extern bool skip_type_ident;
 
+string int2string(int n);
+
 #endif // VARS_H_INCLUDED

@@ -20,7 +20,7 @@
 
 using namespace std;
 
-vector<int> branchs;
+int branch;
 int level;
 int temp_count = 0;
 
@@ -32,15 +32,19 @@ void next_branch() {
 
 }
 
-string new_temp() {
-    string temp_name = "";
-    int temp_count_cpy = temp_count;
-    while (temp_count_cpy != 0) {
-        temp_name = (string)"" + (char)('0' + temp_count_cpy % 10) + temp_name;
-        temp_count_cpy /= 10;
+string int2string(int n) {
+    string int_str;
+    while (n != 0) {
+        int_str = (string)"" + (char)('0' + n % 10) + int_str;
+        n /= 10;
     }
-    if (temp_name == "") temp_name = "0";
-    temp_name = (string)"t" + temp_name;
+    if (int_str == "") int_str = "0";
+    return int_str;
+}
+
+string new_temp() {
+    string temp_name = int2string(temp_count);
+    temp_name = (string)"#" + temp_name;
     temp_count ++;
     return temp_name;
 }
@@ -70,23 +74,16 @@ void declare_func_medi(FuncItem* func_item) {
     }
 }
 
-void invoke_func(FuncItem* func_item, vector<string> paras) {
-    int len = paras.size();
-    for (int i = 0; i < len; i ++) {
-        fout << "push "
-             << paras[i]
-             << endl;
-    }
-    fout << new_temp()
-         << " = "
-         << "RET"
-         << endl;
+void invoke_func_medi(string name) {
+    MIPS_OUTPUT("call " + name);
 }
 
 void func_return(string v) {
-    fout << "ret "
-         << v
-         << endl;
+    MIPS_OUTPUT("return " << v);
+}
+
+void func_return(int v) {
+    MIPS_OUTPUT("return " << v);
 }
 
 void declare_global_var_medi(VAR_MAP vars) {
@@ -99,16 +96,12 @@ void declare_global_var_medi(VAR_MAP vars) {
     }
 }
 
-void lable(FuncItem* func_item) {
-    branchs[branchs.size()-1] ++;
-    MIPS_LEFT << "<=====" << func_item->get_name() << "_L";
-    vector<int>::iterator it = branchs.begin();
-    while(it != branchs.end()) {
-        cout << "_" << *it;
-        it ++;
-    }
-    cout << MIPS_RIGHT;
+string new_label(FuncItem* func_item, string info) {
+    return func_item->get_name() + "_L_" + int2string(branch ++) + "_" + info;
+}
 
+void label_medi(string label) {
+    MIPS_OUTPUT(label << ":");
 }
 
 void cal_medi(Symbol op, string result, string a1, string a2) {
@@ -139,3 +132,34 @@ void push_medi(string name) {
 void return_get_medi(string name) {
     MIPS_OUTPUT("get " << name);
 }
+
+void branch_zero_medi(string name, string label) {
+    MIPS_OUTPUT("bz " << name << " " << label );
+}
+
+void branch_equal_medi(string name, int value, string label) {
+    MIPS_OUTPUT("be " << name << " " << value << " " << label);
+}
+
+void jump_medi(string label) {
+    MIPS_OUTPUT("j " << label);
+}
+
+void array_get_medi(string array_name, string offset, string result) {
+    MIPS_OUTPUT(result << " = " << array_name << " ARGET " << offset);
+}
+
+void array_get_medi(string array_name, int offset, string result) {
+    MIPS_OUTPUT(result << " = " << array_name << " ARGET " << offset);
+}
+
+
+void array_set_medi(string array_name, string offset) {
+    MIPS_OUTPUT();
+}
+
+
+void array_set_medi(string array_name, int offset) {
+}
+
+

@@ -1,0 +1,12 @@
+
+int foo(int a) { return (1); }
+
+void main() {
+	const int g = 5;
+	int a;
+	if (g == 5) {
+		a = 1;
+	} else {
+		a = 2;
+	}
+}

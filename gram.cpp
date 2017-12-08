@@ -1,15 +1,15 @@
 /*
 1. 声明部分（可以直接标签）
-2. 函数调用部分
+2. 函数调用部分   OK
 3. 函数返回部分
-4. 表达式
-5. 条件处理
+4. 表达式          OK
+5. 条件处理         OK
 6. 数组处理
-7. if else 跳转
-8. while 跳转
-9. switch 跳转
+7. if else 跳转   OK
+8. while 跳转     OK
+9. switch 跳转    OK
 10 free string
-
+11 表达式只有一个变量的优化
 
 */
 
@@ -68,10 +68,6 @@ void mate(Symbol sym, void (*handle_ptr)() = NULL) {
     }
 }
 
-void mate_idents() {
-
-}
-
 Type expr(int* value, bool* certain, string* name) {
     Type ex_type;
     int cur_value;
@@ -103,8 +99,10 @@ Type expr(int* value, bool* certain, string* name) {
             first_uncertain = false;
             *name = new_temp();
             assign_medi(*name, *itm_name);
-        } else {
+        } else if (!cur_certain) {
             cal_medi(cur_op, *name, *name, *itm_name);
+        } else {
+            cal_medi(cur_op, *name, *name, cur_value);
         }
         if (symbol == ADD || symbol == SUB) {
             cur_op = symbol;
@@ -144,8 +142,10 @@ Type item(int* value, bool* certain, string* name) {
             first_uncertain = false;
             *name = new_temp();
             assign_medi(*name, *fac_name);
-        } else {
+        } else if (!cur_certain) {
             cal_medi(cur_op, *name, *name, *fac_name);
+        } else {
+            cal_medi(cur_op, *name, *name, cur_value);
         }
         if (symbol == MUL || symbol == DIV) {
             cur_op = symbol;
@@ -264,6 +264,7 @@ Type factor(int* value, bool* certain, string* name) {
                 break;
 
             case FUNC:
+                invoke_func_medi(item->get_name());
                 *name = new_temp();
                 return_get_medi(*name);
             }
@@ -320,10 +321,10 @@ Type factor(int* value, bool* certain, string* name) {
     return fac_type;
 }
 
-void cond() {
+void cond(int* value, bool* certain, string* name) {
     Symbol cmp_op;
     string* left_name = new string();
-    expr(&const_value, &certain, left_name);
+    expr(value, certain, left_name);
     switch (symbol){
     case GT:
     case GE:
@@ -337,8 +338,49 @@ void cond() {
     default:
         return; // only expression
     }
+    bool left_certain = *certain;
+    int left_value = *value;
     string* right_name = new string();
-    expr(&const_value, &certain, right_name);
+    expr(value, certain, right_name);
+    bool right_certain = *certain;
+    int right_value = *value;
+    if (left_certain && right_certain) { // left certain
+        *certain = true;
+        switch (cmp_op) {
+        case GT:
+            *value = (left_value > right_value);
+            break;
+        case GE:
+            *value = (left_value >= right_value);
+            break;
+        case LT:
+            *value = (left_value < right_value);
+            break;
+        case LE:
+            *value = (left_value <= right_value);
+            break;
+        case EQ:
+            *value = (left_value == right_value);
+            break;
+        case NE:
+            *value = (left_value != right_value);
+            break;
+        default: error_debug("cond");
+        }
+        return;
+
+    } else if (left_certain && !right_certain){    // left uncertain
+        cal_medi(cmp_op, *right_name, *right_name, left_value);
+        *name = *right_name;
+    } else if (!left_certain && right_certain) {
+        cal_medi(cmp_op, *left_name, *left_name, right_value);
+        *name = *left_name;
+    } else {
+        cal_medi(cmp_op, *left_name, *left_name, *right_name);
+        *name = *left_name;
+    }
+    *certain = false;
+    delete(right_name);
 }
 
 
@@ -346,29 +388,44 @@ void cond() {
 void statement() {
     switch(symbol){
     // if (cond) statement else statement
-    case IFSY:
-        output_info("If statement begins!");
+    case IFSY: {
+        string *cond_name = new string();
+        string over_label, else_label;
+
         // if block
         getsym_check();
         mate(LPAR); // '('
-        cond(); // identify condition
+        cond(&const_value, &certain, cond_name); // identify condition
         mate(RPAR); // ')'
+//cout << this_func->get_name();
+        else_label = new_label(this_func, "else_begin");   // set label
+        over_label = new_label(this_func, "else_over");   // set label
 
-        lable(this_func);   // set label
+        if (certain && const_value == 0) {
+            jump_medi(else_label);
+        } else if (!certain){
+
+            branch_zero_medi(*cond_name, else_label);
+        }
+
+        delete(cond_name);
+
+        output_info("If statement begins!");
         statement();    // statement among if
+        jump_medi(over_label);
 
         output_info("Else statement begins!");
-        // else block
         mate(ELSY); // 'else'
-
-        lable(this_func);   // set label
+        label_medi(else_label);
         statement();    // statement among else
+        label_medi(over_label);
 
         output_info("Else statement over!");
         break;
-
+    }
     // switch(expr){case 0:statement [default: statement]}
     case SWTSY: {
+        map<int, string> label_map;
         output_info("Switch statement begins!");
         getsym_check();
         mate(LPAR); // '('
@@ -377,6 +434,10 @@ void statement() {
         mate(RPAR); // ')'
         mate(LBRACE);   // '{'
         mate(CASESY);   // case
+        string switch_label = new_label(this_func, "switch_branch");
+        string over_label = new_label(this_func, "switch_over");
+        jump_medi(switch_label);
+
         // cases
         do {
             output_info("Case statement begins!");
@@ -394,44 +455,75 @@ void statement() {
                 error((string)"unexpected symbol " + symbol2string(symbol) + " after [case]");
             }
             mate(COLON);    // :
-            lable(this_func);   // set label
+            string label = new_label(this_func, "case");   // set label
+            label_map.insert(map<int, string>::value_type(num, label));
+            label_medi(label);
             statement();
+            jump_medi(over_label);  // jump to over label
             if (symbol != CASESY) {
                 break;
             }
             getsym_check();
         } while (true);
+        int has_default = false;
+        string default_label;
         if (symbol == DFTSY) {
             output_info("Default statement begins!");
             getsym_check();
             mate(COLON);    // :
-            lable(this_func);   // set label
+            default_label = new_label(this_func, "default");   // set label
+            label_medi(default_label);
             statement();
+            has_default = true;
         }
         mate(RBRACE);   // ';'
         output_info("Switch statement over!");
+        label_medi(switch_label);
+        map<int, string>::iterator it = label_map.begin();
+        while (it != label_map.end()) {
+            branch_equal_medi(*switch_name, it->first, it->second);
+            it ++;
+        }
+        if (has_default) {
+            jump_medi(default_label);
+        }
+        label_medi(over_label);
+        delete(switch_name);
         break;
     }
     // while(cond)statement
-    case WHILESY:
+    case WHILESY: {
         output_info("While statement begins!");
         getsym_check();
         mate(LPAR); // '('
-        cond(); // identify condition
-        mate(RPAR); // ')'
-        lable(this_func);   // set label
-        statement();    // statement among if
-        output_info("While statement over!");
-        break;
+        string begin_label = new_label(this_func, "while_begin");
+        string over_label = new_label(this_func, "while_over");
+        string* cond_name = new string();
+        label_medi(begin_label);   // set label
+        cond(&const_value, &certain, cond_name); // identify condition
 
+        mate(RPAR); // ')'
+
+        if (certain && const_value == 0) {
+            jump_medi(over_label);
+        } else if (!certain) {
+            branch_zero_medi(*cond_name, over_label);
+        }
+        statement();    // statement among if
+        jump_medi(begin_label);
+        output_info("While statement over!");
+        label_medi(over_label);
+        delete(cond_name);
+        break;
+    }
     // '{'
     case LBRACE:
         getsym_check();
-        branchs.push_back(0);
+        //branchs.push_back(0);
         while (symbol != RBRACE) {
             statement();
         } // '}'
-        branchs.pop_back();
+        //branchs.pop_back();
         getsym_check();
         break;
 
@@ -508,6 +600,7 @@ void statement() {
             if (item->get_kind() != FUNC) {
                 error((string)"meaning less " + kind2string(item->get_kind()) + " \'" + item->get_name() + "\'");
             }
+            invoke_func_medi(item->get_name()); // need not get return value
         } else if (ASS == symbol) {
             output_info("This is a assign statement!");
             getsym_check();
@@ -578,9 +671,6 @@ void declare_const(FuncItem* func = NULL) {
                     if (func == NULL) {
                         put_global_const(name, INT, 0);
                     } else {
-                        if (func->get_name() == name) {
-                            error((string)"conflicting declaration with function name");
-                        }
                         func->put_const(name, INT, 0);
                     }
 
@@ -597,9 +687,6 @@ void declare_const(FuncItem* func = NULL) {
                     if (func == NULL) {
                         put_global_const(name, INT, sign * num);
                     } else {
-                        if (func->get_name() == name) {
-                            error((string)"conflicting declaration with function name");
-                        }
                         func->put_const(name, INT, sign * num);
                     }
 
@@ -619,9 +706,6 @@ void declare_const(FuncItem* func = NULL) {
                 if (func == NULL) {
                     put_global_const(name, CHAR, num);
                 } else {
-                    if (func->get_name() == name) {
-                        error((string)"conflicting declaration with function name");
-                    }
                     func->put_const(name, CHAR, num);
                 }
 
@@ -676,9 +760,6 @@ void declare_var(FuncItem* func = NULL) {
                 if (func == NULL) {
                     put_global_var(name, type, num);
                 } else {
-                    if (func->get_name() == name) {
-                        error((string)"conflicting declaration with function name");
-                    }
                     func->put_var(name, type, num);
                 }
 
@@ -688,9 +769,6 @@ void declare_var(FuncItem* func = NULL) {
                 if (func == NULL) {
                     put_global_var(name, type);
                 } else {
-                    if (func->get_name() == name) {
-                        error((string)"conflicting declaration with function name");
-                    }
                     func->put_var(name, type);
                 }
             }
@@ -709,8 +787,7 @@ void comp_statement(FuncItem* func) {
     declare_const(func);
     declare_var(func);
     returned = false;
-    branchs.clear();
-    branchs.push_back(0);
+    branch = 0;
     while (symbol != RBRACE) {  // '}'
         statement();
     }

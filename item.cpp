@@ -75,8 +75,11 @@ void FuncItem::put_para(string name, Type type) {
 }
 
 void FuncItem::put_const(string name, Type type, int value) {
-    if (has_const(name)) {
+    if (has_const(name) || has_const(name)) {
         error("redefinition of '" + name + "\'");
+        return;
+    } else if (name == get_name()) {
+        error((string)"conflicting declaration with function name");
         return;
     }
     ConstItem* const_item = new ConstItem(name, type, value);
@@ -84,8 +87,11 @@ void FuncItem::put_const(string name, Type type, int value) {
 }
 
 void FuncItem::put_var(string name, Type type, int len) {
-    if (has_var(name)) {
+    if (has_var(name) || has_const(name)) {
         error("redefinition of '" + name + "\'");
+        return;
+    } else if (name == get_name()) {
+        error((string)"conflicting declaration with function name");
         return;
     }
     VarItem* var_item = new VarItem(name, type, len);
