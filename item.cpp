@@ -1,5 +1,6 @@
 # include "item.h"
 # include "vars.h"
+# include "medi.h"
 # include <iostream>
 using namespace std;
 
@@ -10,6 +11,7 @@ string type2string(Type type) {
     case INT: return "int";
     case CHAR: return "char";
     case VOID: return "void";
+    case STRING: return "string";
     }
     return NULL;
 }
@@ -61,17 +63,36 @@ int ConstItem::get_value() { return value; }
 
 /* Func */
 
-FuncItem::FuncItem(string name, Type type): Item(name, type, FUNC) {}
+FuncItem::FuncItem(string name, Type type): Item(name, type, FUNC) {
+    func_size = 0;
+}
+
+void FuncItem::add_size(int bytes) {
+    func_size += bytes;
+}
+
+int FuncItem::get_size() {
+    return func_size;
+}
+
+void FuncItem::move_vars_size() {
+    vars_size = func_size;
+}
+
+int FuncItem::get_vars_size() {
+    return vars_size;
+}
 
 void FuncItem::put_para(string name, Type type) {
     if (has_var(name)) {
         error("redefinition of '" + name + "\'");
         return;
     }
-
+    func_size += (type == CHAR) ? 1 : 4;
     VarItem* var_item = new VarItem(name, type);
     vars.insert(VAR_MAP::value_type(name, var_item));
     paras.push_back(var_item);
+    declare_para_medi(type, name);
 }
 
 void FuncItem::put_const(string name, Type type, int value) {
@@ -94,8 +115,10 @@ void FuncItem::put_var(string name, Type type, int len) {
         error((string)"conflicting declaration with function name");
         return;
     }
+    func_size += (type == CHAR) ? 1 : 4;
     VarItem* var_item = new VarItem(name, type, len);
     vars.insert(VAR_MAP::value_type(name, var_item));
+    declare_var_medi(var_item);
 }
 
 // if not exists, return null

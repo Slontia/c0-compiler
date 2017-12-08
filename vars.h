@@ -10,13 +10,14 @@
 using namespace std;
 extern FILE* progf;
 extern ofstream fout;
+extern ifstream fin;
 
 extern char cur_c;	// current char
 extern char token[TOKEN_MAX_LENTH];	// store sign
 extern int token_len;
 extern int num; // currrent integer
 typedef enum {
-    VOID, CHAR, INT
+    VOID, CHAR, INT, STRING
 } Type;
 
 typedef enum {

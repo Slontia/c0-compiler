@@ -1,10 +1,10 @@
 /*
-1. 声明部分（可以直接标签）
+1. 声明部分（可以直接标签）OK
 2. 函数调用部分   OK
-3. 函数返回部分
+3. 函数返回部分   OK
 4. 表达式          OK
 5. 条件处理         OK
-6. 数组处理
+6. 数组处理         OK
 7. if else 跳转   OK
 8. while 跳转     OK
 9. switch 跳转    OK
@@ -98,7 +98,7 @@ Type expr(int* value, bool* certain, string* name) {
         } else if (first_uncertain) {
             first_uncertain = false;
             *name = new_temp();
-            assign_medi(*name, *itm_name);
+            cal_medi(cur_op, *name, *value, *itm_name);
         } else if (!cur_certain) {
             cal_medi(cur_op, *name, *name, *itm_name);
         } else {
@@ -141,7 +141,7 @@ Type item(int* value, bool* certain, string* name) {
         } else if (first_uncertain) {
             first_uncertain = false;
             *name = new_temp();
-            assign_medi(*name, *fac_name);
+            cal_medi(cur_op, *name, *value, *fac_name);
         } else if (!cur_certain) {
             cal_medi(cur_op, *name, *name, *fac_name);
         } else {
@@ -197,7 +197,7 @@ Item* get_item(string name) {
 }
 
 
-Item* read_ident() {
+Item* read_ident(string* index_name) {  // address of the pointer to temp_name
     Item* item = NULL;
     name = token;
     if ((item = get_item(name)) == NULL) {
@@ -212,8 +212,12 @@ Item* read_ident() {
         if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
             error((string)"\'" + name + "\' is not an array type");
         }
-        string* index_name = new string();
         expr(&const_value, &certain, index_name);
+        if (certain) {
+            *index_name = new_temp();
+            assign_medi(*index_name, const_value);
+        }
+
         int len = ((VarItem*)item)->get_len();
         if (certain && (const_value < 0 || const_value >= len)) {
             error((string)"index of array \'" + name + "[]\' out of range");
@@ -228,7 +232,12 @@ Item* read_ident() {
         string* name = new string();
         do {
             para_types.push_back(expr(&const_value, &certain, name));
-            push_medi(*name);
+            if (certain) {
+                push_medi(const_value);
+            } else {
+                push_medi(*name);
+            }
+
             if (symbol != COMMA) { // ','
                 break;
             }
@@ -247,8 +256,9 @@ Type factor(int* value, bool* certain, string* name) {
     Item* item = NULL;
     *certain = false;
     switch(symbol){
-        case IDENT:
-            item = read_ident();
+        case IDENT: {
+            string* index_name = new string();
+            item = read_ident(index_name);
             fac_type = item->get_type();
             if (item->get_type() == VOID) {
                 error("void value not ignored as it ought to be");
@@ -260,7 +270,13 @@ Type factor(int* value, bool* certain, string* name) {
                 break;
 
             case VAR:
-                *name = item->get_name();
+                if (((VarItem*)item)->isarray()) {
+                    *name = new_temp();
+                    array_get_medi(item->get_name(), *index_name, *name);
+                } else {
+                    *name = item->get_name();
+                }
+
                 break;
 
             case FUNC:
@@ -268,9 +284,9 @@ Type factor(int* value, bool* certain, string* name) {
                 *name = new_temp();
                 return_get_medi(*name);
             }
-
+            delete(index_name);
             break;
-
+        }
         // '(' function with paras
         case LPAR:
             getsym_check();
@@ -456,7 +472,11 @@ void statement() {
             }
             mate(COLON);    // :
             string label = new_label(this_func, "case");   // set label
-            label_map.insert(map<int, string>::value_type(num, label));
+            if (label_map.find(num) != label_map.end()) {
+                error("the case has been defined above");
+            } else {
+                label_map.insert(map<int, string>::value_type(num, label));
+            }
             label_medi(label);
             statement();
             jump_medi(over_label);  // jump to over label
@@ -540,33 +560,54 @@ void statement() {
                 error((string)"expected return type \'" + type2string(this_func->get_type()) +
                        "\', actual '" + type2string(ex_type) + "\'");
             }
+            if (certain) {
+                return_medi(const_value);
+            } else {
+                return_medi(*return_name);
+            }
             mate(RPAR);
             mate(SEMI);
+            delete(return_name);
         } else {
+            if (this_func->get_type() != VOID) {
+                error((string)"return-statement with no value, in function returning \'" + type2string(this_func->get_type()) + "\'");
+            }
+            return_medi(this_func);
             getsym_check();
         }
         break;
 
     // read
-    case PRTFST:
+    case PRTFST:{
+        bool is_expr = false;
         output_info("This is a print statement!");
         getsym_check();
         mate(LPAR); // '('
         if (symbol == STRCON) { // string
+            token[token_len] = 0;
+            printf_medi(STRING, token);
             getsym_check();
             if (symbol == COMMA) {  // ','
                 getsym_check();
-                string* print_name = new string();
-                expr(&const_value, &certain, print_name);
+                is_expr = true;
             }
         } else {
+            is_expr = true;
+        }
+        if (is_expr) {
             string* print_name = new string();
-            expr(&const_value, &certain, print_name);
+            Type print_type = expr(&const_value, &certain, print_name);
+            if (certain) {
+                printf_medi(print_type, const_value);
+            } else {
+                printf_medi(print_type, *print_name);
+            }
+            delete(print_name);
         }
         mate(RPAR); // ')'
         mate(SEMI);
         break;
-
+    }
     // write
     case SCFSY:
         output_info("This is a read statement!");
@@ -579,6 +620,8 @@ void statement() {
                 error("unexpected identifier \'" + name + "\'");
             } else if (item->get_kind() != VAR || ((VarItem*)item)->isarray()) {
                 error("can only write to variables");
+            } else {
+                scanf_medi(item->get_name());
             }
             if (symbol != COMMA) { // ','
                 break;
@@ -591,7 +634,8 @@ void statement() {
 
     // assignment | function
     case IDENT: {
-        Item* item = read_ident();
+        string* index_name = new string();
+        Item* item = read_ident(index_name);
         if (item == NULL) {
             break;  // not found
         }
@@ -612,13 +656,24 @@ void statement() {
                 error((string)"cannot convert 'int' to 'char'");
             }
             if (certain) {
-                assign_medi(item->get_name(), const_value);
+                if (((VarItem*)item)->isarray()){
+                    array_set_medi(item->get_name(), *index_name, const_value);
+                } else {
+                    assign_medi(item->get_name(), const_value);
+                }
+
             } else {
-                assign_medi(item->get_name(), *name);
+                if (((VarItem*)item)->isarray()){
+                    array_set_medi(item->get_name(), *index_name, *name);
+                } else {
+                    assign_medi(item->get_name(), *name);
+                }
+
             }
 
         }
         mate(SEMI); // ';'
+        delete(index_name);
         break;
     }
 
@@ -648,13 +703,15 @@ bool defined(string name) {
 }
 
 void put_global_const(string name, Type type, int value) {
-    if (!defined(name))
+    if (defined(name)) return;
     global_consts.insert(CONST_MAP::value_type(name, new ConstItem(name, type, value)));
 }
 
 void put_global_var(string name, Type type, int len = 0) {
-    if (!defined(name))
-    global_vars.insert(VAR_MAP::value_type(name, new VarItem(name, type, len)));
+    if (defined(name)) return;
+    VarItem* var_item = new VarItem(name, type, len);
+    global_vars.insert(VAR_MAP::value_type(name, var_item));
+    declare_var_medi(var_item);
 }
 
 void declare_const(FuncItem* func = NULL) {
@@ -742,12 +799,12 @@ void declare_var(FuncItem* func = NULL) {
 
         do {
             mate(IDENT, &record_name);
-            // array '['
+            // array '[' | func '('
             if (is_first) {
                 if (LPAR == symbol || LBRACE == symbol) {
                     if (func == NULL) {
                         skip_type_ident = true;
-                        return;
+                        return; // turn to function declaration
                     } else {
                         break;
                     }
@@ -783,17 +840,21 @@ void declare_var(FuncItem* func = NULL) {
 }
 
 void comp_statement(FuncItem* func) {
+    init_temp();
     mate(LBRACE);   // '{'
     declare_const(func);
     declare_var(func);
+    func->move_vars_size();
     returned = false;
     branch = 0;
     while (symbol != RBRACE) {  // '}'
         statement();
     }
+    return_medi(func);
     if (!returned && func->get_type() != VOID) {
-        error((string)"non-void return type function without a return statement");
+        error((string)"function returning \'" + type2string(func->get_type()) + "\' without a return-statement");
     }
+    func->add_size(temp_count * 4);
     if (func->get_name() == "main") {
         if (!next_end()) {
             error("there\'re something behind \'main\'");
@@ -822,8 +883,8 @@ void declare_func() {
                     mate(RPAR); // '()'
                     this_func = new FuncItem("main", VOID);
                     funcs.insert(FUNC_MAP::value_type("main", this_func));
+                    declare_func_medi(this_func);
                     comp_statement(this_func);
-
                     return; // finish
                 } else {
                     type = VOID;
@@ -844,6 +905,7 @@ void declare_func() {
             mate(IDENT, &record_name);
         }
         this_func = new FuncItem(name, type);
+        declare_func_medi(this_func);
         funcs.insert(FUNC_MAP::value_type(name, this_func));
 
         if (symbol == LPAR) {
@@ -874,14 +936,23 @@ void declare_func() {
     }
 }
 
+
+FILE* progf;
+
 int gram_main() {
+    progf = fopen("prog.txt", "r");
+    fout.open("intermediate.txt");
+
     getsym_check();
-     cout << "=== CONST BEGIN ===" << endl;
+    cout << "=== CONST BEGIN ===" << endl;
     declare_const();
-     cout << "=== VAR BEGIN ===" << endl;
+    cout << "=== VAR BEGIN ===" << endl;
     declare_var();
-     cout << "=== FUNC BEGIN ===" << endl;
+    cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
-     cout << "=== SUCCESS! ===" << endl;
-     return 0;
+    cout << "=== SUCCESS! ===" << endl;
+
+    fout.close();
+    fclose(progf);
+    return 0;
 }

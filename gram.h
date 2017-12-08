@@ -12,12 +12,9 @@ using namespace std;
 
 class Item;
 
-extern map<string, Item> global_signs;
-
-class act_recorder {
-public:
-    vector<Item> items;
-};
+class FuncItem;
+typedef map<string, FuncItem*> FUNC_MAP;
+extern FUNC_MAP funcs;
 
 int gram_main();
 

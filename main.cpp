@@ -2,12 +2,16 @@
 #include "lexical.h"
 #include "gram.h"
 #include "vars.h"
+#include "tar.h"
 
 using namespace std;
-FILE* progf = fopen("prog.txt", "r");
-ofstream fout;
+
+
 int main() {
-    fout.open("output.txt");
     gram_main();
+    tar_main();
+
+
+
     return 0;
 }

@@ -65,11 +65,14 @@ public:
 
 
 class FuncItem : public Item {
-public:
+private:
     vector<VarItem*> paras;
     CONST_MAP consts;
     VAR_MAP vars;
+    int func_size;
+    int vars_size;
 
+public:
     FuncItem(string name, Type type);
 
     void put_para(string name, Type type);
@@ -91,6 +94,14 @@ public:
     bool para_check(vector<Type> types);
 
     vector<VarItem*> get_paras();
+
+    void add_size(int bytes);
+
+    int get_size();
+
+    void move_vars_size();
+
+    int get_vars_size();
 };
 
 #endif // ITEM_H_INCLUDED

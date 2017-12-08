@@ -41,6 +41,8 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="medi.cpp" />
 		<Unit filename="medi.h" />
+		<Unit filename="tar.cpp" />
+		<Unit filename="tar.h" />
 		<Unit filename="vars.h" />
 		<Extensions>
 			<code_completion />
