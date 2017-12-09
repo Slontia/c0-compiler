@@ -104,4 +104,6 @@ public:
     int get_vars_size();
 };
 
+int round_up(int, int);
+
 #endif // ITEM_H_INCLUDED

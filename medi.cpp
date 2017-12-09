@@ -56,7 +56,7 @@ void declare_func_medi(FuncItem* func_item) {
 
 
 void declare_para_medi(Type type, string name) {
-    MIPS_OUTPUT("@para " << name);
+    MIPS_OUTPUT("@para " << type2string(type) << " " << name);
 }
 
 
@@ -67,7 +67,6 @@ void declare_var_medi(VarItem* var_item) {
     } else {
         MIPS_OUTPUT("@var " << type2string(var_item->get_type()) << " " << var_item->get_name());
     }
-
 }
 
 

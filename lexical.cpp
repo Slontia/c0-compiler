@@ -19,9 +19,8 @@ int token_len = 0;
 int num; // currrent integer
 
 void error_debug(string info) {
-	if (DEBUG) {
-		cout << "[D_ERROR] " << info << endl;
-	}
+    cout << "[D_ERROR] " << info << endl;
+    exit(0);
 }
 
 void error(string info) {

@@ -6,6 +6,16 @@ using namespace std;
 
 void error(string info);
 
+int round_up(int num, int unit) {
+    if (num % unit == 0) {
+        return num;
+    } else {
+        num /= unit;
+        num ++;
+        num *= unit;
+    }
+}
+
 string type2string(Type type) {
     switch (type) {
     case INT: return "int";
@@ -88,7 +98,7 @@ void FuncItem::put_para(string name, Type type) {
         error("redefinition of '" + name + "\'");
         return;
     }
-    func_size += (type == CHAR) ? 1 : 4;
+    func_size += 4;
     VarItem* var_item = new VarItem(name, type);
     vars.insert(VAR_MAP::value_type(name, var_item));
     paras.push_back(var_item);

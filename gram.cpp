@@ -10,6 +10,7 @@
 9. switch 跳转    OK
 10 free string
 11 表达式只有一个变量的优化
+12 除数为0
 
 */
 
@@ -98,7 +99,17 @@ Type expr(int* value, bool* certain, string* name) {
         } else if (first_uncertain) {
             first_uncertain = false;
             *name = new_temp();
-            cal_medi(cur_op, *name, *value, *itm_name);
+            if (*value == 0) {
+                if (cur_op == ADD) {
+                    assign_medi(*name, *itm_name);
+                } else {
+                    cal_medi(cur_op, *name, 0, *itm_name);
+                }
+            } else {
+                assign_medi(*name, *value);
+                cal_medi(cur_op, *name, *name, *itm_name);
+            }
+
         } else if (!cur_certain) {
             cal_medi(cur_op, *name, *name, *itm_name);
         } else {
@@ -141,7 +152,12 @@ Type item(int* value, bool* certain, string* name) {
         } else if (first_uncertain) {
             first_uncertain = false;
             *name = new_temp();
-            cal_medi(cur_op, *name, *value, *fac_name);
+            if (*value == 1 && cur_op == MUL) {
+                assign_medi(*name, *fac_name);
+            } else {
+                assign_medi(*name, *value);
+                cal_medi(cur_op, *name, *name, *fac_name);
+            }
         } else if (!cur_certain) {
             cal_medi(cur_op, *name, *name, *fac_name);
         } else {
@@ -386,7 +402,7 @@ void cond(int* value, bool* certain, string* name) {
         return;
 
     } else if (left_certain && !right_certain){    // left uncertain
-        cal_medi(cmp_op, *right_name, *right_name, left_value);
+        cal_medi(cmp_op, *right_name, left_value, *right_name);
         *name = *right_name;
     } else if (!left_certain && right_certain) {
         cal_medi(cmp_op, *left_name, *left_name, right_value);
@@ -447,6 +463,8 @@ void statement() {
         mate(LPAR); // '('
         string* switch_name = new string();
         type = expr(&const_value, &certain, switch_name); // expression to switch
+        bool switch_certain = certain;
+        int switch_value = const_value;
         mate(RPAR); // ')'
         mate(LBRACE);   // '{'
         mate(CASESY);   // case
@@ -500,9 +518,18 @@ void statement() {
         output_info("Switch statement over!");
         label_medi(switch_label);
         map<int, string>::iterator it = label_map.begin();
-        while (it != label_map.end()) {
-            branch_equal_medi(*switch_name, it->first, it->second);
-            it ++;
+        if (switch_certain) {
+            while (it != label_map.end()) {
+                if (switch_value == it->first) {
+                    jump_medi(it->second);
+                }
+                it ++;
+            }
+        } else {
+            while (it != label_map.end()) {
+                branch_equal_medi(*switch_name, it->first, it->second);
+                it ++;
+            }
         }
         if (has_default) {
             jump_medi(default_label);
