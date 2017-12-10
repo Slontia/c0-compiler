@@ -185,10 +185,23 @@ void array_set_medi(string array_name, int offset, int value) {
     MIPS_OUTPUT(array_name << " = " << offset << " ARSET " << value);
 }
 
-
+vector<string> str_set;
 
 void printf_medi(Type type, string v) {
-    MIPS_OUTPUT("@printf " << type2string(type) << " " << v);
+    if (type == STRING) {
+        int len = str_set.size();
+        for (int i = 0; i < len; i ++) {
+            if (str_set[i] == v) {
+                MIPS_OUTPUT("@printf " << type2string(type) << " " << i << "_S");
+                return;
+            }
+        }
+        str_set.push_back(v);
+        MIPS_OUTPUT("@printf " << type2string(type) << " S_" << len);
+
+    } else {
+        MIPS_OUTPUT("@printf " << type2string(type) << " " << v);
+    }
 }
 void printf_medi(Type type, int v) {
     MIPS_OUTPUT("@printf " << type2string(type) << " " << v);

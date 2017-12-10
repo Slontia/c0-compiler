@@ -1,4 +1,4 @@
-
+int b;
 char sORt {
 	int a[10];   
     int i, j, temp;   
@@ -37,5 +37,10 @@ char sORt {
 }
 
 void main() {
+	int a;
+	a=5;
+	b=3;
 	sORt ;
+	printf(b);
+	printf(a);
 }

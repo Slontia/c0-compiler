@@ -13,6 +13,8 @@ extern int branch;
 extern int level;
 extern int temp_count;
 
+extern vector<string> str_set;
+
 void init_temp();
 string new_temp();
 string new_label(FuncItem* func_item, string info);

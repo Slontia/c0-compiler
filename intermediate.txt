@@ -1,3 +1,4 @@
+@var int b
 @call main
 @exit
 @func sort
@@ -5,7 +6,7 @@
 @var int i
 @var int j
 @var int temp
-@printf string Please input ten numbers:
+@printf string S_0
 i = 0
 sort_L_0_while_begin :
 #0 = i
@@ -110,5 +111,14 @@ sort_L_9_while_over :
 @ret 53
 @ret 0
 @func main
+@var int a
+a = 5
+b = 3
 @call sort
+#0 = b
+#1 = #0
+@printf int #1
+#2 = a
+#3 = #2
+@printf int #3
 @ret

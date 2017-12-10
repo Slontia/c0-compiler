@@ -20,6 +20,7 @@
 #include "lexical.h"
 #include "item.h"
 #include "gram.h"
+#include "medi.h"
 
 using namespace std;
 
@@ -90,9 +91,19 @@ void init_reg_map() {
         Reg_recorder* recorder = &reg_recorders[i];
         if (recorder->active) {
             if (recorder->type == INT) {
-                MIPS_OUTPUT("sw $s" << i << ", " << recorder->offset << "($fp)");
+                if (recorder->global) {
+                    MIPS_OUTPUT("sw $s" << i << ", " << recorder->offset << "($gp)");
+                } else {
+                    MIPS_OUTPUT("sw $s" << i << ", " << recorder->offset << "($fp)");
+                }
+
             } else {    // CHAR
-                MIPS_OUTPUT("sb $s" << i << ", " << recorder->offset << "($fp)");
+                if (recorder->global) {
+                    MIPS_OUTPUT("sb $s" << i << ", " << recorder->offset << "($gp)");
+                } else {
+                    MIPS_OUTPUT("sb $s" << i << ", " << recorder->offset << "($fp)");
+                }
+
             }
             recorder->active = false;
         }
@@ -139,11 +150,7 @@ void init_var(VarItem* var_item) {
             if (char_ptr > int_ptr) {
                 int_ptr = round_up(char_ptr, 4);
             }
-            if (cur_func == NULL) {
-                global_addr_map.insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
-            } else {
-                offset_map.insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
-            }
+            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
             int_ptr += 4;
         } else {
             error_debug("unknown type");
@@ -185,7 +192,7 @@ int get_reg(string name) {
         if (recorder->active) {
             if (recorder->global) {
                 MIPS_OUTPUT((recorder->type == CHAR ? "sb" : "sw") << " $s"
-                    << next_reg << ", " << recorder->offset);
+                    << next_reg << ", " << recorder->offset << "($gp)");
             } else {
                 MIPS_OUTPUT((recorder->type == CHAR ? "sb" : "sw") << " $s"
                     << next_reg << ", " << recorder->offset << "($fp)");
@@ -221,7 +228,7 @@ int get_reg(string name) {
         // load value
         if (recorder->global) { // is global variable
             MIPS_OUTPUT((type == CHAR ? "lb" : "lw") << " $s" << next_reg
-                << ", " << recorder->offset);
+                << ", " << recorder->offset << "($gp)");
         } else {
             MIPS_OUTPUT((type == CHAR ? "lb" : "lw") << " $s" << next_reg
                 << ", " << recorder->offset << "($fp)");
@@ -495,6 +502,7 @@ void call_tar(string funcname) {
     } else {
         // refresh $fp
         MIPS_OUTPUT("addi $fp, $fp, " << cur_addr);
+        MIPS_OUTPUT("add $fp, $fp, $gp");
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
         MIPS_OUTPUT("nop");
@@ -580,7 +588,9 @@ void readline() {
         } else if (strs[0] == "@printf") {
             bool is_immed = is_num(strs[2]);
             if (strs[1] == "string") {
-
+                MIPS_OUTPUT("li $v0, 4");
+                MIPS_OUTPUT("la $a0, " << strs[2]);
+                MIPS_OUTPUT("syscall");
             } else if (strs[1] == "int") {
                 MIPS_OUTPUT("li $v0, 1");
                 if (is_immed) {
@@ -614,12 +624,24 @@ void readline() {
 }
 
 
-
+void set_data_str() {
+    MIPS_OUTPUT(".data");
+    int len = str_set.size();
+    for (int i = 0; i < len; i ++) {
+        MIPS_OUTPUT("S_" << i << ": .asciiz \"" << str_set[i] << "\"");
+    }
+    MIPS_OUTPUT(".space 4");
+    MIPS_OUTPUT("over_S:");
+    MIPS_OUTPUT(".text");
+    MIPS_OUTPUT("la $gp, " << "over_S");
+    MIPS_OUTPUT("andi $gp, $gp, 0xFFFFFFFC");
+}
 
 void tar_main() {
     fin.open("intermediate.txt");
     fout.open("target.asm");
 
+    set_data_str();
     readline();
 
     fout.close();

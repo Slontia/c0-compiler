@@ -1,5 +1,14 @@
+.data
+S_0: .asciiz "Please input ten numbers:"
+.space 4
+over_S:
+.text
+la $gp, over_S
+andi $gp, $gp, 0xFFFFFFFC
+   # @var int b
    # @call main
-addi $fp, $fp, 0
+addi $fp, $fp, 4
+add $fp, $fp, $gp
 jal main_E
 nop
 li $v0, 10
@@ -11,7 +20,10 @@ sort_E:
    # @var int i
    # @var int j
    # @var int temp
-   # @printf string Please input ten numbers:
+   # @printf string S_0
+li $v0, 4
+la $a0, S_0
+syscall
    # i = 0
 lw $s0, 40($fp)
 li $s0, 0
@@ -411,16 +423,53 @@ jr $ra
 nop
    # @func main
 main_E:
+   # @var int a
+   # a = 5
+lw $s5, 0($fp)
+li $s5, 5
+   # b = 3
+lw $s6, 0($gp)
+li $s6, 3
    # @call sort
+sw $s5, 0($fp)
+sw $s6, 0($gp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
-addi $fp, $fp, 0
+addi $fp, $fp, 4
 jal sort_E
 nop
 lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
+   # #0 = b
+lw $s7, 4($fp)
+lw $s0, 0($gp)
+move $s7, $s0
+   # #1 = #0
+lw $s1, 8($fp)
+move $s1, $s7
+   # @printf int #1
+li $v0, 1
+move $a0, $s1
+syscall
+   # #2 = a
+lw $s2, 12($fp)
+lw $s3, 0($fp)
+move $s2, $s3
+   # #3 = #2
+lw $s4, 16($fp)
+move $s4, $s2
+   # @printf int #3
+li $v0, 1
+move $a0, $s4
+syscall
    # @ret
+sw $s0, 0($gp)
+sw $s1, 8($fp)
+sw $s2, 12($fp)
+sw $s3, 0($fp)
+sw $s4, 16($fp)
+sw $s7, 4($fp)
 jr $ra
 nop

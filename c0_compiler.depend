@@ -63,7 +63,7 @@
 	<fstream>
 	"vars.h"
 
-1512890450 d:\projects\console\c0-compiler\gram.h
+1512912486 d:\projects\console\c0-compiler\gram.h
 	<iostream>
 	<fstream>
 	<map>
@@ -90,7 +90,7 @@
 	"medi.h"
 	<iostream>
 
-1512884514 source:d:\projects\console\c0-compiler\medi.cpp
+1512913199 source:d:\projects\console\c0-compiler\medi.cpp
 	<iostream>
 	"medi.h"
 	"vars.h"
@@ -100,12 +100,12 @@
 	<cstdlib>
 	<fstream>
 
-1512884483 d:\projects\console\c0-compiler\medi.h
+1512911103 d:\projects\console\c0-compiler\medi.h
 	<iostream>
 	<vector>
 	"vars.h"
 
-1512902443 source:d:\projects\console\c0-compiler\tar.cpp
+1512912503 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -116,6 +116,7 @@
 	"lexical.h"
 	"item.h"
 	"gram.h"
+	"medi.h"
 
 1512889852 d:\projects\console\c0-compiler\tar.h
 	<iostream>
