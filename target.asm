@@ -54,6 +54,9 @@ move $s1, $s5
 lw $s2, 72($fp)
 move $s2, $s1
    # a = #3 ARSET #5
+sll $t1, $s0, 2
+add $t1, $t1, $fp
+sw $s2, ($t1)
    # #6 = i
 lw $s3, 76($fp)
 move $s3, $s7
@@ -144,13 +147,16 @@ move $s2, $s3
 lw $s4, 112($fp)
 move $s4, $s2
    # #16 = a ARGET #15
+lw $s5, 116($fp)
+sll $t1, $s4, 2
+add $t1, $t1, $fp
+lw $s5, ($t1)
    # #17 = #16
-lw $s5, 120($fp)
-lw $s6, 116($fp)
-move $s5, $s6
+lw $s6, 120($fp)
+move $s6, $s5
    # #18 = #17
 lw $s7, 124($fp)
-move $s7, $s5
+move $s7, $s6
    # #19 = j
 lw $s0, 128($fp)
 move $s0, $s3
@@ -161,26 +167,29 @@ move $s1, $s0
    # #20 = #20 ADD 1
 addi $s1, $s1, 1
    # #21 = a ARGET #20
-   # #22 = #21
 sw $s2, 108($fp)
-lw $s2, 140($fp)
+lw $s2, 136($fp)
+sll $t1, $s1, 2
+add $t1, $t1, $fp
+lw $s2, ($t1)
+   # #22 = #21
 sw $s3, 44($fp)
-lw $s3, 136($fp)
-move $s2, $s3
+lw $s3, 140($fp)
+move $s3, $s2
    # #23 = #22
 sw $s4, 112($fp)
 lw $s4, 144($fp)
-move $s4, $s2
+move $s4, $s3
    # #18 = #18 GT #23
 sgt $s7, $s7, $s4
    # @bz #18 sort_L_6_else_begin
 sw $s0, 128($fp)
 sw $s1, 132($fp)
-sw $s2, 140($fp)
-sw $s3, 136($fp)
+sw $s2, 136($fp)
+sw $s3, 140($fp)
 sw $s4, 144($fp)
-sw $s5, 120($fp)
-sw $s6, 116($fp)
+sw $s5, 116($fp)
+sw $s6, 120($fp)
 sw $s7, 124($fp)
 lw $s5, 124($fp)
 beq $s5, $0, sort_L_6_else_begin
@@ -193,13 +202,16 @@ move $s6, $s7
 lw $s0, 152($fp)
 move $s0, $s6
    # #26 = a ARGET #25
+lw $s1, 156($fp)
+sll $t1, $s0, 2
+add $t1, $t1, $fp
+lw $s1, ($t1)
    # #27 = #26
-lw $s1, 160($fp)
-lw $s2, 156($fp)
-move $s1, $s2
+lw $s2, 160($fp)
+move $s2, $s1
    # #28 = #27
 lw $s3, 164($fp)
-move $s3, $s1
+move $s3, $s2
    # temp = #28
 lw $s4, 48($fp)
 move $s4, $s3
@@ -218,23 +230,29 @@ sw $s0, 152($fp)
 lw $s0, 44($fp)
 move $s7, $s0
    # #32 = #31
-sw $s1, 160($fp)
+sw $s1, 156($fp)
 lw $s1, 180($fp)
 move $s1, $s7
    # #32 = #32 ADD 1
 addi $s1, $s1, 1
    # #33 = a ARGET #32
+sw $s2, 160($fp)
+lw $s2, 184($fp)
+sll $t1, $s1, 2
+add $t1, $t1, $fp
+lw $s2, ($t1)
    # #34 = #33
-sw $s2, 156($fp)
-lw $s2, 188($fp)
 sw $s3, 164($fp)
-lw $s3, 184($fp)
-move $s2, $s3
+lw $s3, 188($fp)
+move $s3, $s2
    # #35 = #34
 sw $s4, 48($fp)
 lw $s4, 192($fp)
-move $s4, $s2
+move $s4, $s3
    # a = #30 ARSET #35
+sll $t1, $s6, 2
+add $t1, $t1, $fp
+sw $s4, ($t1)
    # #36 = j
 sw $s5, 168($fp)
 lw $s5, 196($fp)
@@ -256,11 +274,14 @@ sw $s1, 180($fp)
 lw $s1, 208($fp)
 move $s1, $s7
    # a = #37 ARSET #39
+sll $t1, $s6, 2
+add $t1, $t1, $fp
+sw $s1, ($t1)
    # @j sort_L_7_else_over
 sw $s0, 48($fp)
 sw $s1, 208($fp)
-sw $s2, 188($fp)
-sw $s3, 184($fp)
+sw $s2, 184($fp)
+sw $s3, 188($fp)
 sw $s4, 192($fp)
 sw $s5, 196($fp)
 sw $s6, 200($fp)
@@ -352,14 +373,17 @@ move $s1, $s0
    # #49 = #49 SUB 1
 addi $s1, $s1, -1
    # #50 = a ARGET #49
+lw $s2, 252($fp)
+sll $t1, $s1, 2
+add $t1, $t1, $fp
+lw $s2, ($t1)
    # #51 = #50
-lw $s2, 256($fp)
-lw $s3, 252($fp)
-move $s2, $s3
+lw $s3, 256($fp)
+move $s3, $s2
    # #52 = #51
 sw $s4, 232($fp)
 lw $s4, 260($fp)
-move $s4, $s2
+move $s4, $s3
    # @printf int #52
 li $v0, 1
 move $a0, $s4
@@ -367,8 +391,8 @@ syscall
    # @j sort_L_8_while_begin
 sw $s0, 244($fp)
 sw $s1, 248($fp)
-sw $s2, 256($fp)
-sw $s3, 252($fp)
+sw $s2, 252($fp)
+sw $s3, 256($fp)
 sw $s4, 260($fp)
 sw $s5, 236($fp)
 sw $s6, 40($fp)
@@ -388,9 +412,15 @@ nop
    # @func main
 main_E:
    # @call sort
+addi $sp, $sp, -8
+sw $ra, 0($sp)
+sw $fp, 4($sp)
 addi $fp, $fp, 0
 jal sort_E
 nop
+lw $ra, 0($sp)
+lw $fp, 4($sp)
+addi $sp, $sp, 8
    # @ret
 jr $ra
 nop

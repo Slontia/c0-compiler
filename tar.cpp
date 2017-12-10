@@ -341,6 +341,72 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2) {
     MIPS_OUTPUT(mips.str());
 }
 
+VarItem* get_var_item(string name) {
+    if (cur_func->has_var(name)) {
+        return cur_func->get_var(name);
+    } else {
+        return get_global_var(name);
+    }
+}
+
+int get_var_offset(string name) {
+    STRINT_MAP::iterator it = offset_map.find(name);
+    if (it != offset_map.end()) {
+        return it->second;
+    }
+    return -1;
+}
+
+void array_tar(string arr_str, string off_str, string sou_str, bool is_set) {
+    VarItem* item = get_var_item(arr_str);
+    Type type;
+    if (item == NULL) {
+        error_debug("unknown array \'" + arr_str + "\'");
+    } else {
+        type = item->get_type();
+    }
+    bool offset_is_immed = is_num(off_str);
+    bool value_is_immed = is_num(sou_str);
+    // get reg
+    string reg;
+    if (value_is_immed) {
+        reg = "$t0";
+        MIPS_OUTPUT("li $t0, " << sou_str);
+        if (!is_set) {
+            error_debug("array to a value");
+        }
+    } else {
+        stringstream ss;
+        ss << "$s" << get_reg(sou_str);
+        reg = ss.str();
+    }
+
+    // get op
+    string op;
+    if (type == INT) {
+        op = is_set ? "sw" : "lw";
+    } else {
+        op = is_set ? "sb" : "lb";
+    }
+
+    if (offset_is_immed) {
+        int offset;
+        sscanf(off_str.c_str(), "%d", &offset);
+        if (type == INT) {
+            offset *= 4;
+        }
+        offset += get_var_offset(arr_str);
+        MIPS_OUTPUT(op << " " << reg << ", " << offset << "($fp)");
+    } else {
+        if (type == INT) {
+            MIPS_OUTPUT("sll $t1, $s" << get_reg(off_str) << ", 2");  // offset *= 4
+            MIPS_OUTPUT("add $t1, $t1, $fp");
+        } else {
+            MIPS_OUTPUT("add $t1, $s" << get_reg(off_str) << ", $fp");
+        }
+        MIPS_OUTPUT(op << " " << reg << ", ($t1)");
+    }
+}
 
 void name_handle(vector<string> strs) {
     int len = strs.size();
@@ -369,9 +435,9 @@ void name_handle(vector<string> strs) {
         string cal_str1 = strs[2];
         string cal_str2 = strs[4];
         if (op == "ARGET") {
-
+            array_tar(strs[2], strs[4], strs[0], false);
         } else if (op == "ARSET") {
-
+            array_tar(strs[0], strs[2], strs[4], true);
         } else {
             cal_tar(op, strs[0], strs[2], strs[4]);
         }
@@ -399,15 +465,16 @@ void call_tar(string funcname) {
         paras.clear();
         // save regs
         init_reg_map();
-        /*
+
         MIPS_OUTPUT("addi $sp, $sp, -8");
         MIPS_OUTPUT("sw $ra, 0($sp)");
         MIPS_OUTPUT("sw $fp, 4($sp)");
+        /*
         for (int i = 0; i < reg_count; i ++) {
             MIPS_OUTPUT("addi $sp, $sp, -4");
             MIPS_OUTPUT("sw $s" << i << ", 0($sp)");
-        }
-        */
+        }*/
+
         // refresh $fp
         MIPS_OUTPUT("addi $fp, $fp, " << cur_addr + len * 4);
         // jump
@@ -419,10 +486,11 @@ void call_tar(string funcname) {
             MIPS_OUTPUT("lw $s" << i << ", 0($sp)");
             MIPS_OUTPUT("addi $sp, $sp, 4");
         }
+        */
         MIPS_OUTPUT("lw $ra, 0($sp)");
         MIPS_OUTPUT("lw $fp, 4($sp)");
         MIPS_OUTPUT("addi $sp, $sp, 8");
-        */
+
 
     } else {
         // refresh $fp
