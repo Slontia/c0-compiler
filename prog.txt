@@ -1,12 +1,24 @@
 
-int foo(int a) { return (1); }
+int Fibonacci {
+    int a,b,sum;  
+    int n,i;
+    a=1;
+    b=a;  
+    scanf(n);  
+    printf(a);
+    printf(b);
+    i=3;
+    while(i<=n){ 
+        sum=a+b;  
+        b=a;  
+        a=sum;  
+        printf(sum);
+        i = i+1;
+    }  
+    return (0);  
+
+}
 
 void main() {
-	const int f = 10;
-	int a, b, c,d,e;
-
-	a = 1*2+3;
-	b = 2;
-	c = 3;
-	d = (a + 10) * c + foo(a);
+	Fibonacci ;
 }

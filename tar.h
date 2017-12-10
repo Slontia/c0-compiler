@@ -12,6 +12,7 @@ typedef struct {
     string name = "";
     bool active = false;
     Type type;
+    bool global = false;
 }Reg_recorder;
 
 class FuncItem;

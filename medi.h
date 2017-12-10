@@ -17,6 +17,8 @@ void init_temp();
 string new_temp();
 string new_label(FuncItem* func_item, string info);
 
+void exit_medi();
+
 void declare_func_medi(FuncItem* func_item);
 
 void invoke_func_medi(string name);
@@ -50,6 +52,8 @@ void branch_zero_medi(string name, string label);
 void branch_equal_medi(string name, int value, string label);
 
 void jump_medi(string label);
+
+void jump_link_medi(string label);
 
 void array_get_medi(string array_name, string offset, string result);
 void array_get_medi(string array_name, int offset, string result);

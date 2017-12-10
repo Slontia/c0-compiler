@@ -975,6 +975,8 @@ int gram_main() {
     declare_const();
     cout << "=== VAR BEGIN ===" << endl;
     declare_var();
+    invoke_func_medi("main");
+    exit_medi();
     cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
     cout << "=== SUCCESS! ===" << endl;

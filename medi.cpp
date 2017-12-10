@@ -49,6 +49,12 @@ string new_label(FuncItem* func_item, string info) {
     return func_item->get_name() + "_L_" + int2string(branch ++) + "_" + info;
 }
 
+void exit_medi() {
+    MIPS_OUTPUT("@exit");
+}
+
+
+
 void declare_func_medi(FuncItem* func_item) {
     MIPS_OUTPUT("@func " << func_item->get_name());
 }
@@ -151,6 +157,10 @@ void jump_medi(string label) {
     MIPS_OUTPUT("@j " << label);
 }
 
+
+void jump_link_medi(string label) {
+    MIPS_OUTPUT("@jal " << label);
+}
 
 
 void array_get_medi(string array_name, string offset, string result) {

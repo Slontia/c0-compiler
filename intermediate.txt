@@ -1,28 +1,52 @@
-@func foo
-@para int a
-@ret 1
-@ret 0
-@func main
+@call main
+@exit
+@func fibonacci
 @var int a
 @var int b
-@var int c
-@var int d
-@var int e
-a = 5
-b = 2
-c = 3
+@var int sum
+@var int n
+@var int i
+a = 1
 #0 = a
 #1 = #0
-#1 = #1 ADD 10
-#2 = #1
-#2 = #2 MUL c
+b = #1
+@scanf n
+#2 = a
 #3 = #2
-#4 = a
+@printf int #3
+#4 = b
 #5 = #4
-@push #5
-@call foo
-@get #6
+@printf int #5
+i = 3
+fibonacci_L_0_while_begin :
+#6 = i
 #7 = #6
-#3 = #3 ADD #7
-d = #3
+#8 = n
+#9 = #8
+#7 = #7 LE #9
+@bz #7 fibonacci_L_1_while_over
+#10 = a
+#11 = #10
+#12 = b
+#11 = #11 ADD #12
+sum = #11
+#13 = a
+#14 = #13
+b = #14
+#15 = sum
+#16 = #15
+a = #16
+#17 = sum
+#18 = #17
+@printf int #18
+#19 = i
+#20 = #19
+#20 = #20 ADD 1
+i = #20
+@j fibonacci_L_0_while_begin
+fibonacci_L_1_while_over :
+@ret 0
+@ret 0
+@func main
+@call fibonacci
 @ret
