@@ -1,52 +1,114 @@
 @call main
 @exit
-@func fibonacci
-@var int a
-@var int b
-@var int sum
-@var int n
+@func sort
+@array int[] a 10
 @var int i
-a = 1
-#0 = a
+@var int j
+@var int temp
+@printf string Please input ten numbers:
+i = 0
+sort_L_0_while_begin :
+#0 = i
 #1 = #0
-b = #1
-@scanf n
-#2 = a
+#1 = #1 LT 10
+@bz #1 sort_L_1_while_over
+@scanf temp
+#2 = i
 #3 = #2
-@printf int #3
-#4 = b
+#4 = temp
 #5 = #4
-@printf int #5
-i = 3
-fibonacci_L_0_while_begin :
+a = #3 ARSET #5
 #6 = i
 #7 = #6
-#8 = n
+#7 = #7 ADD 1
+i = #7
+@j sort_L_0_while_begin
+sort_L_1_while_over :
+i = 0
+sort_L_2_while_begin :
+#8 = i
 #9 = #8
-#7 = #7 LE #9
-@bz #7 fibonacci_L_1_while_over
-#10 = a
+#9 = #9 LT 9
+@bz #9 sort_L_3_while_over
+j = 0
+sort_L_4_while_begin :
+#10 = j
 #11 = #10
-#12 = b
-#11 = #11 ADD #12
-sum = #11
-#13 = a
-#14 = #13
-b = #14
-#15 = sum
-#16 = #15
-a = #16
-#17 = sum
+#12 = i
+#13 = 9
+#13 = #13 SUB #12
+#11 = #11 LT #13
+@bz #11 sort_L_5_while_over
+#14 = j
+#15 = #14
+#16 = a ARGET #15
+#17 = #16
 #18 = #17
-@printf int #18
-#19 = i
+#19 = j
 #20 = #19
 #20 = #20 ADD 1
-i = #20
-@j fibonacci_L_0_while_begin
-fibonacci_L_1_while_over :
-@ret 0
+#21 = a ARGET #20
+#22 = #21
+#23 = #22
+#18 = #18 GT #23
+@bz #18 sort_L_6_else_begin
+#24 = j
+#25 = #24
+#26 = a ARGET #25
+#27 = #26
+#28 = #27
+temp = #28
+#29 = j
+#30 = #29
+#31 = j
+#32 = #31
+#32 = #32 ADD 1
+#33 = a ARGET #32
+#34 = #33
+#35 = #34
+a = #30 ARSET #35
+#36 = j
+#37 = #36
+#37 = #37 ADD 1
+#38 = temp
+#39 = #38
+a = #37 ARSET #39
+@j sort_L_7_else_over
+sort_L_6_else_begin :
+sort_L_7_else_over :
+#40 = j
+#41 = #40
+#41 = #41 ADD 1
+j = #41
+@j sort_L_4_while_begin
+sort_L_5_while_over :
+#42 = i
+#43 = #42
+#43 = #43 ADD 1
+i = #43
+@j sort_L_2_while_begin
+sort_L_3_while_over :
+i = 0
+sort_L_8_while_begin :
+#44 = i
+#45 = #44
+#45 = #45 LT 10
+@bz #45 sort_L_9_while_over
+#46 = i
+#47 = #46
+#47 = #47 ADD 1
+i = #47
+#48 = i
+#49 = #48
+#49 = #49 SUB 1
+#50 = a ARGET #49
+#51 = #50
+#52 = #51
+@printf int #52
+@j sort_L_8_while_begin
+sort_L_9_while_over :
+@ret 53
 @ret 0
 @func main
-@call fibonacci
+@call sort
 @ret

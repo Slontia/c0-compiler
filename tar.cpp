@@ -84,18 +84,30 @@ bool is_num(string str) {
     return true;
 }
 
-void init_func(string funcname) {
-    offset_map.clear();
+void init_reg_map() {
     reg_map.clear();
     for (int i = 0; i < reg_count; i++) {
-        reg_recorders[i].active = false;
+        Reg_recorder* recorder = &reg_recorders[i];
+        if (recorder->active) {
+            if (recorder->type == INT) {
+                MIPS_OUTPUT("sw $s" << i << ", " << recorder->offset << "($fp)");
+            } else {    // CHAR
+                MIPS_OUTPUT("sb $s" << i << ", " << recorder->offset << "($fp)");
+            }
+            recorder->active = false;
+        }
     }
+}
+
+void init_func(string funcname) {
+    offset_map.clear();
     cur_func = get_ele(funcname, funcs);
     temp_base_addr = 0;
     int_ptr = 0;
     char_ptr = 0;
     cur_addr = 0;
     para_read_count = 0;
+    init_reg_map();
     MIPS_OUTPUT(funcname << "_E:");
 }
 
@@ -335,6 +347,7 @@ void name_handle(vector<string> strs) {
     if (len <= 1) {
         error_debug("too few strs");
     } else if (strs[1] == ":") {
+        init_reg_map();
         MIPS_OUTPUT(strs[0] << ":");    // [MIPS] label
     } else if (strs[1] != "=") {
         error_debug("without equal, " + strs[0]);
@@ -385,6 +398,8 @@ void call_tar(string funcname) {
         }
         paras.clear();
         // save regs
+        init_reg_map();
+        /*
         MIPS_OUTPUT("addi $sp, $sp, -8");
         MIPS_OUTPUT("sw $ra, 0($sp)");
         MIPS_OUTPUT("sw $fp, 4($sp)");
@@ -392,12 +407,14 @@ void call_tar(string funcname) {
             MIPS_OUTPUT("addi $sp, $sp, -4");
             MIPS_OUTPUT("sw $s" << i << ", 0($sp)");
         }
+        */
         // refresh $fp
         MIPS_OUTPUT("addi $fp, $fp, " << cur_addr + len * 4);
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
         MIPS_OUTPUT("nop");
         // load regs
+        /*
         for (int i = reg_count - 1; i >= 0; i --) {
             MIPS_OUTPUT("lw $s" << i << ", 0($sp)");
             MIPS_OUTPUT("addi $sp, $sp, 4");
@@ -405,6 +422,7 @@ void call_tar(string funcname) {
         MIPS_OUTPUT("lw $ra, 0($sp)");
         MIPS_OUTPUT("lw $fp, 4($sp)");
         MIPS_OUTPUT("addi $sp, $sp, 8");
+        */
 
     } else {
         // refresh $fp
@@ -456,6 +474,7 @@ void readline() {
             }
 
         } else if (strs[0] == "@ret") { // v¼Ä´æÆ÷¸³Öµ£¬Ìø×ªÖÁra OK
+            init_reg_map();
             if (strs.size() == 2) {
                 if (is_num(strs[1])) {
                     MIPS_OUTPUT("li $v0, " << strs[1]);
@@ -467,6 +486,7 @@ void readline() {
             MIPS_OUTPUT("nop");
 
         } else if (strs[0] == "@be") {
+            init_reg_map();
             if (!is_num(strs[2])) {
                 error_debug("be not num");
             } else {
@@ -475,14 +495,17 @@ void readline() {
             }
 
         } else if (strs[0] == "@bz") {
+            init_reg_map();
             MIPS_OUTPUT("beq $s" << get_reg(strs[1]) << ", $0, " << strs[2]);
             MIPS_OUTPUT("nop");
 
         } else if (strs[0] == "@j") {
+            init_reg_map();
             MIPS_OUTPUT("j " << strs[1]);
             MIPS_OUTPUT("nop");
 
         } else if (strs[0] == "@jal") {
+            init_reg_map();
             MIPS_OUTPUT("jal " << strs[1]);
             MIPS_OUTPUT("nop");
 
@@ -512,7 +535,7 @@ void readline() {
         } else if (strs[0] == "@scanf") {
             MIPS_OUTPUT("li $v0, 5");
             MIPS_OUTPUT("syscall");
-            MIPS_OUTPUT("move $s" << get_reg(strs[1]) << ", $a0");
+            MIPS_OUTPUT("move $s" << get_reg(strs[1]) << ", $v0");
 
         } else if (strs[0] == "@exit") {
 
