@@ -102,6 +102,8 @@ public:
     void move_vars_size();
 
     int get_vars_size();
+
+    int get_para_count();
 };
 
 int round_up(int, int);

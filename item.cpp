@@ -171,3 +171,7 @@ bool FuncItem::para_check(vector<Type> types) {
     }
     return true;
 }
+
+int FuncItem::get_para_count() {
+    return paras.size();
+}

@@ -1392,8 +1392,8 @@ lw $s5, 28($fp)
 move $s5, $s3
    # @push #5
    # @call mod
-sw $s2, 36($fp)
 sw $s5, 32($fp)
+sw $s2, 36($fp)
 sw $s0, 16($fp)
 sw $s1, 0($fp)
 sw $s2, 20($fp)
@@ -1474,9 +1474,8 @@ lw $s5, 64($fp)
 move $s5, $s4
    # @push #14
    # @call mod
-sw $s0, 76($fp)
-sw $s3, 72($fp)
 sw $s5, 68($fp)
+sw $s3, 72($fp)
 sw $s0, 48($fp)
 sw $s1, 52($fp)
 sw $s2, 0($fp)
@@ -1488,7 +1487,7 @@ sw $s7, 4($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
-addi $fp, $fp, 80
+addi $fp, $fp, 76
 jal mod_E
 nop
 lw $ra, 0($sp)
@@ -1506,37 +1505,40 @@ move $s0, $s7
    # @push #17
    # @call gcd
 sw $s0, 80($fp)
+lw $s1, 48($fp)
+sw $s1, 84($fp)
 sw $s0, 76($fp)
+sw $s1, 48($fp)
 sw $s6, 68($fp)
 sw $s7, 72($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
-addi $fp, $fp, 84
+addi $fp, $fp, 88
 jal gcd_E
 nop
 lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
    # @get #18
-lw $s1, 80($fp)
-move $s1, $v0
+lw $s2, 80($fp)
+move $s2, $v0
    # #19 = #18
-lw $s2, 84($fp)
-move $s2, $s1
-   # #20 = #19
-lw $s3, 88($fp)
+lw $s3, 84($fp)
 move $s3, $s2
-   # @ret #20
-sw $s1, 80($fp)
-sw $s2, 84($fp)
-sw $s3, 88($fp)
+   # #20 = #19
 lw $s4, 88($fp)
-move $v0, $s4
+move $s4, $s3
+   # @ret #20
+sw $s2, 80($fp)
+sw $s3, 84($fp)
+sw $s4, 88($fp)
+lw $s5, 88($fp)
+move $v0, $s5
 jr $ra
 nop
    # gcd_L_3_else_over :
-sw $s4, 88($fp)
+sw $s5, 88($fp)
 gcd_L_3_else_over:
    # gcd_L_1_else_over :
 gcd_L_1_else_over:
@@ -1555,195 +1557,123 @@ optimize_E:
    # @var int t3
    # @var int t4
    # i = 0
-lw $s5, 0($fp)
-li $s5, 0
+lw $s6, 0($fp)
+li $s6, 0
    # c = 1
-lw $s6, 12($fp)
-li $s6, 1
-   # b = 1
-lw $s7, 8($fp)
+lw $s7, 12($fp)
 li $s7, 1
+   # b = 1
+lw $s0, 8($fp)
+li $s0, 1
    # optimize_L_0_while_begin :
-sw $s5, 0($fp)
-sw $s6, 12($fp)
-sw $s7, 8($fp)
+sw $s0, 8($fp)
+sw $s6, 0($fp)
+sw $s7, 12($fp)
 optimize_L_0_while_begin:
    # #0 = i
-lw $s0, 32($fp)
-lw $s1, 0($fp)
-move $s0, $s1
+lw $s1, 32($fp)
+lw $s2, 0($fp)
+move $s1, $s2
    # #1 = #0
-lw $s2, 36($fp)
-move $s2, $s0
+lw $s3, 36($fp)
+move $s3, $s1
    # #1 = #1 LT 10000
 li $t0, 10000
-slt $s2, $s2, $t0
+slt $s3, $s3, $t0
    # @bz #1 optimize_L_1_while_over
-sw $s0, 32($fp)
-sw $s1, 0($fp)
-sw $s2, 36($fp)
-lw $s3, 36($fp)
-beq $s3, $0, optimize_L_1_while_over
+sw $s1, 32($fp)
+sw $s2, 0($fp)
+sw $s3, 36($fp)
+lw $s4, 36($fp)
+beq $s4, $0, optimize_L_1_while_over
 nop
    # #2 = i
-lw $s4, 40($fp)
-lw $s5, 0($fp)
-move $s4, $s5
-   # #3 = #2
-lw $s6, 44($fp)
-move $s6, $s4
-   # #3 = #3 ADD 1
-addi $s6, $s6, 1
-   # i = #3
+lw $s5, 40($fp)
+lw $s6, 0($fp)
 move $s5, $s6
-   # #2 = c
-lw $s7, 12($fp)
-move $s4, $s7
-   # #3 = 0 SUB #2
-sub $s6, $0, $s4
-   # t1 = #3
-lw $s0, 16($fp)
-move $s0, $s6
-   # #2 = b
-lw $s1, 8($fp)
-move $s4, $s1
-   # #2 = #2 MUL t1
-mul $s4, $s4, $s0
    # #3 = #2
-move $s6, $s4
-   # t2 = #3
-lw $s2, 20($fp)
-move $s2, $s6
-   # #2 = c
-move $s4, $s7
-   # #3 = 0 SUB #2
-sub $s6, $0, $s4
-   # t3 = #3
-sw $s3, 36($fp)
-lw $s3, 24($fp)
-move $s3, $s6
-   # #2 = b
-move $s4, $s1
-   # #2 = #2 MUL t3
-mul $s4, $s4, $s3
-   # #3 = #2
-move $s6, $s4
-   # c = #3
-move $s7, $s6
-   # #2 = t2
-move $s4, $s2
-   # #3 = #2
-move $s6, $s4
-   # #4 = c
-sw $s4, 40($fp)
-lw $s4, 48($fp)
-move $s4, $s7
-   # #3 = #3 ADD #4
-add $s6, $s6, $s4
-   # t4 = #3
-sw $s5, 0($fp)
-lw $s5, 28($fp)
-move $s5, $s6
-   # #2 = t4
-sw $s6, 44($fp)
-lw $s6, 40($fp)
-move $s6, $s5
-   # #3 = #2
-sw $s7, 12($fp)
 lw $s7, 44($fp)
-move $s7, $s6
-   # a = #3
-sw $s0, 16($fp)
-lw $s0, 4($fp)
+move $s7, $s5
+   # #3 = #3 ADD 1
+addi $s7, $s7, 1
+   # i = #3
+move $s6, $s7
+   # #2 = c
+lw $s0, 12($fp)
+move $s5, $s0
+   # #3 = 0 SUB #2
+sub $s7, $0, $s5
+   # t1 = #3
+lw $s1, 16($fp)
+move $s1, $s7
+   # #2 = b
+lw $s2, 8($fp)
+move $s5, $s2
+   # #2 = #2 MUL t1
+mul $s5, $s5, $s1
+   # #3 = #2
+move $s7, $s5
+   # t2 = #3
+lw $s3, 20($fp)
+move $s3, $s7
+   # #2 = c
+move $s5, $s0
+   # #3 = 0 SUB #2
+sub $s7, $0, $s5
+   # t3 = #3
+sw $s4, 36($fp)
+lw $s4, 24($fp)
+move $s4, $s7
+   # #2 = b
+move $s5, $s2
+   # #2 = #2 MUL t3
+mul $s5, $s5, $s4
+   # #3 = #2
+move $s7, $s5
+   # c = #3
 move $s0, $s7
-   # @j optimize_L_0_while_begin
-sw $s0, 4($fp)
-sw $s1, 8($fp)
-sw $s2, 20($fp)
-sw $s3, 24($fp)
-sw $s4, 48($fp)
-sw $s5, 28($fp)
-sw $s6, 40($fp)
+   # #2 = t2
+move $s5, $s3
+   # #3 = #2
+move $s7, $s5
+   # #4 = c
+sw $s5, 40($fp)
+lw $s5, 48($fp)
+move $s5, $s0
+   # #3 = #3 ADD #4
+add $s7, $s7, $s5
+   # t4 = #3
+sw $s6, 0($fp)
+lw $s6, 28($fp)
+move $s6, $s7
+   # #2 = t4
 sw $s7, 44($fp)
+lw $s7, 40($fp)
+move $s7, $s6
+   # #3 = #2
+sw $s0, 12($fp)
+lw $s0, 44($fp)
+move $s0, $s7
+   # a = #3
+sw $s1, 16($fp)
+lw $s1, 4($fp)
+move $s1, $s0
+   # @j optimize_L_0_while_begin
+sw $s0, 44($fp)
+sw $s1, 4($fp)
+sw $s2, 8($fp)
+sw $s3, 20($fp)
+sw $s4, 24($fp)
+sw $s5, 48($fp)
+sw $s6, 28($fp)
+sw $s7, 40($fp)
 j optimize_L_0_while_begin
 nop
    # optimize_L_1_while_over :
 optimize_L_1_while_over:
    # #0 = a
-lw $s1, 32($fp)
-lw $s2, 4($fp)
-move $s1, $s2
-   # #1 = #0
-lw $s3, 36($fp)
-move $s3, $s1
-   # @printf int #1
-li $v0, 1
-move $a0, $s3
-syscall
-   # @call printspace
-sw $s1, 32($fp)
-sw $s2, 4($fp)
-sw $s3, 36($fp)
-addi $sp, $sp, -8
-sw $ra, 0($sp)
-sw $fp, 4($sp)
-addi $fp, $fp, 52
-jal printspace_E
-nop
-lw $ra, 0($sp)
-lw $fp, 4($sp)
-addi $sp, $sp, 8
-   # #0 = b
-lw $s4, 32($fp)
-lw $s5, 8($fp)
-move $s4, $s5
-   # #1 = #0
-lw $s6, 36($fp)
-move $s6, $s4
-   # @printf int #1
-li $v0, 1
-move $a0, $s6
-syscall
-   # @call printspace
-sw $s4, 32($fp)
-sw $s5, 8($fp)
-sw $s6, 36($fp)
-addi $sp, $sp, -8
-sw $ra, 0($sp)
-sw $fp, 4($sp)
-addi $fp, $fp, 52
-jal printspace_E
-nop
-lw $ra, 0($sp)
-lw $fp, 4($sp)
-addi $sp, $sp, 8
-   # #0 = c
-lw $s7, 32($fp)
-lw $s0, 12($fp)
-move $s7, $s0
-   # #1 = #0
-lw $s1, 36($fp)
-move $s1, $s7
-   # @printf int #1
-li $v0, 1
-move $a0, $s1
-syscall
-   # @call printspace
-sw $s0, 12($fp)
-sw $s1, 36($fp)
-sw $s7, 32($fp)
-addi $sp, $sp, -8
-sw $ra, 0($sp)
-sw $fp, 4($sp)
-addi $fp, $fp, 52
-jal printspace_E
-nop
-lw $ra, 0($sp)
-lw $fp, 4($sp)
-addi $sp, $sp, 8
-   # #0 = t1
 lw $s2, 32($fp)
-lw $s3, 16($fp)
+lw $s3, 4($fp)
 move $s2, $s3
    # #1 = #0
 lw $s4, 36($fp)
@@ -1754,7 +1684,7 @@ move $a0, $s4
 syscall
    # @call printspace
 sw $s2, 32($fp)
-sw $s3, 16($fp)
+sw $s3, 4($fp)
 sw $s4, 36($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
@@ -1765,9 +1695,9 @@ nop
 lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
-   # #0 = t2
+   # #0 = b
 lw $s5, 32($fp)
-lw $s6, 20($fp)
+lw $s6, 8($fp)
 move $s5, $s6
    # #1 = #0
 lw $s7, 36($fp)
@@ -1778,7 +1708,7 @@ move $a0, $s7
 syscall
    # @call printspace
 sw $s5, 32($fp)
-sw $s6, 20($fp)
+sw $s6, 8($fp)
 sw $s7, 36($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
@@ -1789,9 +1719,9 @@ nop
 lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
-   # #0 = t3
+   # #0 = c
 lw $s0, 32($fp)
-lw $s1, 24($fp)
+lw $s1, 12($fp)
 move $s0, $s1
    # #1 = #0
 lw $s2, 36($fp)
@@ -1802,7 +1732,7 @@ move $a0, $s2
 syscall
    # @call printspace
 sw $s0, 32($fp)
-sw $s1, 24($fp)
+sw $s1, 12($fp)
 sw $s2, 36($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
@@ -1813,9 +1743,9 @@ nop
 lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
-   # #0 = t4
+   # #0 = t1
 lw $s3, 32($fp)
-lw $s4, 28($fp)
+lw $s4, 16($fp)
 move $s3, $s4
    # #1 = #0
 lw $s5, 36($fp)
@@ -1824,10 +1754,82 @@ move $s5, $s3
 li $v0, 1
 move $a0, $s5
 syscall
-   # @ret
+   # @call printspace
 sw $s3, 32($fp)
-sw $s4, 28($fp)
+sw $s4, 16($fp)
 sw $s5, 36($fp)
+addi $sp, $sp, -8
+sw $ra, 0($sp)
+sw $fp, 4($sp)
+addi $fp, $fp, 52
+jal printspace_E
+nop
+lw $ra, 0($sp)
+lw $fp, 4($sp)
+addi $sp, $sp, 8
+   # #0 = t2
+lw $s6, 32($fp)
+lw $s7, 20($fp)
+move $s6, $s7
+   # #1 = #0
+lw $s0, 36($fp)
+move $s0, $s6
+   # @printf int #1
+li $v0, 1
+move $a0, $s0
+syscall
+   # @call printspace
+sw $s0, 36($fp)
+sw $s6, 32($fp)
+sw $s7, 20($fp)
+addi $sp, $sp, -8
+sw $ra, 0($sp)
+sw $fp, 4($sp)
+addi $fp, $fp, 52
+jal printspace_E
+nop
+lw $ra, 0($sp)
+lw $fp, 4($sp)
+addi $sp, $sp, 8
+   # #0 = t3
+lw $s1, 32($fp)
+lw $s2, 24($fp)
+move $s1, $s2
+   # #1 = #0
+lw $s3, 36($fp)
+move $s3, $s1
+   # @printf int #1
+li $v0, 1
+move $a0, $s3
+syscall
+   # @call printspace
+sw $s1, 32($fp)
+sw $s2, 24($fp)
+sw $s3, 36($fp)
+addi $sp, $sp, -8
+sw $ra, 0($sp)
+sw $fp, 4($sp)
+addi $fp, $fp, 52
+jal printspace_E
+nop
+lw $ra, 0($sp)
+lw $fp, 4($sp)
+addi $sp, $sp, 8
+   # #0 = t4
+lw $s4, 32($fp)
+lw $s5, 28($fp)
+move $s4, $s5
+   # #1 = #0
+lw $s6, 36($fp)
+move $s6, $s4
+   # @printf int #1
+li $v0, 1
+move $a0, $s6
+syscall
+   # @ret
+sw $s4, 32($fp)
+sw $s5, 28($fp)
+sw $s6, 36($fp)
 jr $ra
 nop
    # @func process
@@ -1837,30 +1839,30 @@ process_E:
    # @scanf int choice
 li $v0, 5
 syscall
-lw $s6, 0($fp)
-move $s6, $v0
+lw $s7, 0($fp)
+move $s7, $v0
    # #0 = choice
-lw $s7, 8($fp)
-move $s7, $s6
-   # #1 = #0
-lw $s0, 12($fp)
+lw $s0, 8($fp)
 move $s0, $s7
-   # #1 = #1 ADD 97
-addi $s0, $s0, 97
-   # #1 = #1 SUB 1
-addi $s0, $s0, -1
-   # choice_ch = #1
-lb $s1, 4($fp)
+   # #1 = #0
+lw $s1, 12($fp)
 move $s1, $s0
+   # #1 = #1 ADD 97
+addi $s1, $s1, 97
+   # #1 = #1 SUB 1
+addi $s1, $s1, -1
+   # choice_ch = #1
+lb $s2, 4($fp)
+move $s2, $s1
    # #0 = choice_ch
-move $s7, $s1
+move $s0, $s2
    # #1 = #0
-move $s0, $s7
+move $s1, $s0
    # @j process_L_0_switch_branch
-sw $s0, 12($fp)
-sb $s1, 4($fp)
-sw $s6, 0($fp)
-sw $s7, 8($fp)
+sw $s0, 8($fp)
+sw $s1, 12($fp)
+sb $s2, 4($fp)
+sw $s7, 0($fp)
 j process_L_0_switch_branch
 nop
    # process_L_2_case :
@@ -1883,20 +1885,20 @@ process_L_3_case:
    # @scanf int n
 li $v0, 5
 syscall
-lw $s2, 0($gp)
-move $s2, $v0
+lw $s3, 0($gp)
+move $s3, $v0
    # #2 = n
-lw $s3, 16($fp)
-move $s3, $s2
-   # #3 = #2
-lw $s4, 20($fp)
+lw $s4, 16($fp)
 move $s4, $s3
+   # #3 = #2
+lw $s5, 20($fp)
+move $s5, $s4
    # @push #3
    # @call fibo
-sw $s4, 24($fp)
-sw $s2, 0($gp)
-sw $s3, 16($fp)
-sw $s4, 20($fp)
+sw $s5, 24($fp)
+sw $s3, 0($gp)
+sw $s4, 16($fp)
+sw $s5, 20($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -1907,38 +1909,38 @@ lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
    # @get #4
-lw $s5, 24($fp)
-move $s5, $v0
+lw $s6, 24($fp)
+move $s6, $v0
    # #5 = #4
-lw $s6, 28($fp)
-move $s6, $s5
-   # #6 = #5
-lw $s7, 32($fp)
+lw $s7, 28($fp)
 move $s7, $s6
-   # ans = #6
-lw $s0, 20($gp)
+   # #6 = #5
+lw $s0, 32($fp)
 move $s0, $s7
+   # ans = #6
+lw $s1, 20($gp)
+move $s1, $s0
    # @printf string S_5
 li $v0, 4
 la $a0, S_5
 syscall
    # #2 = ans
-lw $s1, 16($fp)
-move $s1, $s0
-   # #3 = #2
-lw $s2, 20($fp)
+lw $s2, 16($fp)
 move $s2, $s1
+   # #3 = #2
+lw $s3, 20($fp)
+move $s3, $s2
    # @printf int #3
 li $v0, 1
-move $a0, $s2
+move $a0, $s3
 syscall
    # @call printspace
-sw $s0, 20($gp)
-sw $s1, 16($fp)
-sw $s2, 20($fp)
-sw $s5, 24($fp)
-sw $s6, 28($fp)
-sw $s7, 32($fp)
+sw $s0, 32($fp)
+sw $s1, 20($gp)
+sw $s2, 16($fp)
+sw $s3, 20($fp)
+sw $s6, 24($fp)
+sw $s7, 28($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -1956,52 +1958,52 @@ process_L_4_case:
    # @scanf int x
 li $v0, 5
 syscall
-lw $s3, 4($gp)
-move $s3, $v0
+lw $s4, 4($gp)
+move $s4, $v0
    # @scanf int y
 li $v0, 5
 syscall
-lw $s4, 8($gp)
-move $s4, $v0
+lw $s5, 8($gp)
+move $s5, $v0
    # @scanf int kind
 li $v0, 5
 syscall
-lw $s5, 12($gp)
-move $s5, $v0
+lw $s6, 12($gp)
+move $s6, $v0
    # #2 = x
-lw $s6, 16($fp)
-move $s6, $s3
+lw $s7, 16($fp)
+move $s7, $s4
    # #3 = #2
-lw $s7, 20($fp)
-move $s7, $s6
+lw $s0, 20($fp)
+move $s0, $s7
    # @push #3
    # #4 = y
-lw $s0, 24($fp)
-move $s0, $s4
+lw $s1, 24($fp)
+move $s1, $s5
    # #5 = #4
-lw $s1, 28($fp)
-move $s1, $s0
+lw $s2, 28($fp)
+move $s2, $s1
    # @push #5
    # #6 = kind
-lw $s2, 32($fp)
-move $s2, $s5
+lw $s3, 32($fp)
+move $s3, $s6
    # #7 = #6
-sw $s3, 4($gp)
-lw $s3, 36($fp)
-move $s3, $s2
+sw $s4, 4($gp)
+lw $s4, 36($fp)
+move $s4, $s3
    # @push #7
    # @call operation
-sw $s7, 48($fp)
-sw $s1, 44($fp)
-sw $s3, 40($fp)
-sw $s0, 24($fp)
-sw $s1, 28($fp)
-sw $s2, 32($fp)
-sw $s3, 36($fp)
-sw $s4, 8($gp)
-sw $s5, 12($gp)
-sw $s6, 16($fp)
-sw $s7, 20($fp)
+sw $s4, 40($fp)
+sw $s2, 44($fp)
+sw $s0, 48($fp)
+sw $s0, 20($fp)
+sw $s1, 24($fp)
+sw $s2, 28($fp)
+sw $s3, 32($fp)
+sw $s4, 36($fp)
+sw $s5, 8($gp)
+sw $s6, 12($gp)
+sw $s7, 16($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -2012,22 +2014,22 @@ lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
    # @get #8
-lw $s4, 40($fp)
-move $s4, $v0
+lw $s5, 40($fp)
+move $s5, $v0
    # #9 = #8
-lw $s5, 44($fp)
-move $s5, $s4
-   # #10 = #9
-lw $s6, 48($fp)
+lw $s6, 44($fp)
 move $s6, $s5
-   # ans = #10
-lw $s7, 20($gp)
+   # #10 = #9
+lw $s7, 48($fp)
 move $s7, $s6
+   # ans = #10
+lw $s0, 20($gp)
+move $s0, $s7
    # @call printspace
-sw $s4, 40($fp)
-sw $s5, 44($fp)
-sw $s6, 48($fp)
-sw $s7, 20($gp)
+sw $s0, 20($gp)
+sw $s5, 40($fp)
+sw $s6, 44($fp)
+sw $s7, 48($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -2045,20 +2047,20 @@ process_L_5_case:
    # @scanf int m
 li $v0, 5
 syscall
-lw $s0, 16($gp)
-move $s0, $v0
+lw $s1, 16($gp)
+move $s1, $v0
    # #2 = m
-lw $s1, 16($fp)
-move $s1, $s0
-   # #3 = #2
-lw $s2, 20($fp)
+lw $s2, 16($fp)
 move $s2, $s1
+   # #3 = #2
+lw $s3, 20($fp)
+move $s3, $s2
    # @push #3
    # @call display
-sw $s2, 52($fp)
-sw $s0, 16($gp)
-sw $s1, 16($fp)
-sw $s2, 20($fp)
+sw $s3, 52($fp)
+sw $s1, 16($gp)
+sw $s2, 16($fp)
+sw $s3, 20($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -2076,40 +2078,40 @@ process_L_6_case:
    # @scanf int _a
 li $v0, 5
 syscall
-lw $s3, 24($gp)
-move $s3, $v0
+lw $s4, 24($gp)
+move $s4, $v0
    # @scanf int _b
 li $v0, 5
 syscall
-lw $s4, 28($gp)
-move $s4, $v0
+lw $s5, 28($gp)
+move $s5, $v0
    # @printf string S_6
 li $v0, 4
 la $a0, S_6
 syscall
    # #2 = _a
-lw $s5, 16($fp)
-move $s5, $s3
+lw $s6, 16($fp)
+move $s6, $s4
    # #3 = #2
-lw $s6, 20($fp)
-move $s6, $s5
+lw $s7, 20($fp)
+move $s7, $s6
    # @push #3
    # #4 = _b
-lw $s7, 24($fp)
-move $s7, $s4
+lw $s0, 24($fp)
+move $s0, $s5
    # #5 = #4
-lw $s0, 28($fp)
-move $s0, $s7
+lw $s1, 28($fp)
+move $s1, $s0
    # @push #5
    # @call gcd
-sw $s6, 56($fp)
-sw $s0, 52($fp)
-sw $s0, 28($fp)
-sw $s3, 24($gp)
-sw $s4, 28($gp)
-sw $s5, 16($fp)
-sw $s6, 20($fp)
-sw $s7, 24($fp)
+sw $s1, 52($fp)
+sw $s7, 56($fp)
+sw $s0, 24($fp)
+sw $s1, 28($fp)
+sw $s4, 24($gp)
+sw $s5, 28($gp)
+sw $s6, 16($fp)
+sw $s7, 20($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -2120,22 +2122,22 @@ lw $ra, 0($sp)
 lw $fp, 4($sp)
 addi $sp, $sp, 8
    # @get #6
-lw $s1, 32($fp)
-move $s1, $v0
+lw $s2, 32($fp)
+move $s2, $v0
    # #7 = #6
-lw $s2, 36($fp)
-move $s2, $s1
-   # #8 = #7
-lw $s3, 40($fp)
+lw $s3, 36($fp)
 move $s3, $s2
+   # #8 = #7
+lw $s4, 40($fp)
+move $s4, $s3
    # @printf int #8
 li $v0, 1
-move $a0, $s3
+move $a0, $s4
 syscall
    # @call printspace
-sw $s1, 32($fp)
-sw $s2, 36($fp)
-sw $s3, 40($fp)
+sw $s2, 32($fp)
+sw $s3, 36($fp)
+sw $s4, 40($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -2175,36 +2177,36 @@ nop
    # process_L_0_switch_branch :
 process_L_0_switch_branch:
    # @be #1 97 process_L_2_case
-lw $s4, 12($fp)
-beq $s4, 97, process_L_2_case
+lw $s5, 12($fp)
+beq $s5, 97, process_L_2_case
 nop
    # @be #1 98 process_L_3_case
-sw $s4, 12($fp)
-lw $s5, 12($fp)
-beq $s5, 98, process_L_3_case
-nop
-   # @be #1 99 process_L_4_case
 sw $s5, 12($fp)
 lw $s6, 12($fp)
-beq $s6, 99, process_L_4_case
+beq $s6, 98, process_L_3_case
 nop
-   # @be #1 100 process_L_5_case
+   # @be #1 99 process_L_4_case
 sw $s6, 12($fp)
 lw $s7, 12($fp)
-beq $s7, 100, process_L_5_case
+beq $s7, 99, process_L_4_case
 nop
-   # @be #1 101 process_L_6_case
+   # @be #1 100 process_L_5_case
 sw $s7, 12($fp)
 lw $s0, 12($fp)
-beq $s0, 101, process_L_6_case
+beq $s0, 100, process_L_5_case
 nop
-   # @be #1 102 process_L_7_case
+   # @be #1 101 process_L_6_case
 sw $s0, 12($fp)
 lw $s1, 12($fp)
-beq $s1, 102, process_L_7_case
+beq $s1, 101, process_L_6_case
+nop
+   # @be #1 102 process_L_7_case
+sw $s1, 12($fp)
+lw $s2, 12($fp)
+beq $s2, 102, process_L_7_case
 nop
    # @j process_L_8_default
-sw $s1, 12($fp)
+sw $s2, 12($fp)
 j process_L_8_default
 nop
    # process_L_1_switch_over :
@@ -2217,10 +2219,10 @@ main_E:
    # @var int i
    # @var int num
    # i = 0
-lw $s2, 0($fp)
-li $s2, 0
+lw $s3, 0($fp)
+li $s3, 0
    # @call testdefine
-sw $s2, 0($fp)
+sw $s3, 0($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)
@@ -2233,53 +2235,53 @@ addi $sp, $sp, 8
    # @scanf int num
 li $v0, 5
 syscall
-lw $s3, 4($fp)
-move $s3, $v0
+lw $s4, 4($fp)
+move $s4, $v0
    # main_L_0_while_begin :
-sw $s3, 4($fp)
+sw $s4, 4($fp)
 main_L_0_while_begin:
    # #0 = i
-lw $s4, 8($fp)
-lw $s5, 0($fp)
-move $s4, $s5
+lw $s5, 8($fp)
+lw $s6, 0($fp)
+move $s5, $s6
    # #1 = #0
-lw $s6, 12($fp)
-move $s6, $s4
+lw $s7, 12($fp)
+move $s7, $s5
    # #2 = num
-lw $s7, 16($fp)
-lw $s0, 4($fp)
-move $s7, $s0
+lw $s0, 16($fp)
+lw $s1, 4($fp)
+move $s0, $s1
    # #3 = #2
-lw $s1, 20($fp)
-move $s1, $s7
+lw $s2, 20($fp)
+move $s2, $s0
    # #1 = #1 LT #3
-slt $s6, $s6, $s1
+slt $s7, $s7, $s2
    # @bz #1 main_L_1_while_over
-sw $s0, 4($fp)
-sw $s1, 20($fp)
-sw $s4, 8($fp)
-sw $s5, 0($fp)
-sw $s6, 12($fp)
-sw $s7, 16($fp)
-lw $s2, 12($fp)
-beq $s2, $0, main_L_1_while_over
+sw $s0, 16($fp)
+sw $s1, 4($fp)
+sw $s2, 20($fp)
+sw $s5, 8($fp)
+sw $s6, 0($fp)
+sw $s7, 12($fp)
+lw $s3, 12($fp)
+beq $s3, $0, main_L_1_while_over
 nop
    # #4 = i
-lw $s3, 24($fp)
-lw $s4, 0($fp)
-move $s3, $s4
-   # #5 = #4
-lw $s5, 28($fp)
-move $s5, $s3
-   # #5 = #5 ADD 1
-addi $s5, $s5, 1
-   # i = #5
+lw $s4, 24($fp)
+lw $s5, 0($fp)
 move $s4, $s5
+   # #5 = #4
+lw $s6, 28($fp)
+move $s6, $s4
+   # #5 = #5 ADD 1
+addi $s6, $s6, 1
+   # i = #5
+move $s5, $s6
    # @call process
-sw $s2, 12($fp)
-sw $s3, 24($fp)
-sw $s4, 0($fp)
-sw $s5, 28($fp)
+sw $s3, 12($fp)
+sw $s4, 24($fp)
+sw $s5, 0($fp)
+sw $s6, 28($fp)
 addi $sp, $sp, -8
 sw $ra, 0($sp)
 sw $fp, 4($sp)

@@ -409,6 +409,8 @@ void array_tar(string arr_str, string off_str, string sou_str, bool is_set) {
         if (it != global_addr_map.end()) {
             offset = it->second;
             point_reg = "$gp";
+        } else {
+            error_debug("cannot found array");
         }
     }
 
@@ -477,17 +479,19 @@ void name_handle(vector<string> strs) {
 void call_tar(string funcname) {
     if (funcname != "main") {
         // store paras
-        int len = paras.size();
+        int len = get_func(funcname)->get_para_count();
         for (int i = 0; i < len; i++) {
-            int addr = cur_addr + (len - i - 1) * 4;
-            if (is_num(paras[i])) {
-                MIPS_OUTPUT("li $t0, " << paras[i]);
+            int addr = cur_addr + i * 4;
+            string paraname = paras.back();
+            paras.pop_back();
+
+            if (is_num(paraname)) {
+                MIPS_OUTPUT("li $t0, " << paraname);
                 MIPS_OUTPUT("sw $t0, " << addr << "($fp)");
             } else {
-                MIPS_OUTPUT("sw $s" << get_reg(paras[i]) << ", " << addr << "($fp)");
+                MIPS_OUTPUT("sw $s" << get_reg(paraname) << ", " << addr << "($fp)");
             }
         }
-        paras.clear();
         // save regs
         init_reg_map();
 

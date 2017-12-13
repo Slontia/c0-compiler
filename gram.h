@@ -22,5 +22,6 @@ extern FUNC_MAP funcs;
 
 int gram_main();
 VarItem* get_global_var(string name);
+FuncItem* get_func(string name);
 
 #endif // GRAM_H_INCLUDED
