@@ -362,6 +362,7 @@ int get_var_offset(string name) {
     if (it != offset_map.end()) {
         return it->second;
     }
+    cout << name;
     return -1;
 }
 
@@ -397,22 +398,37 @@ void array_tar(string arr_str, string off_str, string sou_str, bool is_set) {
         op = is_set ? "sb" : "lb";
     }
 
-    if (offset_is_immed) {
-        int offset;
-        sscanf(off_str.c_str(), "%d", &offset);
-        if (type == INT) {
-            offset *= 4;
+    int offset;
+    string point_reg;
+    STRINT_MAP::iterator it = offset_map.find(arr_str);
+    if (it != offset_map.end()) {
+        offset = it->second;
+        point_reg = "$fp";
+    } else {
+        it = global_addr_map.find(arr_str);
+        if (it != global_addr_map.end()) {
+            offset = it->second;
+            point_reg = "$gp";
         }
-        offset += get_var_offset(arr_str);
-        MIPS_OUTPUT(op << " " << reg << ", " << offset << "($fp)");
+    }
+
+    if (offset_is_immed) {
+        int ele_offset;
+        sscanf(off_str.c_str(), "%d", &ele_offset);
+        if (type == INT) {
+            ele_offset *= 4;
+        }
+        MIPS_OUTPUT(op << " " << reg << ", " << offset + ele_offset << "(" << point_reg << ")");
+
     } else {
         if (type == INT) {
             MIPS_OUTPUT("sll $t1, $s" << get_reg(off_str) << ", 2");  // offset *= 4
-            MIPS_OUTPUT("add $t1, $t1, $fp");
+            MIPS_OUTPUT("add $t1, $t1, " << point_reg);
         } else {
-            MIPS_OUTPUT("add $t1, $s" << get_reg(off_str) << ", $fp");
+            MIPS_OUTPUT("add $t1, $s" << get_reg(off_str) << ", " << point_reg);
         }
-        MIPS_OUTPUT("addi $t1, $t1, " << get_var_offset(arr_str));  // add array base
+
+        MIPS_OUTPUT("addi $t1, $t1, " << offset);  // add array base
         MIPS_OUTPUT(op << " " << reg << ", ($t1)");
     }
 }

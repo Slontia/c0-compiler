@@ -932,8 +932,8 @@ lw $s4, 68($fp)
 move $s4, $s3
    # alphabet = #9 ARSET #14
 lw $s5, 48($fp)
-add $t1, $s5, $fp
-addi $t1, $t1, -1
+add $t1, $s5, $gp
+addi $t1, $t1, 33
 sb $s4, ($t1)
    # #8 = i
 lw $s6, 44($fp)
@@ -980,8 +980,8 @@ lw $s5, 68($fp)
 move $s5, $s4
    # alphabet = #9 ARSET #14
 lw $s6, 48($fp)
-add $t1, $s6, $fp
-addi $t1, $t1, -1
+add $t1, $s6, $gp
+addi $t1, $t1, 33
 sb $s5, ($t1)
    # #8 = i
 lw $s7, 44($fp)
@@ -991,8 +991,8 @@ move $s7, $s0
 move $s6, $s7
    # #10 = alphabet ARGET #9
 lw $s1, 52($fp)
-add $t1, $s6, $fp
-addi $t1, $t1, -1
+add $t1, $s6, $gp
+addi $t1, $t1, 33
 lb $s1, ($t1)
    # #11 = #10
 lw $s2, 56($fp)
@@ -1091,8 +1091,8 @@ lw $s0, 56($fp)
 move $s0, $s7
    # #12 = alphabet ARGET #11
 lw $s1, 60($fp)
-add $t1, $s0, $fp
-addi $t1, $t1, -1
+add $t1, $s0, $gp
+addi $t1, $t1, 33
 lb $s1, ($t1)
    # #13 = #12
 lw $s2, 64($fp)
@@ -1132,8 +1132,8 @@ lw $s6, 80($fp)
 move $s6, $s5
    # alphabet = #9 ARSET #17
 lw $s7, 48($fp)
-add $t1, $s7, $fp
-addi $t1, $t1, -1
+add $t1, $s7, $gp
+addi $t1, $t1, 33
 sb $s6, ($t1)
    # #8 = i
 lw $s0, 44($fp)
@@ -1143,8 +1143,8 @@ move $s0, $s1
 move $s7, $s0
    # #10 = alphabet ARGET #9
 lw $s2, 52($fp)
-add $t1, $s7, $fp
-addi $t1, $t1, -1
+add $t1, $s7, $gp
+addi $t1, $t1, 33
 lb $s2, ($t1)
    # #11 = #10
 lw $s3, 56($fp)
