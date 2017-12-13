@@ -24,9 +24,6 @@ Type type;
 bool returned;
 bool skip_type_ident = false;
 
-int const_value;
-bool certain;
-
 Type item(int*, bool*, string*);
 Type factor(int*, bool*, string*);
 Type expr(int*, bool*, string*);
@@ -435,15 +432,17 @@ void statement() {
         // if block
         getsym_check();
         mate(LPAR); // '('
-        cond(&const_value, &certain, cond_name); // identify condition
+        int cond_value;
+        bool cond_certain;
+        cond(&cond_value, &cond_certain, cond_name); // identify condition
         mate(RPAR); // ')'
 //cout << this_func->get_name();
         else_label = new_label(this_func, "else_begin");   // set label
         over_label = new_label(this_func, "else_over");   // set label
 
-        if (certain && const_value == 0) {
+        if (cond_certain && cond_value == 0) {
             jump_medi(else_label);
-        } else if (!certain){
+        } else if (!cond_certain){
 
             branch_zero_medi(*cond_name, else_label);
         }
@@ -470,9 +469,9 @@ void statement() {
         getsym_check();
         mate(LPAR); // '('
         string* switch_name = new string();
-        type = expr(&const_value, &certain, switch_name); // expression to switch
-        bool switch_certain = certain;
-        int switch_value = const_value;
+        int switch_value;
+        bool switch_certain;
+        type = expr(&switch_value, &switch_certain, switch_name); // expression to switch
         mate(RPAR); // ')'
         mate(LBRACE);   // '{'
         mate(CASESY);   // case
@@ -571,13 +570,15 @@ void statement() {
         string over_label = new_label(this_func, "while_over");
         string* cond_name = new string();
         label_medi(begin_label);   // set label
-        cond(&const_value, &certain, cond_name); // identify condition
+        int cond_value;
+        bool cond_certain;
+        cond(&cond_value, &cond_certain, cond_name); // identify condition
 
         mate(RPAR); // ')'
 
-        if (certain && const_value == 0) {
+        if (cond_certain && cond_value == 0) {
             jump_medi(over_label);
-        } else if (!certain) {
+        } else if (!cond_certain) {
             branch_zero_medi(*cond_name, over_label);
         }
         statement();    // statement among if
@@ -649,9 +650,11 @@ void statement() {
         }
         if (is_expr) {
             string* print_name = new string();
-            Type print_type = expr(&const_value, &certain, print_name);
-            if (certain) {
-                printf_medi(print_type, const_value);
+            int print_value;
+            bool print_certain;
+            Type print_type = expr(&print_value, &print_certain, print_name);
+            if (print_certain) {
+                printf_medi(print_type, print_value);
             } else {
                 printf_medi(print_type, *print_name);
             }
@@ -705,14 +708,16 @@ void statement() {
                 error((string)"assignment of non-var \'" + item->get_name() + "\'");
             }
             string* name = new string();
-            if (expr(&const_value, &certain, name) == INT && item->get_type() == CHAR) {
+            int assign_value;
+            bool assign_certain;
+            if (expr(&assign_value, &assign_certain, name) == INT && item->get_type() == CHAR) {
                 //error((string)"cannot convert 'int' to 'char'");
             }
-            if (certain) {
+            if (assign_certain) {
                 if (((VarItem*)item)->isarray()){
-                    array_set_medi(item->get_name(), *index_name, const_value);
+                    array_set_medi(item->get_name(), *index_name, assign_value);
                 } else {
-                    assign_medi(item->get_name(), const_value);
+                    assign_medi(item->get_name(), assign_value);
                 }
 
             } else {
@@ -993,7 +998,7 @@ void declare_func() {
 FILE* progf;
 
 int gram_main() {
-    progf = fopen("prog_huaiwei.txt", "r");
+    progf = fopen("prog1052.txt", "r");
     fout.open("intermediate.txt");
 
     getsym_check();

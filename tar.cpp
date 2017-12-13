@@ -412,6 +412,7 @@ void array_tar(string arr_str, string off_str, string sou_str, bool is_set) {
         } else {
             MIPS_OUTPUT("add $t1, $s" << get_reg(off_str) << ", $fp");
         }
+        MIPS_OUTPUT("addi $t1, $t1, " << get_var_offset(arr_str));  // add array base
         MIPS_OUTPUT(op << " " << reg << ", ($t1)");
     }
 }

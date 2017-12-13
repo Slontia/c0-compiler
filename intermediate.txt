@@ -1,331 +1,626 @@
-@var int begin
-@var int end
-@var int res
-@var int ps
-@array char[] _s 300
-@var char temp
+@var int n
+@var int x
+@var int y
+@var int kind
+@var int m
+@var int ans
+@var int _a
+@var int _b
+@var char ch
+@array char[] alphabet 26
 @call main
 @exit
-@func _asfunc_1
-@para int a
-@para char c
-#0 = a
-#1 = #0
-#1 = #1 GT 1
-@bz #1 _asfunc_1_L_0_else_begin
-#2 = c
-#3 = #2
-#3 = #3 SUB 105
-@j _asfunc_1_L_2_switch_branch
-_asfunc_1_L_4_case :
-#4 = a
-#5 = a
-#6 = #5
-#6 = #6 SUB 1
-@push #6
-@push 105
-@call _asfunc_1
-@get #7
-#4 = #4 MUL #7
-#8 = #4
-@ret #8
-@j _asfunc_1_L_3_switch_over
-_asfunc_1_L_5_default :
-#4 = a
-#5 = a
-#6 = #5
-#6 = #6 SUB 1
-@push #6
-@push 99
-@call _asfunc_1
-@get #7
-#4 = #4 MUL #7
-#8 = #4
-@ret #8
-@j _asfunc_1_L_3_switch_over
-_asfunc_1_L_2_switch_branch :
-@be #3 0 _asfunc_1_L_4_case
-@j _asfunc_1_L_5_default
-_asfunc_1_L_3_switch_over :
-@j _asfunc_1_L_1_else_over
-_asfunc_1_L_0_else_begin :
-#2 = c
-#3 = #2
-@j _asfunc_1_L_6_switch_branch
-_asfunc_1_L_8_case :
-@printf string S_0
-@j _asfunc_1_L_7_switch_over
-_asfunc_1_L_9_default :
-@printf string S_1
-@j _asfunc_1_L_7_switch_over
-_asfunc_1_L_6_switch_branch :
-@be #3 105 _asfunc_1_L_8_case
-@j _asfunc_1_L_9_default
-_asfunc_1_L_7_switch_over :
-@ret 1
-_asfunc_1_L_1_else_over :
-@ret 0
-@func min
-@para int a
-@para int b
-#0 = a
-#1 = #0
-#2 = b
-#3 = #2
-#1 = #1 LT #3
-@bz #1 min_L_0_else_begin
-#4 = a
-#5 = #4
-@ret #5
-@j min_L_1_else_over
-min_L_0_else_begin :
-#4 = a
-#5 = #4
-#6 = b
-#7 = #6
-#5 = #5 EQ #7
-@bz #5 min_L_2_else_begin
-#8 = a
-#9 = #8
-@ret #9
-@j min_L_3_else_over
-min_L_2_else_begin :
-#8 = b
-#9 = #8
-@ret #9
-min_L_3_else_over :
-min_L_1_else_over :
-@ret 0
-@func max
-@para int a
-@para int b
-#0 = a
-#1 = #0
-#2 = b
-#3 = #2
-#1 = #1 GT #3
-@bz #1 max_L_0_else_begin
-#4 = a
-#5 = #4
-@ret #5
-@j max_L_1_else_over
-max_L_0_else_begin :
-#4 = b
-#5 = #4
-@ret #5
-max_L_1_else_over :
-@ret 0
-@func no_sfc
-@para int a
-@para int b
-#0 = a
-#1 = #0
-#1 = #1 GT 2000
-@bz #1 no_sfc_L_0_else_begin
-res = -1
+@func testdefine
+@var int var0
+@var int var1
+@array int[] arr1 1
+@var int var2
+@array int[] arr2 2
+@var int var3
+@array int[] arr3 3
+@var int var4
+@array int[] arr4 4
+@var int var5
+@array int[] arr5 5
+@var int var6
+@array int[] arr6 6
+@var int var7
+@array int[] arr7 7
+@var int var8
+@array int[] arr8 8
+@var int var9
+@array int[] arr9 9
+@var int var10
+@array int[] arr10 10
+@var int var11
+@array int[] arr11 11
+@var int var12
+@array int[] arr12 12
+@var int var13
+@array int[] arr13 13
+@var int var14
+@array int[] arr14 14
+@var int var15
+@array int[] arr15 15
+@var int var16
+@array int[] arr16 16
+@var int var17
+@array int[] arr17 17
+@var int var18
+@array int[] arr18 18
+@var int var19
+@array int[] arr19 19
 @ret
-@j no_sfc_L_1_else_over
-no_sfc_L_0_else_begin :
-no_sfc_L_1_else_over :
-#0 = a
-#1 = #0
-@push #1
-#2 = b
-#3 = #2
-@push #3
-@call min
-@get #4
-#5 = #4
-#6 = #5
-begin = #6
-#0 = a
-#1 = #0
-@push #1
-#2 = b
-#3 = #2
-@push #3
-@call max
-@get #4
-#5 = #4
-#6 = #5
-end = #6
-#0 = begin
-#1 = #0
-#2 = end
-#1 = #1 ADD #2
-#3 = #1
-#4 = end
-#5 = #4
-#6 = begin
-#5 = #5 SUB #6
-#5 = #5 ADD 1
-#3 = #3 MUL #5
-#3 = #3 DIV 2
-#7 = #3
-res = #7
-@ret
-@func print1
-@para int res1
-@para int res2
-@printf string S_2
-#0 = res1
-#1 = #0
-@printf int #1
-@printf string S_3
-#0 = res2
-#1 = #0
-#1 = #1 ADD 2
-#1 = #1 SUB 1
-#1 = #1 SUB 1
-@printf int #1
-@ret
-@func print2
-#0 = res
-#1 = #0
-#1 = #1 NE -1
-@bz #1 print2_L_0_else_begin
-@printf string S_4
-#2 = res
-#3 = #2
-@printf int #3
-@j print2_L_1_else_over
-print2_L_0_else_begin :
-@printf string S_5
-print2_L_1_else_over :
-@ret
-@func main
-@var int s_firi
-@var int s_seci
-@var int ni
-@var int nc
-@var int resulti
-@var int resultc
-@var int i
-@var int j
-@var int k
-@var int flag
-@var char s_firc
-@var char s_secc
-@var char p_fir
-@var char p_sec
-@scanf int s_firi
-@scanf int s_seci
-@scanf char s_firc
-@scanf char s_secc
-#0 = s_firi
+@func fibo
+@para int n
+#0 = n
 #1 = #0
 #1 = #1 LT 0
-@bz #1 main_L_0_else_begin
-@printf string S_6
-@ret
-@j main_L_1_else_over
-main_L_0_else_begin :
-#2 = s_seci
+@bz #1 fibo_L_0_else_begin
+@ret -1
+@j fibo_L_1_else_over
+fibo_L_0_else_begin :
+#2 = n
 #3 = #2
-#3 = #3 LT 0
-@bz #3 main_L_2_else_begin
-@printf string S_6
-@ret
-@j main_L_3_else_over
-main_L_2_else_begin :
-main_L_3_else_over :
-main_L_1_else_over :
-#0 = s_firi
+#3 = #3 EQ 0
+@bz #3 fibo_L_2_else_begin
+@ret 0
+@j fibo_L_3_else_over
+fibo_L_2_else_begin :
+#4 = n
+#5 = #4
+#5 = #5 EQ 1
+@bz #5 fibo_L_4_else_begin
+@ret 1
+@j fibo_L_5_else_over
+fibo_L_4_else_begin :
+#6 = n
+#7 = #6
+#7 = #7 GT 10
+@bz #7 fibo_L_6_else_begin
+@ret -2
+@j fibo_L_7_else_over
+fibo_L_6_else_begin :
+#8 = n
+#9 = #8
+#9 = #9 SUB 1
+@push #9
+@call fibo
+@get #10
+#11 = #10
+#12 = #11
+#13 = n
+#14 = #13
+#14 = #14 SUB 2
+@push #14
+@call fibo
+@get #15
+#16 = #15
+#12 = #12 ADD #16
+@ret #12
+fibo_L_7_else_over :
+fibo_L_5_else_over :
+fibo_L_3_else_over :
+fibo_L_1_else_over :
+@ret 0
+@func upcase
+@para char x
+@var char y
+#0 = x
 #1 = #0
-#2 = s_seci
+#1 = #1 GE 97
+@bz #1 upcase_L_0_else_begin
+#2 = x
 #3 = #2
-#1 = #1 GE #3
-@bz #1 main_L_4_else_begin
-#4 = s_firi
+#3 = #3 LE 122
+@bz #3 upcase_L_2_else_begin
+#4 = x
 #5 = #4
-ni = #5
-@j main_L_5_else_over
-main_L_4_else_begin :
-#4 = s_seci
+#5 = #5 SUB 97
+#5 = #5 ADD 65
+y = #5
+#4 = y
 #5 = #4
-ni = #5
-main_L_5_else_over :
-#0 = ni
+@ret #5
+@j upcase_L_3_else_over
+upcase_L_2_else_begin :
+#4 = x
+#5 = #4
+@ret #5
+upcase_L_3_else_over :
+@j upcase_L_1_else_over
+upcase_L_0_else_begin :
+#2 = x
+#3 = #2
+@ret #3
+upcase_L_1_else_over :
+@ret 0
+@func lowcase
+@para char x
+@var char y
+#0 = x
+#1 = #0
+#1 = #1 GE 65
+@bz #1 lowcase_L_0_else_begin
+#2 = x
+#3 = #2
+#3 = #3 LE 90
+@bz #3 lowcase_L_2_else_begin
+#4 = x
+#5 = #4
+#5 = #5 SUB 65
+#5 = #5 ADD 97
+y = #5
+#4 = y
+#5 = #4
+@ret #5
+@j lowcase_L_3_else_over
+lowcase_L_2_else_begin :
+#4 = x
+#5 = #4
+@ret #5
+lowcase_L_3_else_over :
+@j lowcase_L_1_else_over
+lowcase_L_0_else_begin :
+#2 = x
+#3 = #2
+@ret #3
+lowcase_L_1_else_over :
+@ret 0
+@func printspace
+@printf string S_0
+@ret
+@func operation
+@para int x
+@para int y
+@para int kind
+#0 = kind
+#1 = #0
+@j operation_L_0_switch_branch
+operation_L_2_case :
+@printf string S_1
+#2 = x
+#3 = #2
+#4 = y
+#3 = #3 ADD #4
+@printf int #3
+#2 = x
+#3 = #2
+#4 = y
+#3 = #3 ADD #4
+@ret #3
+@j operation_L_1_switch_over
+operation_L_3_case :
+@printf string S_1
+#2 = x
+#3 = #2
+#4 = y
+#3 = #3 SUB #4
+@printf int #3
+#2 = x
+#3 = #2
+#4 = y
+#3 = #3 SUB #4
+@ret #3
+@j operation_L_1_switch_over
+operation_L_4_case :
+@printf string S_1
+#2 = x
+#2 = #2 MUL y
+#3 = #2
+@printf int #3
+#2 = x
+#2 = #2 MUL y
+#3 = #2
+@ret #3
+@j operation_L_1_switch_over
+operation_L_5_case :
+#2 = y
+#3 = #2
+#3 = #3 NE 0
+@bz #3 operation_L_6_else_begin
+@printf string S_1
+#4 = x
+#4 = #4 DIV y
+#5 = #4
+@printf int #5
+#4 = x
+#4 = #4 DIV y
+#5 = #4
+@ret #5
+@j operation_L_7_else_over
+operation_L_6_else_begin :
+@printf string S_2
+@ret 0
+operation_L_7_else_over :
+@j operation_L_1_switch_over
+operation_L_8_default :
+@printf string S_3
+@ret -1
+@j operation_L_1_switch_over
+operation_L_0_switch_branch :
+@be #1 1 operation_L_2_case
+@be #1 2 operation_L_3_case
+@be #1 3 operation_L_4_case
+@be #1 4 operation_L_5_case
+@j operation_L_8_default
+operation_L_1_switch_over :
+@ret 0
+@func display
+@para int m
+@var int i
+@var char letter
+#0 = m
 #1 = #0
 #1 = #1 LE 0
-@bz #1 main_L_6_else_begin
-main_L_8_while_begin :
-#2 = ni
+@bz #1 display_L_0_else_begin
+@ret
+@j display_L_1_else_over
+display_L_0_else_begin :
+#2 = m
 #3 = #2
-#3 = #3 LE 0
-@bz #3 main_L_9_while_over
-#4 = ni
+#3 = #3 GT 26
+@bz #3 display_L_2_else_begin
+m = 26
+@j display_L_3_else_over
+display_L_2_else_begin :
+i = 0
+letter = 97
+display_L_4_while_begin :
+#4 = i
 #5 = #4
-#5 = #5 ADD 1
-ni = #5
-@j main_L_8_while_begin
-main_L_9_while_over :
-@j main_L_7_else_over
-main_L_6_else_begin :
-#2 = ni
+#6 = m
+#7 = #6
+#5 = #5 LT #7
+@bz #5 display_L_5_while_over
+#8 = i
+#9 = #8
+#10 = letter
+#11 = #10
+@push #11
+@call upcase
+@get #12
+#13 = #12
+#14 = #13
+alphabet = #9 ARSET #14
+#8 = i
+#9 = #8
+#10 = letter
+#11 = #10
+@push #11
+@call upcase
+@get #12
+#13 = #12
+#14 = #13
+alphabet = #9 ARSET #14
+#8 = i
+#9 = #8
+#10 = alphabet ARGET #9
+#11 = #10
+#12 = #11
+@printf char #12
+#8 = i
+#9 = #8
+#9 = #9 ADD 1
+i = #9
+#8 = letter
+#9 = #8
+#9 = #9 ADD 1
+letter = #9
+@j display_L_4_while_begin
+display_L_5_while_over :
+@call printspace
+i = 0
+display_L_6_while_begin :
+#4 = i
+#5 = #4
+#6 = m
+#7 = #6
+#5 = #5 LT #7
+@bz #5 display_L_7_while_over
+#8 = i
+#9 = #8
+#10 = i
+#11 = #10
+#12 = alphabet ARGET #11
+#13 = #12
+#14 = #13
+@push #14
+@call lowcase
+@get #15
+#16 = #15
+#17 = #16
+alphabet = #9 ARSET #17
+#8 = i
+#9 = #8
+#10 = alphabet ARGET #9
+#11 = #10
+#12 = #11
+@printf char #12
+#8 = i
+#9 = #8
+#9 = #9 ADD 1
+i = #9
+@j display_L_6_while_begin
+display_L_7_while_over :
+@call printspace
+display_L_3_else_over :
+display_L_1_else_over :
+@ret
+@func expre
+@var int x
+@var int y
+@var int z
+@scanf int x
+@scanf int y
+#0 = x
+#1 = #0
+#2 = y
+#1 = #1 ADD #2
+#3 = #1
+#4 = #3
+#5 = y
+#5 = #5 MUL -2
+#6 = 0 SUB #5
+#7 = #6
+#4 = #4 SUB #7
+#4 = #4 ADD 0
+#8 = #4
+#9 = #8
+z = #9
+@printf string S_4
+#0 = z
+#1 = #0
+@printf int #1
+@call printspace
+@ret
+@func mod
+@para int x
+@para int y
+@var int z
+#0 = x
+#1 = #0
+#2 = x
+#2 = #2 DIV y
+#2 = #2 MUL y
+#1 = #1 SUB #2
+z = #1
+#0 = z
+#1 = #0
+@ret #1
+@ret 0
+@func gcd
+@para int a
+@para int b
+#0 = b
+#1 = #0
+#1 = #1 EQ 0
+@bz #1 gcd_L_0_else_begin
+@ret 0
+@j gcd_L_1_else_over
+gcd_L_0_else_begin :
+#2 = a
+#3 = #2
+@push #3
+#4 = b
+#5 = #4
+@push #5
+@call mod
+@get #6
+#7 = #6
+#8 = #7
+#8 = #8 EQ 0
+@bz #8 gcd_L_2_else_begin
+#9 = b
+#10 = #9
+@ret #10
+@j gcd_L_3_else_over
+gcd_L_2_else_begin :
+#9 = b
+#10 = #9
+@push #10
+#11 = a
+#12 = #11
+@push #12
+#13 = b
+#14 = #13
+@push #14
+@call mod
+@get #15
+#16 = #15
+#17 = #16
+@push #17
+@call gcd
+@get #18
+#19 = #18
+#20 = #19
+@ret #20
+gcd_L_3_else_over :
+gcd_L_1_else_over :
+@ret 0
+@func optimize
+@var int i
+@var int a
+@var int b
+@var int c
+@var int t1
+@var int t2
+@var int t3
+@var int t4
+i = 0
+c = 1
+b = 1
+optimize_L_0_while_begin :
+#0 = i
+#1 = #0
+#1 = #1 LT 10000
+@bz #1 optimize_L_1_while_over
+#2 = i
 #3 = #2
 #3 = #3 ADD 1
-ni = #3
-main_L_7_else_over :
-#0 = s_firc
-#1 = #0
-#2 = s_secc
-#1 = #1 SUB #2
-@j main_L_10_switch_branch
-main_L_12_case :
-nc = 1
-@j main_L_11_switch_over
-main_L_13_case :
-nc = 2
-@j main_L_11_switch_over
-main_L_14_case :
-nc = 3
-@j main_L_11_switch_over
-main_L_15_case :
-nc = 4
-@j main_L_11_switch_over
-main_L_16_default :
-nc = 5
-@j main_L_11_switch_over
-main_L_10_switch_branch :
-@be #1 -2 main_L_15_case
-@be #1 -1 main_L_14_case
-@be #1 1 main_L_12_case
-@be #1 2 main_L_13_case
-@j main_L_16_default
-main_L_11_switch_over :
-#0 = ni
-#1 = #0
-@push #1
-@push 105
-@call _asfunc_1
-@get #2
+i = #3
+#2 = c
+#3 = 0 SUB #2
+t1 = #3
+#2 = b
+#2 = #2 MUL t1
 #3 = #2
-#4 = #3
-resulti = #4
-#0 = nc
-#1 = #0
-@push #1
-@push 99
-@call _asfunc_1
-@get #2
+t2 = #3
+#2 = c
+#3 = 0 SUB #2
+t3 = #3
+#2 = b
+#2 = #2 MUL t3
 #3 = #2
-#4 = #3
-resultc = #4
-#0 = resulti
+c = #3
+#2 = t2
+#3 = #2
+#4 = c
+#3 = #3 ADD #4
+t4 = #3
+#2 = t4
+#3 = #2
+a = #3
+@j optimize_L_0_while_begin
+optimize_L_1_while_over :
+#0 = a
 #1 = #0
-@push #1
-#2 = resultc
+@printf int #1
+@call printspace
+#0 = b
+#1 = #0
+@printf int #1
+@call printspace
+#0 = c
+#1 = #0
+@printf int #1
+@call printspace
+#0 = t1
+#1 = #0
+@printf int #1
+@call printspace
+#0 = t2
+#1 = #0
+@printf int #1
+@call printspace
+#0 = t3
+#1 = #0
+@printf int #1
+@call printspace
+#0 = t4
+#1 = #0
+@printf int #1
+@ret
+@func process
+@var int choice
+@var char choice_ch
+@scanf int choice
+#0 = choice
+#1 = #0
+#1 = #1 ADD 97
+#1 = #1 SUB 1
+choice_ch = #1
+#0 = choice_ch
+#1 = #0
+@j process_L_0_switch_branch
+process_L_2_case :
+@call expre
+@j process_L_1_switch_over
+process_L_3_case :
+@scanf int n
+#2 = n
 #3 = #2
 @push #3
-@call print1
-#0 = resulti
-#1 = #0
-@push #1
-#2 = resultc
+@call fibo
+@get #4
+#5 = #4
+#6 = #5
+ans = #6
+@printf string S_5
+#2 = ans
+#3 = #2
+@printf int #3
+@call printspace
+@j process_L_1_switch_over
+process_L_4_case :
+@scanf int x
+@scanf int y
+@scanf int kind
+#2 = x
 #3 = #2
 @push #3
-@call no_sfc
-@call print2
+#4 = y
+#5 = #4
+@push #5
+#6 = kind
+#7 = #6
+@push #7
+@call operation
+@get #8
+#9 = #8
+#10 = #9
+ans = #10
+@call printspace
+@j process_L_1_switch_over
+process_L_5_case :
+@scanf int m
+#2 = m
+#3 = #2
+@push #3
+@call display
+@j process_L_1_switch_over
+process_L_6_case :
+@scanf int _a
+@scanf int _b
+@printf string S_6
+#2 = _a
+#3 = #2
+@push #3
+#4 = _b
+#5 = #4
+@push #5
+@call gcd
+@get #6
+#7 = #6
+#8 = #7
+@printf int #8
+@call printspace
+@j process_L_1_switch_over
+process_L_7_case :
+@printf string S_7
+@j process_L_1_switch_over
+process_L_8_default :
+@call optimize
+@j process_L_1_switch_over
+process_L_0_switch_branch :
+@be #1 97 process_L_2_case
+@be #1 98 process_L_3_case
+@be #1 99 process_L_4_case
+@be #1 100 process_L_5_case
+@be #1 101 process_L_6_case
+@be #1 102 process_L_7_case
+@j process_L_8_default
+process_L_1_switch_over :
+@ret
+@func main
+@var int i
+@var int num
+i = 0
+@call testdefine
+@scanf int num
+main_L_0_while_begin :
+#0 = i
+#1 = #0
+#2 = num
+#3 = #2
+#1 = #1 LT #3
+@bz #1 main_L_1_while_over
+#4 = i
+#5 = #4
+#5 = #5 ADD 1
+i = #5
+@call process
+@j main_L_0_while_begin
+main_L_1_while_over :
 @ret
 @ret
