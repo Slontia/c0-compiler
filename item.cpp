@@ -171,15 +171,3 @@ bool FuncItem::para_check(vector<Type> types) {
     }
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-

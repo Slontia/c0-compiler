@@ -1,17 +1,7 @@
 /*
-1. 声明部分（可以直接标签）OK
-2. 函数调用部分   OK
-3. 函数返回部分   OK
-4. 表达式          OK
-5. 条件处理         OK
-6. 数组处理         OK
-7. if else 跳转   OK
-8. while 跳转     OK
-9. switch 跳转    OK
 10 free string
-11 表达式只有一个变量的优化
-12 除数为0
-
+12 div 0
+if/switch need not to save
 */
 
 #include "lexical.h"
@@ -70,7 +60,7 @@ void mate(Symbol sym, void (*handle_ptr)() = NULL) {
 }
 
 Type expr(int* value, bool* certain, string* name) {
-    Type ex_type;
+    Type ex_type = CHAR;
     int cur_value;
     bool cur_certain;
     Symbol cur_op = ADD;
@@ -84,7 +74,9 @@ Type expr(int* value, bool* certain, string* name) {
         getsym_check();
     }
     do {
-        ex_type = item(&cur_value, &cur_certain, itm_name);
+        if (item(&cur_value, &cur_certain, itm_name) == INT) {
+            ex_type = INT;
+        }
         *certain &= cur_certain;
         if (*certain) {
             switch (cur_op) {
@@ -124,11 +116,12 @@ Type expr(int* value, bool* certain, string* name) {
         }
     } while (true);
     delete(itm_name);
+    cout << type2string(ex_type);
     return ex_type;
 }
 
 Type item(int* value, bool* certain, string* name) {
-    Type it_type;
+    Type it_type = CHAR;
     int cur_value;
     bool cur_certain;
     Symbol cur_op = MUL;
@@ -137,7 +130,10 @@ Type item(int* value, bool* certain, string* name) {
     string* fac_name = new string();
     bool first_uncertain = true;
     do {
-        it_type = factor(&cur_value, &cur_certain, fac_name);
+        cout << "TEST";
+        if (factor(&cur_value, &cur_certain, fac_name) == INT) {
+            it_type = INT;
+        }
         *certain &= cur_certain;
         if (*certain) {
             switch(cur_op) {
@@ -170,6 +166,7 @@ Type item(int* value, bool* certain, string* name) {
         } else {
             break;
         }
+        cout << "TEST";
     } while (true);
     delete(fac_name);
     return it_type;
@@ -228,14 +225,16 @@ Item* read_ident(string* index_name) {  // address of the pointer to temp_name
         if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
             error((string)"\'" + name + "\' is not an array type");
         }
-        expr(&const_value, &certain, index_name);
-        if (certain) {
+        int index_value;
+        bool index_certain;
+        expr(&index_value, &index_certain, index_name);
+        if (index_certain) {
             *index_name = new_temp();
-            assign_medi(*index_name, const_value);
+            assign_medi(*index_name, index_value);
         }
 
         int len = ((VarItem*)item)->get_len();
-        if (certain && (const_value < 0 || const_value >= len)) {
+        if (index_certain && (index_value < 0 || index_value >= len)) {
             error((string)"index of array \'" + name + "[]\' out of range");
         }
         /* out of range judgment */
@@ -247,9 +246,11 @@ Item* read_ident(string* index_name) {  // address of the pointer to temp_name
         vector<Type> para_types;
         string* name = new string();
         do {
-            para_types.push_back(expr(&const_value, &certain, name));
-            if (certain) {
-                push_medi(const_value);
+            int para_value;
+            bool para_certain;
+            para_types.push_back(expr(&para_value, &para_certain, name));
+            if (para_certain) {
+                push_medi(para_value);
             } else {
                 push_medi(*name);
             }
@@ -273,7 +274,7 @@ Type factor(int* value, bool* certain, string* name) {
     *certain = false;
     switch(symbol){
         case IDENT: {
-            string* index_name = new string();
+            string* index_name = new string("123");
             item = read_ident(index_name);
             fac_type = item->get_type();
             if (item->get_type() == VOID) {
@@ -292,6 +293,7 @@ Type factor(int* value, bool* certain, string* name) {
                 } else {
                     *name = item->get_name();
                 }
+                *certain = false;
 
                 break;
 
@@ -299,7 +301,9 @@ Type factor(int* value, bool* certain, string* name) {
                 invoke_func_medi(item->get_name());
                 *name = new_temp();
                 return_get_medi(*name);
+                *certain = false;
             }
+            cout << *index_name;
             delete(index_name);
             break;
         }
@@ -327,6 +331,7 @@ Type factor(int* value, bool* certain, string* name) {
             break;
 
         case INTCON:
+
             fac_type = INT;
             *value = num;
             *certain = true;
@@ -334,6 +339,7 @@ Type factor(int* value, bool* certain, string* name) {
             break;
 
         case CHARCON:
+
             fac_type = CHAR;
             *value = num;
             *certain = true;
@@ -341,6 +347,7 @@ Type factor(int* value, bool* certain, string* name) {
             break;
 
         case ZERO:
+
             fac_type = INT;
             *value = 0;
             *certain = true;
@@ -418,6 +425,7 @@ void cond(int* value, bool* certain, string* name) {
 
 
 void statement() {
+    temp_counts.push_back(temp_counts.back());
     switch(symbol){
     // if (cond) statement else statement
     case IFSY: {
@@ -474,20 +482,35 @@ void statement() {
 
         // cases
         do {
+            int sign = 1;
             output_info("Case statement begins!");
-            if (symbol == INTCON || symbol == ZERO) {    // int
+            switch (symbol) {
+            case INTCON:
+            case ZERO: {    // int
                 if (type == CHAR) {
-                    error((string)"expected type \'int\', got \'char\'");
-                }
-                getsym_check();
-            } else if (symbol == CHARCON) { // char
-                if (type == INT) {
                     error((string)"expected type \'char\', got \'int\'");
                 }
                 getsym_check();
-            } else {
+                break;
+            }
+            case CHARCON: { // char
+                if (type == INT) {
+                    error((string)"expected type \'int\', got \'char\'");
+                }
+                getsym_check();
+                break;
+            }
+            case SUB:
+                sign = -1;
+            case ADD:
+                getsym_check();
+                mate(INTCON);
+                break;
+
+            default:
                 error((string)"unexpected symbol " + symbol2string(symbol) + " after [case]");
             }
+            num *= sign;    // pos / nega
             mate(COLON);    // :
             string label = new_label(this_func, "case");   // set label
             if (label_map.find(num) != label_map.end()) {
@@ -512,6 +535,7 @@ void statement() {
             default_label = new_label(this_func, "default");   // set label
             label_medi(default_label);
             statement();
+            jump_medi(over_label);
             has_default = true;
         }
         mate(RBRACE);   // ';'
@@ -582,13 +606,15 @@ void statement() {
         if (symbol != SEMI) {
             mate(LPAR);
             string* return_name = new string();
-            Type ex_type = expr(&const_value, &certain, return_name);
+            int expr_value;
+            bool expr_certain;
+            Type ex_type = expr(&expr_value, &expr_certain, return_name);
             if (ex_type != this_func->get_type()) {
                 error((string)"expected return type \'" + type2string(this_func->get_type()) +
                        "\', actual '" + type2string(ex_type) + "\'");
             }
-            if (certain) {
-                return_medi(const_value);
+            if (expr_certain) {
+                return_medi(expr_value);
             } else {
                 return_medi(*return_name);
             }
@@ -648,7 +674,7 @@ void statement() {
             } else if (item->get_kind() != VAR || ((VarItem*)item)->isarray()) {
                 error("can only write to variables");
             } else {
-                scanf_medi(item->get_name());
+                scanf_medi(item->get_type(), item->get_name());
             }
             if (symbol != COMMA) { // ','
                 break;
@@ -680,7 +706,7 @@ void statement() {
             }
             string* name = new string();
             if (expr(&const_value, &certain, name) == INT && item->get_type() == CHAR) {
-                error((string)"cannot convert 'int' to 'char'");
+                //error((string)"cannot convert 'int' to 'char'");
             }
             if (certain) {
                 if (((VarItem*)item)->isarray()){
@@ -713,6 +739,7 @@ void statement() {
         error((string)"unexpected symbol " + symbol2string(symbol) + " in the beginning of the statement");
         break;
     }
+    temp_counts.pop_back();
 }
 
 bool defined(string name) {
@@ -881,7 +908,6 @@ void comp_statement(FuncItem* func) {
     if (!returned && func->get_type() != VOID) {
         error((string)"function returning \'" + type2string(func->get_type()) + "\' without a return-statement");
     }
-    func->add_size(temp_count * 4);
     if (func->get_name() == "main") {
         if (!next_end()) {
             error("there\'re something behind \'main\'");
@@ -967,7 +993,7 @@ void declare_func() {
 FILE* progf;
 
 int gram_main() {
-    progf = fopen("prog.txt", "r");
+    progf = fopen("prog_huaiwei.txt", "r");
     fout.open("intermediate.txt");
 
     getsym_check();
@@ -977,6 +1003,7 @@ int gram_main() {
     declare_var();
     invoke_func_medi("main");
     exit_medi();
+    temp_counts.push_back(0);
     cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
     cout << "=== SUCCESS! ===" << endl;

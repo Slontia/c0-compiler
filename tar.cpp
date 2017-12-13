@@ -156,7 +156,7 @@ void init_var(VarItem* var_item) {
             error_debug("unknown type");
         }
     }
-    temp_base_addr = (int_ptr > char_ptr) ? int_ptr : char_ptr;
+    temp_base_addr = round_up((int_ptr > char_ptr) ? int_ptr : char_ptr, 4);
     cur_addr = temp_base_addr;
 }
 
@@ -191,10 +191,10 @@ int get_reg(string name) {
         // store value
         if (recorder->active) {
             if (recorder->global) {
-                MIPS_OUTPUT((recorder->type == CHAR ? "sb" : "sw") << " $s"
+                MIPS_OUTPUT(((recorder->type == CHAR) ? "sb" : "sw") << " $s"
                     << next_reg << ", " << recorder->offset << "($gp)");
             } else {
-                MIPS_OUTPUT((recorder->type == CHAR ? "sb" : "sw") << " $s"
+                MIPS_OUTPUT(((recorder->type == CHAR) ? "sb" : "sw") << " $s"
                     << next_reg << ", " << recorder->offset << "($fp)");
              }
              keep_active = true;
@@ -209,6 +209,7 @@ int get_reg(string name) {
             if (offset + 4 > cur_addr) {
                 cur_addr = offset + 4;
             }
+            recorder->global = false;
         } else {
             map<string, int>::iterator off_it = offset_map.find(name);
             if (off_it == offset_map.end()) {
@@ -227,10 +228,10 @@ int get_reg(string name) {
         }
         // load value
         if (recorder->global) { // is global variable
-            MIPS_OUTPUT((type == CHAR ? "lb" : "lw") << " $s" << next_reg
+            MIPS_OUTPUT(((type == CHAR) ? "lb" : "lw") << " $s" << next_reg
                 << ", " << recorder->offset << "($gp)");
         } else {
-            MIPS_OUTPUT((type == CHAR ? "lb" : "lw") << " $s" << next_reg
+            MIPS_OUTPUT(((type == CHAR) ? "lb" : "lw") << " $s" << next_reg
                 << ", " << recorder->offset << "($fp)");
         }
 
@@ -338,8 +339,8 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2) {
         if (is_cal) {
             mips << ", " << immed2;
         } else {
-            MIPS_OUTPUT("li $t1, " << immed2);
-            mips << ", $t1";
+            MIPS_OUTPUT("li $t0, " << immed2);
+            mips << ", $t0";
         }
     } else {
         mips << ", $s" << get_reg(cal_str2);
@@ -483,7 +484,7 @@ void call_tar(string funcname) {
         }*/
 
         // refresh $fp
-        MIPS_OUTPUT("addi $fp, $fp, " << cur_addr + len * 4);
+        MIPS_OUTPUT("addi $fp, $fp, " << round_up(cur_addr, 4) + len * 4);
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
         MIPS_OUTPUT("nop");
@@ -501,7 +502,7 @@ void call_tar(string funcname) {
 
     } else {
         // refresh $fp
-        MIPS_OUTPUT("addi $fp, $fp, " << cur_addr);
+        MIPS_OUTPUT("addi $fp, $fp, " << round_up(cur_addr, 4));
         MIPS_OUTPUT("add $fp, $fp, $gp");
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
@@ -611,9 +612,13 @@ void readline() {
             }
 
         } else if (strs[0] == "@scanf") {
-            MIPS_OUTPUT("li $v0, 5");
+            if (strs[1] == "int") {
+                MIPS_OUTPUT("li $v0, 5");
+            } else if (strs[1] == "char") {
+                MIPS_OUTPUT("li $v0, 12");
+            }
             MIPS_OUTPUT("syscall");
-            MIPS_OUTPUT("move $s" << get_reg(strs[1]) << ", $v0");
+            MIPS_OUTPUT("move $s" << get_reg(strs[2]) << ", $v0");
 
         } else if (strs[0] == "@exit") {
 

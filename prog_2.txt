@@ -6,13 +6,14 @@ int i,j,k;
 char x,y,z;
 int array[100];
 
-int foo1(int m, char n1){
+int foo1(int m, int n1){
 	int a1, a2;
 	int i;
 	int n;
 	a1 = array[98+1*2*0];
 	n = n1;
 	printf("N/M: ");
+	printf("\n");
 	i = -0;
 	if (m == 0)
 	if (n == 0)
@@ -20,11 +21,12 @@ int foo1(int m, char n1){
 		i = i + 1;
 		scanf(a1, a2);
 		if (a1 > a2){
-			printf("Test 01");
+			printf("Test 01\n");
 			while (a1 > a1-a2){
 				a1 = a1 -- 3;
 				a2 = a2 - 1; 
 				printf("M = ", a1);
+				printf("\n");
 			}
 		}else {
 			n = m;
@@ -36,11 +38,12 @@ int foo1(int m, char n1){
 	return (a1 - a2);
 	else; else;
 	if (m > n){
-			printf("Test 01");
+			printf("Test 01\n");
 			while (m > m-n){
 				m = m - 3;
-				n = n - 1; 
+				n = n - 5; 
 				printf("M = ", m);
+				printf("\n");
 			}
 		}else {
 			n = m;
@@ -85,8 +88,9 @@ int init_all_char {
 int print_null {
 	printf("");
 	{
-	printf("'!#$%$%^&%^){}{|<'");
+	printf("'!#$%$%^&%^){}{|<'\n");
 	printf("             ");
+	printf("\n");
 	}
 	return (0);
 }
@@ -94,9 +98,11 @@ int print_null {
 int foo3(int m, int count) {
 	if (m < -13){
 		printf("FIFTEEN!");
+		printf("\n");
 		return (1);
 	}else if (m < -10) {
 		printf("TEN!");
+		printf("\n");
 		return (0);
 	}else {}
 	no_meanings;
@@ -109,7 +115,8 @@ char test_expression {
 	int a_rRay_[100];
 	i = 1;
 	{a_rRay_[5] = 100 + print_null;}
-	printf("HHHH", a_rRay_[_*_+a-'1']/'*'+foo1(a_rRay_[_*_+a-'1'],'1')+print_null);
+	printf("HHHH\n", a_rRay_[_*_+a-'1']/'*'+foo1(a_rRay_[_*_+a-'1'],'1'+0)+print_null);
+	printf("\n");
 	return ('0');
 }
 
@@ -130,16 +137,17 @@ int foo4 {
 
 void scanf_all {
 	printf("Scanf all: ");
+	printf("\n");
 	scanf(i,j,k,x,y);
 }
 
 void test_switch(int number) {
 	switch (number) {
-		case 48: {printf("Oh noooooo!");}
-		case 0: printf("Oh yeah!");
+		case 48: {printf("Oh noooooo!\n");}
+		case 0: printf("Oh yeah!\n");
 		case 1:;
 		default:
-			printf("dark deep Fantasy!");
+			printf("dark deep Fantasy!\n");
 	}
 }
 
@@ -176,6 +184,7 @@ char sORt {
     int i, j, temp;   
     
 	printf("Please input ten numbers:");   
+	printf("\n");
 	i = 0;
 	while (i < 10)  {
 		scanf(temp);
@@ -205,7 +214,7 @@ char sORt {
 	    printf(a[i-1]);   
 	}
 
-	return (5 + '0');   
+	return ('5');   
 }
 
 void main() {
@@ -213,7 +222,7 @@ void main() {
 	int times, i;
 
 	scanf(j);
-	printf(foo1(0, '0'));
+	printf(foo1(0, 0));
 	test_expression;
 	print_null;
 	no_meanings;
@@ -230,10 +239,11 @@ void main() {
 	printf(foo3(foo4, 0));
 	printf(foo3(foo3(foo4, 0) , 0));
 
-	printf(foo1(c, '0'));
+	printf(foo1(c, e));
+	printf("\n");
 	scanf_all;
 	no_meanings;
-	foo1(c, a);
+	foo1(c, d);
 	print_all;
 
 	init_all_char;
@@ -257,6 +267,7 @@ void main() {
 	printf(foo5(0, 0));
 
 	printf("Fibonacci N: ");
+	printf("\n");
 	scanf(times);
 	i = 0;
 	while(i<times){
@@ -265,6 +276,7 @@ void main() {
 	}
 
 	printf("Sort N: ");
+	printf("\n");
 	scanf(times);
 	i = 0;
 	while(i<times){

@@ -11,7 +11,8 @@ class VarItem;
 
 extern int branch;
 extern int level;
-extern int temp_count;
+// extern int temp_count;
+extern vector<int> temp_counts;
 
 extern vector<string> str_set;
 
@@ -69,6 +70,6 @@ void printf_medi(Type type, string v);
 void printf_medi(Type type, int v);
 void printf_medi(Type type, string str);
 
-void scanf_medi(string v);
+void scanf_medi(Type type, string v);
 
 #endif // MEDI_H_INCLUDED

@@ -565,5 +565,3 @@ int lexical_main(){
 	}
 	return 0;
 }
-
-
