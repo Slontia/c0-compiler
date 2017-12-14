@@ -1,3 +1,4 @@
+# define LINE 1
 # define DEBUG 0
 # define LL
 # if DEBUG
@@ -172,7 +173,12 @@ void printf_medi(Type type, string v) {
                 return;
             }
         }
-        str_set.push_back(v);
+        if(LINE) {
+            str_set.push_back("\\n"+v);
+        } else {
+            str_set.push_back(v);
+        }
+
         MIPS_OUTPUT("@printf " << type2string(type) << " S_" << len);
 
     } else {

@@ -8,6 +8,9 @@
 #define TOKEN_MAX_LENTH 10000
 
 using namespace std;
+
+extern bool success;
+
 extern FILE* progf;
 extern ofstream fout;
 extern ifstream fin;

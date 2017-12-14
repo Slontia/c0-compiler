@@ -10,6 +10,7 @@ int foo1(int m, char n1){
 	int a1, a2;
 	int i;
 	int n;
+foo1();
 	a1 = array[98+1*2*0];
 	n = n1;
 	printf("N/M: ");
@@ -23,7 +24,7 @@ int foo1(int m, char n1){
 			printf("Test 01");
 			while (a1 > a1-a2){
 				a1 = a1 -- 3;
-				a2 = a2 - 1; 
+				a2 = 1 * 0; 
 				printf("M = ", a1);
 			}
 		}else {

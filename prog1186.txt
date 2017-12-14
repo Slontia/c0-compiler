@@ -1,0 +1,341 @@
+const int a = +5;
+const char m = '3';
+const int z = 6,b = 10;
+CONST char q = 's',p = 't'   ;   
+
+int aa,bb,cc,ss[1];     
+char mm,nn,zz,str_test[50]; 
+int number[30];         
+int ra,rb,rc,rd;
+
+void f5{
+    int a,b,c,d[10],e[4],f,g[5],k,l[6];
+    int m[7],n[8],p,q,h[9];
+    char i,o[4],r[5],s,t,u[65],v___;
+    char w[1],x[5],y,z,__;
+    printf("variable defination passed!");
+    return;
+}
+
+void constF5{
+    const int a = 10,b = 2,c = 3;            
+    const char d = 'd',e = 'e',f = 'f',g = '+',h = '-';
+    const char i = '8';
+            
+    printf("const defination passed!");
+}
+
+void defi(int value){
+    const int A1 = 10,B1 = 2,C1 = 3;            
+    const char D1 = 'd',E1 = 'e',F1 = 'f',G1 = '+',H1 = '-';
+    const char I1 = '8';
+
+    int a,b,c,d[10],e[4],f,g[5],k,l[6];
+    int m[7],n[8],p,q,h[9];
+    char i,o[4],r[5],s,t,u[65],v___;
+    char w[1],x[5],y,z,__;    
+    
+    a = value;
+    d[5] = value;
+    a = D1;
+    __ = E1;    
+    v___ = G1;
+    
+    printf("variable and const defination passed!");    
+}
+
+void defi_test{
+    f5;
+    constF5;
+    defi(66);
+}
+
+
+void f1{}
+
+int f2(int q){
+    return (q);
+}
+
+int f3{            
+    return (1+9); 
+}
+
+int max(int a,int b){
+    if(a > b)
+        return (a);else;
+    if(b > a)
+        return (b);else;
+
+    printf("a and b are equal.");
+    return (((a) - (-b)) / 2);
+}
+
+void fun_def_test{
+    int c;
+    printf("Please input a number (1-100): ");
+    scanf(c);
+    
+    printf("the max number is:",max(f2(c),f3));  
+    c = max(max(max(5,+5),5),5);  
+    f1;    
+}
+
+
+
+int calcu(int size){
+    int i;
+    int sum;
+    i = 0;
+    sum = 0;
+    
+        sum  = sum + number[i];
+        i = i + 1;
+    while(i < size){
+        sum  = sum + number[i];
+        i = i + 1;
+    }
+    return (sum);
+}
+
+
+int calcuCov(int size,int aver){
+    int i;
+    int cov;
+    int temp;
+    i = 0;
+    cov = 0;
+    
+        temp = ((number[i] - aver) * (number[i] - aver));
+        cov = cov + temp;
+        i = i + 1;
+    while(i < size){
+        temp = ((number[i] - aver) * (number[i] - aver));
+        cov = cov + temp;
+        i = i + 1;
+    }
+    return (cov);
+}
+
+int partion(int sta,int end){
+    int x,temp;
+    int i,j;
+    x = number[end];
+    i = sta - 1;
+    j = sta;
+
+
+        if(number[j] <= x){
+            i = i + 1;
+            temp = number[i];
+            number[i] = number[j];
+            number[j] = temp;
+        }else;
+        j = j + 1;
+    while(j < end){
+        if(number[j] <= x){
+            i = i + 1;
+            temp = number[i];
+            number[i] = number[j];
+            number[j] = temp;
+        }else;
+        j = j + 1;
+    }
+    
+    temp = number[i + 1];
+    number[i + 1] = number[end];
+    number[end] = temp;
+    return (i+1);
+}
+
+void quick_sort(int sta,int end){
+    int q;
+    if(sta < end){
+        q = partion(sta,end);
+        quick_sort(sta,q - 1);
+        quick_sort(q + 1, end);
+    }else;
+}
+
+void reverse(int len){
+    char temp;
+    int i;
+    i = +0; 
+
+        temp = str_test[i];
+        str_test[i] = str_test[(len - i)]; 
+        str_test[len - i] = temp; 
+        i = i + +1;   
+    while(i < (len / 2)){
+        temp = str_test[i];
+        str_test[i] = str_test[(len - i)]; 
+        str_test[len - i] = temp; 
+        i = i + +1;   
+    }
+}
+
+int charCount{
+    int sum,i;
+    sum = 0;
+    i = 0;
+    
+        switch(str_test[i]){
+        case 'S':{
+                if(str_test[i] == 'a')
+                    sum = sum + 1;else;
+                i = i + 1;
+            while(i <= 10){
+                if(str_test[i] == 'a')
+                    sum = sum + 1;else;
+                i = i + 1;
+            }
+        }
+        case 'E':
+            return (sum);
+        }
+
+        i = i + 1;
+    while(1)   {
+        switch(str_test[i]){
+        case 'S':{
+                if(str_test[i] == 'a')
+                    sum = sum + 1;else;
+                i = i + 1;
+            while(i <= 10){
+                if(str_test[i] == 'a')
+                    sum = sum + 1;else;
+                i = i + 1;
+            }
+        }
+        case 'E':
+            return (sum);
+        }
+
+        i = i + 1;
+    } 
+}
+
+
+void other_test1{
+    char score;    
+    printf(" !#$%&'*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    
+    printf("please input the mode before test(1~3)"); 
+    scanf(score);
+    switch(score){
+    case '1':{
+        printf("Easy ..");
+    }
+    case '2':
+        printf("Middle");
+    case '3':
+        printf("Hard");
+    }
+
+    str_test[0] = 'S';
+    str_test[1] = 'a';
+    str_test[2] = 'a';
+    str_test[3] = 'a';
+    str_test[4] = 'a';
+    str_test[5] = 'a';
+    str_test[6] = 'b';
+    str_test[7] = 'b';
+    str_test[8] = 'a';
+    str_test[9] = 'b';
+    str_test[10] = 'b';
+    str_test[11] = 'E';
+    str_test[12] = 'E';
+
+    reverse(12);
+    printf("The reverse str of SaaaaabbabbEE is:");
+    printf(str_test[0]);
+    printf(str_test[1]);
+    printf(str_test[2]);
+    printf(str_test[3]);
+    printf(str_test[4]);
+    printf(str_test[5]);
+    printf(str_test[6]);
+    printf(str_test[7]);
+    printf(str_test[8]);
+    printf(str_test[9]);
+    printf(str_test[10]);
+    printf(str_test[11]);
+    printf(str_test[12]);
+    
+    printf("The character a in str_test is encountered ",charCount);
+
+}
+
+void other_test2{
+    int i;
+    int temp;
+            
+    printf("Please input four integers (>0, <1000)");;;;; 
+
+       scanf(ra,rb,rc,rd);
+
+    aa = a + (+(-a + m));
+
+    printf("The value of aa is ",aa);
+
+    ss[0] = a + (-a);
+
+    printf("the number of ss[0] is ",ss[0]);   
+
+    ra = (((ra + rb * rc + rd) / ((((rb * rc)) + (ra + rd)) + (88))) + (max(ra,rb))) - str_test[ss[0]] + 'H' + -70;
+    
+ra = +ra + -10;
+    while(ra > 20){
+        ra = +ra + -10;
+    }
+
+    if(ra < 20){
+        ra = ++10 + 0;  
+    }else;
+   
+    printf("Please input some numbers(non-zero,positive),the count is ",ra);
+
+    i = 0;
+
+        scanf(temp);
+        number[i] = temp;
+        if(number[i])    
+            i = i + 1;else;
+    while(i < ra){
+        scanf(temp);
+        number[i] = temp;
+        if(number[i])    
+            i = i + 1;else;
+    }
+}
+
+void main(){
+    int i;
+    int sum,cov,aver;
+    
+    other_test1;
+    other_test2;
+    
+    sum = calcu(ra);    
+    aver = sum / ra;
+    cov = calcuCov(ra,aver);
+    cov = cov / ra;
+    printf("The sum of input numbers is ",sum);
+    printf("    ");
+    printf("The cov of input number is ",cov);
+
+    quick_sort(0,ra-1);  
+    i = 0;
+
+        printf(number[i]);
+        i = i + 1;
+    while(i < ra){
+        printf(number[i]);
+        i = i + 1;
+    }
+    
+    fun_def_test;
+    defi_test;
+
+    return;
+}

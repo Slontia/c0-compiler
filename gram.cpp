@@ -32,6 +32,20 @@ typedef enum {
     CONST_STATE, VAR_STATE, FUNC_STATE, FUNC_CONST_STATE, FUNC_VAR_STATE, FUNC_STATEMENT_STATE
 }State;
 
+void getsym_check() {
+    if (!getsym()) {
+        error("unfinished program");
+        exit(0);
+    }
+}
+
+void skip(Symbol tar_sym) {
+    while (symbol != tar_sym) {
+        getsym_check();
+    }
+    getsym_check();
+}
+
 void output_info(string info) {
     // cout << info << endl;
 }
@@ -39,12 +53,6 @@ void output_info(string info) {
 void record_name() {
     token[token_len] = 0;
     name = token;
-}
-
-void getsym_check() {
-    if (!getsym()) {
-        error("unfinished program");
-    }
 }
 
 void mate(Symbol sym, void (*handle_ptr)() = NULL) {
@@ -113,7 +121,6 @@ Type expr(int* value, bool* certain, string* name) {
         }
     } while (true);
     delete(itm_name);
-    cout << type2string(ex_type);
     return ex_type;
 }
 
@@ -127,7 +134,6 @@ Type item(int* value, bool* certain, string* name) {
     string* fac_name = new string();
     bool first_uncertain = true;
     do {
-        cout << "TEST";
         if (factor(&cur_value, &cur_certain, fac_name) == INT) {
             it_type = INT;
         }
@@ -138,6 +144,10 @@ Type item(int* value, bool* certain, string* name) {
                 *value *= cur_value;
                 break;
             case DIV:
+                if (cur_value == 0) {
+                    error("division by zero");
+                    cur_value = 1;  // [ERROR HANDLE] set division by 1
+                }
                 *value /= cur_value;
                 break;
             default: error_debug("item");
@@ -163,7 +173,6 @@ Type item(int* value, bool* certain, string* name) {
         } else {
             break;
         }
-        cout << "TEST";
     } while (true);
     delete(fac_name);
     return it_type;
@@ -221,18 +230,20 @@ Item* read_ident(string* index_name) {  // address of the pointer to temp_name
         getsym_check();
         if (item->get_kind() != VAR || !((VarItem*)item)->isarray()) {
             error((string)"\'" + name + "\' is not an array type");
+            skip(RBKT); // [ERROR HANDLE] skip to ']'
+            return item;
         }
         int index_value;
         bool index_certain;
         expr(&index_value, &index_certain, index_name);
-        if (index_certain) {
-            *index_name = new_temp();
-            assign_medi(*index_name, index_value);
-        }
-
         int len = ((VarItem*)item)->get_len();
         if (index_certain && (index_value < 0 || index_value >= len)) {
             error((string)"index of array \'" + name + "[]\' out of range");
+            index_value = 0;    // [ERROR HANDLE] set index 0
+        }
+        if (index_certain) {
+            *index_name = new_temp();
+            assign_medi(*index_name, index_value);
         }
         /* out of range judgment */
         mate(RBKT); // ']'
@@ -276,6 +287,9 @@ Type factor(int* value, bool* certain, string* name) {
             fac_type = item->get_type();
             if (item->get_type() == VOID) {
                 error("void value not ignored as it ought to be");
+                *certain = true;
+                *value = 0; // [ERROR HANDLE] set value 0
+                return CHAR;
             }
             switch (item->get_kind()) {
             case CONST:
@@ -300,7 +314,6 @@ Type factor(int* value, bool* certain, string* name) {
                 return_get_medi(*name);
                 *certain = false;
             }
-            cout << *index_name;
             delete(index_name);
             break;
         }
@@ -344,7 +357,6 @@ Type factor(int* value, bool* certain, string* name) {
             break;
 
         case ZERO:
-
             fac_type = INT;
             *value = 0;
             *certain = true;
@@ -353,6 +365,9 @@ Type factor(int* value, bool* certain, string* name) {
 
         default:
             error((string)"unexpected symbol " + symbol2string(symbol) + " in [factor]");
+            *certain = true;
+            *value = 0;
+            return CHAR;
     }
     return fac_type;
 }
@@ -372,6 +387,7 @@ void cond(int* value, bool* certain, string* name) {
         getsym_check();
         break;
     default:
+        *name = *left_name;
         return; // only expression
     }
     bool left_certain = *certain;
@@ -699,19 +715,22 @@ void statement() {
             output_info("This is a function invoking statement!");
             if (item->get_kind() != FUNC) {
                 error((string)"meaning less " + kind2string(item->get_kind()) + " \'" + item->get_name() + "\'");
+            } else {
+                invoke_func_medi(item->get_name()); // need not get return value
             }
-            invoke_func_medi(item->get_name()); // need not get return value
         } else if (ASS == symbol) {
             output_info("This is a assign statement!");
             getsym_check();
             if (item->get_kind() != VAR) {
                 error((string)"assignment of non-var \'" + item->get_name() + "\'");
+                skip(SEMI);
+                return;
             }
             string* name = new string();
             int assign_value;
             bool assign_certain;
             if (expr(&assign_value, &assign_certain, name) == INT && item->get_type() == CHAR) {
-                //error((string)"cannot convert 'int' to 'char'");
+                error((string)"cannot convert 'int' to 'char'");
             }
             if (assign_certain) {
                 if (((VarItem*)item)->isarray()){
@@ -742,6 +761,7 @@ void statement() {
 
     default:
         error((string)"unexpected symbol " + symbol2string(symbol) + " in the beginning of the statement");
+        getsym_check();
         break;
     }
     temp_counts.pop_back();
@@ -833,6 +853,8 @@ void declare_const(FuncItem* func = NULL) {
             break;
         default:
             error((string)"unexpected const type " + symbol2string(symbol));
+            skip(SEMI);
+            return;
         }
         mate(SEMI);
     }
@@ -915,7 +937,7 @@ void comp_statement(FuncItem* func) {
     }
     if (func->get_name() == "main") {
         if (!next_end()) {
-            error("there\'re something behind \'main\'");
+            error("something behind \'main\'");
         }
 
     } else {
@@ -998,7 +1020,7 @@ void declare_func() {
 FILE* progf;
 
 int gram_main() {
-    progf = fopen("prog1052.txt", "r");
+    progf = fopen("prog_huaiwei.txt", "r");
     fout.open("intermediate.txt");
 
     getsym_check();
@@ -1011,7 +1033,7 @@ int gram_main() {
     temp_counts.push_back(0);
     cout << "=== FUNC BEGIN ===" << endl;
     declare_func();
-    cout << "=== SUCCESS! ===" << endl;
+    cout << "=== " << (success ? "SUCCESS" : "FAILED") << " ===" << endl;
 
     fout.close();
     fclose(progf);

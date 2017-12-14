@@ -453,7 +453,6 @@ void name_handle(vector<string> strs) {
             MIPS_OUTPUT("li $s" << get_reg(strs[0]) << ", " << strs[2]);
         } else {
             // [MIPS] move
-            int i = get_reg(strs[0]);
             MIPS_OUTPUT("move $s" << get_reg(strs[0]) << ", $s" << get_reg(strs[2]));
         }
     } else if (len == 5) {  // cal

@@ -25,8 +25,6 @@ extern map<string, int> reg_map;       // name-register map
 extern int temp_base_addr;     // address records tamps
 extern FuncItem* cur_func;  // current function
 
-
-
 bool is_temp(string name);
 int get_temp_no(string name);
 int get_reg(string name);

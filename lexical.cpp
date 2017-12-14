@@ -2,10 +2,11 @@
 #include<string.h>
 #include <cstdlib>
 #include "vars.h"
+#define ERROR_EXIT 0
 #define OUTPUT_LEX 0
 #define DEBUG 0
 #define OUTPUT_ERROR_C 0
-#define OUTPUT_PROG 1
+#define OUTPUT_PROG 0
 
 using namespace std;
 
@@ -13,6 +14,7 @@ using namespace std;
 |			  error				|
 ===============================*/
 
+bool success = true;
 char cur_c;	// current char
 char token[TOKEN_MAX_LENTH] = {0};	// store sign
 int token_len = 0;
@@ -20,13 +22,14 @@ int num; // currrent integer
 
 void error_debug(string info) {
     cout << "[D_ERROR] " << info << endl;
-    exit(0);
+    if (ERROR_EXIT) exit(0);
 }
 
 void error(string info) {
 	cout << "[ERROR] " << info << endl;
+	success = false;
 	if (OUTPUT_ERROR_C) cout << (int)cur_c;
-	exit(0);
+	if (ERROR_EXIT) exit(0);
 }
 
 void suspend_handle() {
@@ -347,8 +350,8 @@ string symbol2string(Symbol sym) {
 		case MAINSY:
 			return "MAINSY";
 		default:
-			error("unexpected word");
-			return NULL;
+			error_debug("unexpected word");
+			return "";
 	}
 }
 
@@ -474,7 +477,7 @@ bool getsym() {
 			sym_handle(symbol, token);
 		} else {
 			retract();
-			error("unexpected char '!'");
+			error("unexpected char \'!\'");
 		}
 
 	} else if (is_ass()) {
@@ -554,7 +557,8 @@ bool getsym() {
 		symbol = DIV  ;
 		sym_handle(symbol, cur_c);
 	} else {
-		error("unexpected char");
+		error((string)"unexpected character \'" + cur_c + "\'");
+		return getsym();    // skip
 	}
     return true;
 }

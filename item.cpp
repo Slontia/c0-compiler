@@ -13,6 +13,7 @@ int round_up(int num, int unit) {
         num /= unit;
         num ++;
         num *= unit;
+        return num;
     }
 }
 

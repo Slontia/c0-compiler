@@ -9,9 +9,8 @@ using namespace std;
 
 int main() {
     gram_main();
+    if (!success) return 0;
     tar_main();
-
-
 
     return 0;
 }
