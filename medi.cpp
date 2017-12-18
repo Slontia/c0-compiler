@@ -1,4 +1,4 @@
-# define LINE 1
+# define LINE 0
 # define DEBUG 0
 # define LL
 # if DEBUG

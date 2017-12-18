@@ -1,0 +1,279 @@
+
+const int len = 100;
+int a;
+int find_array[100];
+
+void init_array {
+	int a;
+	a = 0;
+	while (a < len) {
+		find_array[a] = a;
+		a = a+1;
+	}
+}
+
+void find(int begin, int end, int num) {
+	int mid;
+	
+	if (begin == end) {
+		if (find_array[begin] == num) {
+			printf ("Found: ");
+			printf (begin);
+			printf ("\n");
+		} else {
+			printf ("[ 404 Not Found ]\n");
+		}
+		return;
+	}else;
+	mid = (begin + end) / 2;
+	if (find_array[mid] < num) {
+		find(mid+1, end, num);
+	} else if (find_array[mid] > num) {
+		find(begin, mid, num);
+	} else if (find_array[mid] == num) {
+		printf ("Found: ");
+		printf (mid);
+		printf ("\n");
+	} else {
+		printf ("You got a bug!");
+	}
+}
+
+int get_index(int size, int row, int col) {
+	return ((row-1)*size + (col-1));
+}
+
+void Zigzag {
+	int a;
+	int i;char temp;
+	int tempi;
+	char matrix[100];
+	int row, col;
+	printf ("Please enter the length of the matrix: ");
+	scanf (a);
+	
+	while (a >=10) {
+		printf ("It's too small, my friend! Please enter again: ");
+		scanf (a);
+	}
+	i = 0;
+	printf ("Got it! Please enter the matrix:\n");
+	while (i<a*a){
+		scanf (temp);
+		matrix[i] = temp;
+		i = i+1;
+		if ((i)/a*a==i) {
+			printf ("\n");
+		}else;
+	}
+	printf ("ZIGZAG!\n");
+	row = 1;
+	col = 1;
+	printf (matrix[get_index(a, row, col)]);
+	while (row * col != a * a) {
+		if (col == a) {
+			row = row + 1;
+		} else {
+			col = col +1;
+		}
+		i=0;
+		printf (matrix[get_index(a, row, col)]);
+		tempi = col-row;
+		while (i < tempi) {
+			i = i+1;
+			col = col -1;
+			row = row + 1;
+			printf (matrix[get_index(a, row, col)]);
+		}
+		
+		
+		if (row == a) {
+			col = col + 1;
+		} else {
+			row = row +1;
+		}
+		i=0;
+		printf (matrix[get_index(a, row, col)]);
+		tempi = -col+row;
+		while (i < tempi) {
+			i = i+1;
+			row = row -1;
+			col = col + 1;
+			printf (matrix[get_index(a, row, col)])
+			;
+		}
+	}
+	
+	
+	
+}
+
+void FluctuATions {
+	int n;
+	int a, b;
+	int ra, rb;
+	int sub;
+	int max_sub;
+	int i;
+	printf ("Please enter the size of the array:");
+	scanf (n);
+	while (n <= 1) {
+		printf ("Interesting.\n");
+		printf ("Please enter the size of the array:");
+		scanf (n);
+	}
+	a= 0;
+	b = 0;
+	max_sub = -1;
+	i=0;
+	while (-(-(-(-(i)))) < n) {
+		scanf (a);
+		sub = (a - b);
+		if (sub <= 0) sub = -(+sub);
+		else;
+
+		if (sub > max_sub) {
+			ra =a;
+			rb =b;
+max_sub = sub;
+		}else;
+		b=a;
+i=i+1;
+	}
+	printf ("The maximum fluctuation is ");
+printf(max_sub);
+	printf (" from ");
+	printf (ra);
+	printf (" and ");
+	printf (rb);
+	printf ("\n");
+}
+
+void Fibonacci {
+	int a,b,sum;  
+    int n,i;
+    a=1;
+    b=a;  
+    printf ("Please enter the length of the Fibonacci: ");
+    scanf (n);  
+    if (n <= 0 ) {
+    	printf ("It's meaningless!\n");
+    	return;
+	}else;
+    printf (a);
+    printf ("\t");
+    if (n <= 1) {
+    	return;
+	}else;
+    printf (b);
+    printf ("\t");
+    if (n <= 'c'-'a') {
+    	return;
+	}else;
+    i=3;
+    while(i<=n){ 
+        sum=a+b;  
+        b=a;  
+        a=sum;  
+        printf (sum);
+        printf ("\t");
+        if (n / 10 * 10 == i+1) printf ("\n");else;
+        i = i+1;
+
+    }  
+    
+    return;  
+}
+
+char sort {
+	int a[100];
+	int size;   
+    int i, j, temp;   
+    
+	printf ("Please enter the size of the array: "); 
+	scanf (size);
+	while(size >= '0' + 1 - '1' + 100) {
+		printf ("Invalid size! Please enter the size again: ");
+    	scanf (size);
+	}
+	
+	printf ("Got it! Now, please enter the ");
+	printf (size);
+	printf (" elements:\n");
+	i = 0;
+	while (i < size)  {
+		scanf (temp);
+		a[i] = temp;
+		i = i + 1;
+	}
+
+	i = 0;
+	while (i < size-1)
+	{   
+		j = 0;
+	    while (j < size-1 - i){
+	    	if (a[j] > a[j+1])   
+		    {   
+		        temp = a[j];   
+		        a[j] = a[j+1];   
+		        a[j+1] = temp;   
+		    }else;
+		    j = j + 1;
+	    }
+	    i = i + 1;
+	}   
+
+	i = 0;
+	printf ("The sorted array is:\n");
+	while (i < size){
+		i = i + 1;
+	    printf (a[i-1]);  
+		printf ("\t");
+		if ((i+1) / 10 * 10 == i+1) {
+			printf ("\n");
+		}else;
+	}
+
+	return ('0');   
+}
+
+void select {
+	int i;
+	int num;
+	while (1) {
+		printf ("\n");
+		printf ("======================\n");
+		printf ("|   1. Sort          |\n");
+		printf ("|   2. Fibonacci     |\n");
+		printf ("|   3. FluctuaTions  |\n");
+		printf ("|   4. Zigzag        |\n");
+		printf ("|   5. Find          |\n");
+		printf ("|   0. Exit          |\n");
+		printf ("======================\n");
+		printf ("Please enter your choice(0-5):");
+		scanf (i);
+		switch (i/1*1) {
+			case 0:  ;
+			case 1: sort; 
+			case 2: Fibonacci;
+			case 3: FluctuATions; 
+			case 4: Zigzag;
+			case 5: {
+				printf ("Please enter a number:");
+				scanf (num);
+				find(0,len-1, num);
+			}
+			default:
+				printf ("Interesting.\n");
+		}
+		if (i==0) {
+			printf ("Bye");
+			return;
+		}else;
+	}
+}
+
+void main() {
+	init_array;
+	select;
+}

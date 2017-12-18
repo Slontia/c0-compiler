@@ -41,7 +41,7 @@
 	<iostream>
 	<fstream>
 
-1513242846 source:d:\projects\console\c0-compiler\lexical.cpp
+1513267993 source:d:\projects\console\c0-compiler\lexical.cpp
 	<iostream>
 	<string.h>
 	<cstdlib>
@@ -69,7 +69,7 @@
 	<map>
 	<vector>
 
-1513242929 source:d:\projects\console\c0-compiler\gram.cpp
+1513524784 source:d:\projects\console\c0-compiler\gram.cpp
 	"lexical.h"
 	<cstdlib>
 	"vars.h"
@@ -90,7 +90,7 @@
 	"medi.h"
 	<iostream>
 
-1513236081 source:d:\projects\console\c0-compiler\medi.cpp
+1513244156 source:d:\projects\console\c0-compiler\medi.cpp
 	<iostream>
 	"medi.h"
 	"vars.h"
@@ -123,4 +123,253 @@
 	<iostream>
 	<map>
 	"vars.h"
+
+1513243034 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\item.cpp
+	"item.h"
+	"vars.h"
+	"medi.h"
+	<iostream>
+
+1513164326 c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\item.h
+	<iostream>
+	<map>
+	<vector>
+	"vars.h"
+
+1513242815 c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\vars.h
+	<iostream>
+	<fstream>
+
+1513131911 c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\medi.h
+	<iostream>
+	<vector>
+	"vars.h"
+
+1513267993 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\lexical.cpp
+	<iostream>
+	<string.h>
+	<cstdlib>
+	"vars.h"
+
+1513242864 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\main.cpp
+	<iostream>
+	"lexical.h"
+	"gram.h"
+	"vars.h"
+	"tar.h"
+
+1512549170 c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\lexical.h
+	<iostream>
+	<fstream>
+	"vars.h"
+
+1513164839 c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\gram.h
+	<iostream>
+	<fstream>
+	<map>
+	<vector>
+
+1513243071 c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\tar.h
+	<iostream>
+	<map>
+	"vars.h"
+
+1513244156 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\medi.cpp
+	<iostream>
+	"medi.h"
+	"vars.h"
+	"item.h"
+	"lexical.h"
+	<vector>
+	<cstdlib>
+	<fstream>
+	<sstream>
+
+1513242995 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\tar.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<vector>
+	<stdio.h>
+	<map>
+	"tar.h"
+	"lexical.h"
+	"item.h"
+	"gram.h"
+	"medi.h"
+
+1513268775 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\gram.cpp
+	"lexical.h"
+	<cstdlib>
+	"vars.h"
+	"gram.h"
+	"item.h"
+	"medi.h"
+	<iostream>
+
+1513524784 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\gram.cpp
+	"lexical.h"
+	<cstdlib>
+	"vars.h"
+	"gram.h"
+	"item.h"
+	"medi.h"
+	<iostream>
+
+1512549170 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\lexical.h
+	<iostream>
+	<fstream>
+	"vars.h"
+
+1513242815 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\vars.h
+	<iostream>
+	<fstream>
+
+1513164839 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\gram.h
+	<iostream>
+	<fstream>
+	<map>
+	<vector>
+
+1513164326 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\item.h
+	<iostream>
+	<map>
+	<vector>
+	"vars.h"
+
+1513131911 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\medi.h
+	<iostream>
+	<vector>
+	"vars.h"
+
+1513243034 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\item.cpp
+	"item.h"
+	"vars.h"
+	"medi.h"
+	<iostream>
+
+1513267993 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\lexical.cpp
+	<iostream>
+	<string.h>
+	<cstdlib>
+	"vars.h"
+
+1513242864 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\main.cpp
+	<iostream>
+	"lexical.h"
+	"gram.h"
+	"vars.h"
+	"tar.h"
+
+1513243071 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\tar.h
+	<iostream>
+	<map>
+	"vars.h"
+
+1513244156 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\medi.cpp
+	<iostream>
+	"medi.h"
+	"vars.h"
+	"item.h"
+	"lexical.h"
+	<vector>
+	<cstdlib>
+	<fstream>
+	<sstream>
+
+1513242995 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_目标代码执行\c0-compiler\tar.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<vector>
+	<stdio.h>
+	<map>
+	"tar.h"
+	"lexical.h"
+	"item.h"
+	"gram.h"
+	"medi.h"
+
+1513524784 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\gram.cpp
+	"lexical.h"
+	<cstdlib>
+	"vars.h"
+	"gram.h"
+	"item.h"
+	"medi.h"
+	<iostream>
+
+1512549170 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\lexical.h
+	<iostream>
+	<fstream>
+	"vars.h"
+
+1513242815 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\vars.h
+	<iostream>
+	<fstream>
+
+1513164839 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\gram.h
+	<iostream>
+	<fstream>
+	<map>
+	<vector>
+
+1513164326 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\item.h
+	<iostream>
+	<map>
+	<vector>
+	"vars.h"
+
+1513131911 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\medi.h
+	<iostream>
+	<vector>
+	"vars.h"
+
+1513243034 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\item.cpp
+	"item.h"
+	"vars.h"
+	"medi.h"
+	<iostream>
+
+1513267993 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\lexical.cpp
+	<iostream>
+	<string.h>
+	<cstdlib>
+	"vars.h"
+
+1513242864 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\main.cpp
+	<iostream>
+	"lexical.h"
+	"gram.h"
+	"vars.h"
+	"tar.h"
+
+1513243071 c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\tar.h
+	<iostream>
+	<map>
+	"vars.h"
+
+1513244156 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\medi.cpp
+	<iostream>
+	"medi.h"
+	"vars.h"
+	"item.h"
+	"lexical.h"
+	<vector>
+	<cstdlib>
+	<fstream>
+	<sstream>
+
+1513242995 source:c:\users\65486_000\desktop\15061183_1941\15061183_刘畅_测试程序\c0-compiler\tar.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<vector>
+	<stdio.h>
+	<map>
+	"tar.h"
+	"lexical.h"
+	"item.h"
+	"gram.h"
+	"medi.h"
 

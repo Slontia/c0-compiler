@@ -55,12 +55,17 @@ void record_name() {
     name = token;
 }
 
-void mate(Symbol sym, void (*handle_ptr)() = NULL) {
+bool mate(Symbol sym, void (*handle_ptr)() = NULL, Symbol skip_sym = NONE) {
     if (symbol != sym) {
         error((string)"got " + symbol2string(symbol) + " expected " + symbol2string(sym));
+        if (skip_sym != NONE) {
+            skip(skip_sym);
+        }
+        return false;
     } else {
         if ((*handle_ptr) != NULL) (*handle_ptr)();
         getsym_check();
+        return true;
     }
 }
 
@@ -284,6 +289,11 @@ Type factor(int* value, bool* certain, string* name) {
         case IDENT: {
             string* index_name = new string("123");
             item = read_ident(index_name);
+            if (item == NULL) {
+                *certain = true;
+                *value = 0;
+                return CHAR;
+            }
             fac_type = item->get_type();
             if (item->get_type() == VOID) {
                 error("void value not ignored as it ought to be");
@@ -327,21 +337,26 @@ Type factor(int* value, bool* certain, string* name) {
         case ADD:
             getsym_check();
             fac_type = INT;
-            mate(INTCON);
-            *value = num;
+            if (!mate(INTCON)) {
+                *value = 0;
+            } else {
+                *value = num;
+            }
             *certain = true;
             break;
 
         case SUB:
             getsym_check();
             fac_type = INT;
-            mate(INTCON);
-            *value = -1 * num;
+            if (!mate(INTCON)) {
+                *value = 0;
+            } else {
+                *value = -1 * num;
+            }
             *certain = true;
             break;
 
         case INTCON:
-
             fac_type = INT;
             *value = num;
             *certain = true;
@@ -349,7 +364,6 @@ Type factor(int* value, bool* certain, string* name) {
             break;
 
         case CHARCON:
-
             fac_type = CHAR;
             *value = num;
             *certain = true;
@@ -470,11 +484,11 @@ void statement() {
         jump_medi(over_label);
 
         output_info("Else statement begins!");
-        mate(ELSY); // 'else'
-        label_medi(else_label);
-        statement();    // statement among else
-        label_medi(over_label);
-
+        if (mate(ELSY)){
+            label_medi(else_label);
+            statement();    // statement among else
+            label_medi(over_label);
+        } // 'else'
         output_info("Else statement over!");
         break;
     }
@@ -686,17 +700,22 @@ void statement() {
         getsym_check();
         mate(LPAR);
         do {
-            mate(IDENT, &record_name);
-            Item* item = get_item(name);
-            if (item == NULL) {
-                error("unexpected identifier \'" + name + "\'");
-            } else if (item->get_kind() != VAR || ((VarItem*)item)->isarray()) {
-                error("can only write to variables");
+            if (mate(IDENT, &record_name)) {
+                Item* item = get_item(name);
+                if (item == NULL) {
+                    error("unexpected identifier \'" + name + "\'");
+                } else if (item->get_kind() != VAR || ((VarItem*)item)->isarray()) {
+                    error("can only write to variables");
+                } else {
+                    scanf_medi(item->get_type(), item->get_name());
+                }
+                if (symbol != COMMA) { // ','
+                    break;
+                }
             } else {
-                scanf_medi(item->get_type(), item->get_name());
-            }
-            if (symbol != COMMA) { // ','
-                break;
+                if (SEMI == symbol) {
+                    break;
+                }
             }
             getsym_check();
         } while (true);
@@ -709,6 +728,7 @@ void statement() {
         string* index_name = new string();
         Item* item = read_ident(index_name);
         if (item == NULL) {
+            getsym_check();
             break;  // not found
         }
         if (SEMI == symbol) {
@@ -800,53 +820,63 @@ void declare_const(FuncItem* func = NULL) {
         case INTSY:
             getsym_check();
             do {
-                mate(IDENT, &record_name);  // record name
-                mate(ASS);
-                if (symbol == ZERO) {
-                    getsym_check();
-                    if (func == NULL) {
-                        put_global_const(name, INT, 0);
-                    } else {
-                        func->put_const(name, INT, 0);
-                    }
+                if (mate(IDENT, &record_name)) {
+                    mate(ASS);
+                    if (symbol == ZERO) {
+                        getsym_check();
+                        if (func == NULL) {
+                            put_global_const(name, INT, 0);
+                        } else {
+                            func->put_const(name, INT, 0);
+                        }
 
+                    } else {
+                        int sign = 1;
+                        if (symbol == ADD) {
+                            sign = 1;
+                            getsym_check();
+                        } else if (symbol == SUB) {
+                            sign = -1;
+                            getsym_check();
+                        }
+                        mate(INTCON);
+                        if (func == NULL) {
+                            put_global_const(name, INT, sign * num);
+                        } else {
+                            func->put_const(name, INT, sign * num);
+                        }
+                    }
+                    if (symbol != COMMA) {
+                        break;
+                    }
                 } else {
-                    int sign = 1;
-                    if (symbol == ADD) {
-                        sign = 1;
-                        getsym_check();
-                    } else if (symbol == SUB) {
-                        sign = -1;
-                        getsym_check();
+                    if (SEMI == symbol) {
+                        break;
                     }
-                    mate(INTCON);
-                    if (func == NULL) {
-                        put_global_const(name, INT, sign * num);
-                    } else {
-                        func->put_const(name, INT, sign * num);
-                    }
-
-                }
-                if (symbol != COMMA) {
-                    break;
                 }
                 getsym_check();
             } while (true);
             break;
+
         case CHARSY:
             getsym_check();
             do {
-                mate(IDENT, &record_name);
-                mate(ASS);
-                mate(CHARCON);
-                if (func == NULL) {
-                    put_global_const(name, CHAR, num);
-                } else {
-                    func->put_const(name, CHAR, num);
-                }
+                if (mate(IDENT, &record_name)) {
+                    mate(ASS);
+                    mate(CHARCON);
+                    if (func == NULL) {
+                        put_global_const(name, CHAR, num);
+                    } else {
+                        func->put_const(name, CHAR, num);
+                    }
 
-                if (symbol != COMMA) {
-                    break;
+                    if (symbol != COMMA) {
+                        break;
+                    }
+                } else {
+                    if (SEMI == symbol) {
+                        break;
+                    }
                 }
                 getsym_check();
             } while (true);
@@ -879,40 +909,45 @@ void declare_var(FuncItem* func = NULL) {
         getsym_check();
 
         do {
-            mate(IDENT, &record_name);
-            // array '[' | func '('
-            if (is_first) {
-                if (LPAR == symbol || LBRACE == symbol) {
+            if (mate(IDENT, &record_name)) {
+                // array '[' | func '('
+                if (is_first) {
+                    if (LPAR == symbol || LBRACE == symbol) {
+                        if (func == NULL) {
+                            skip_type_ident = true;
+                            return; // turn to function declaration
+                        } else {
+                            break;
+                        }
+                    }
+                    is_first = false;
+                }
+                if (LBKT == symbol) {
+                    getsym_check();
+                    mate(INTCON);
                     if (func == NULL) {
-                        skip_type_ident = true;
-                        return; // turn to function declaration
+                        put_global_var(name, type, num);
                     } else {
-                        break;
+                        func->put_var(name, type, num);
+                    }
+
+                    mate(RBKT); // ']'
+
+                } else {
+                    if (func == NULL) {
+                        put_global_var(name, type);
+                    } else {
+                        func->put_var(name, type);
                     }
                 }
-                is_first = false;
-            }
-            if (LBKT == symbol) {
-                getsym_check();
-                mate(INTCON);
-                if (func == NULL) {
-                    put_global_var(name, type, num);
-                } else {
-                    func->put_var(name, type, num);
+
+                if (COMMA != symbol) {  // ','
+                    break;
                 }
-
-                mate(RBKT); // ']'
-
             } else {
-                if (func == NULL) {
-                    put_global_var(name, type);
-                } else {
-                    func->put_var(name, type);
+                if (SEMI == symbol) {
+                    break;
                 }
-            }
-
-            if (COMMA != symbol) {  // ','
-                break;
             }
             getsym_check();
         } while (true);
@@ -982,8 +1017,9 @@ void declare_func() {
                 error((string)"unexpected return type " + symbol2string(symbol));
                 return;
             }
-            mate(IDENT, &record_name);
+            mate(IDENT, &record_name, IDENT);
         }
+        defined(name);
         this_func = new FuncItem(name, type);
         declare_func_medi(this_func);
         funcs.insert(FUNC_MAP::value_type(name, this_func));
@@ -1003,10 +1039,15 @@ void declare_func() {
                 default:
                     error((string)"Unexpected parameter type " + symbol2string(symbol));
                 }
-                mate(IDENT, &record_name);
-                this_func->put_para(name, type);
-                if (symbol != COMMA) { // ','
-                    break;
+                if (mate(IDENT, &record_name)){
+                    this_func->put_para(name, type);
+                    if (symbol != COMMA) { // ','
+                        break;
+                    }
+                } else {
+                    if (RPAR == symbol) {
+                        break;
+                    }
                 }
                 getsym_check();
             } while (true);
@@ -1020,7 +1061,10 @@ void declare_func() {
 FILE* progf;
 
 int gram_main() {
-    progf = fopen("prog_huaiwei.txt", "r");
+    string filename;
+    cout << "filename: ";
+    cin >> filename;
+    progf = fopen(filename.c_str(), "r");
     fout.open("intermediate.txt");
 
     getsym_check();
