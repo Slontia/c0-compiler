@@ -1,0 +1,27 @@
+select_L_3_case :
+@j select_L_2_switch_over
+select_L_4_case :
+@call sort
+@j select_L_2_switch_over
+select_L_5_case :
+@call fibonacci
+@j select_L_2_switch_over
+select_L_6_case :
+@call fluctuations
+@j select_L_2_switch_over
+select_L_7_case :
+@call zigzag
+@j select_L_2_switch_over
+select_L_8_case :
+@printf string S_31
+@scanf int num
+@push 0
+@push 99
+#2 = num
+#3 = #2
+@push #3
+@call find
+@j select_L_2_switch_over
+select_L_9_default :
+@printf string S_9
+@j select_L_2_switch_over

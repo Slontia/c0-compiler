@@ -435,11 +435,6 @@ fluctuations_L_2_while_begin :
 #15 = #13
 #16 = #15
 sub = #16
-@printf string S_10
-#12 = sub
-#13 = #12
-@printf int #13
-@printf string S_1
 #12 = sub
 #13 = #12
 #13 = #13 LE 0
@@ -470,11 +465,6 @@ max_sub = #17
 @j fluctuations_L_7_else_over
 fluctuations_L_6_else_begin :
 fluctuations_L_7_else_over :
-@printf string S_11
-#12 = max_sub
-#13 = #12
-@printf int #13
-@printf string S_1
 #12 = a
 #13 = #12
 b = #13
@@ -484,15 +474,15 @@ b = #13
 i = #13
 @j fluctuations_L_2_while_begin
 fluctuations_L_3_while_over :
-@printf string S_12
+@printf string S_10
 #0 = max_sub
 #1 = #0
 @printf int #1
-@printf string S_13
+@printf string S_11
 #0 = ra
 #1 = #0
 @printf int #1
-@printf string S_14
+@printf string S_12
 #0 = rb
 #1 = #0
 @printf int #1
@@ -508,13 +498,13 @@ a = 1
 #0 = a
 #1 = #0
 b = #1
-@printf string S_15
+@printf string S_13
 @scanf int n
 #0 = n
 #1 = #0
 #1 = #1 LE 0
 @bz #1 fibonacci_L_0_else_begin
-@printf string S_16
+@printf string S_14
 @ret
 @j fibonacci_L_1_else_over
 fibonacci_L_0_else_begin :
@@ -522,7 +512,7 @@ fibonacci_L_1_else_over :
 #0 = a
 #1 = #0
 @printf int #1
-@printf string S_17
+@printf string S_15
 #0 = n
 #1 = #0
 #1 = #1 LE 1
@@ -534,7 +524,7 @@ fibonacci_L_3_else_over :
 #0 = b
 #1 = #0
 @printf int #1
-@printf string S_17
+@printf string S_15
 #0 = n
 #1 = #0
 #1 = #1 LE 2
@@ -565,7 +555,7 @@ a = #5
 #4 = sum
 #5 = #4
 @printf int #5
-@printf string S_17
+@printf string S_15
 #4 = n
 #4 = #4 DIV 10
 #4 = #4 MUL 10
@@ -593,22 +583,22 @@ fibonacci_L_7_while_over :
 @var int i
 @var int j
 @var int temp
-@printf string S_18
+@printf string S_16
 @scanf int size
 sort_L_0_while_begin :
 #0 = size
 #1 = #0
 #1 = #1 GE 100
 @bz #1 sort_L_1_while_over
-@printf string S_19
+@printf string S_17
 @scanf int size
 @j sort_L_0_while_begin
 sort_L_1_while_over :
-@printf string S_20
+@printf string S_18
 #0 = size
 #1 = #0
 @printf int #1
-@printf string S_21
+@printf string S_19
 i = 0
 sort_L_2_while_begin :
 #0 = i
@@ -699,7 +689,7 @@ i = #5
 @j sort_L_4_while_begin
 sort_L_5_while_over :
 i = 0
-@printf string S_22
+@printf string S_20
 sort_L_10_while_begin :
 #0 = i
 #1 = #0
@@ -718,7 +708,7 @@ i = #5
 #7 = #6
 #8 = #7
 @printf int #8
-@printf string S_17
+@printf string S_15
 #4 = i
 #5 = #4
 #5 = #5 ADD 1
@@ -744,43 +734,37 @@ sort_L_11_while_over :
 @var int num
 select_L_0_while_begin :
 @printf string S_1
+@printf string S_21
+@printf string S_22
 @printf string S_23
 @printf string S_24
 @printf string S_25
 @printf string S_26
 @printf string S_27
+@printf string S_21
 @printf string S_28
-@printf string S_29
-@printf string S_23
-@printf string S_30
 @scanf int i
 #0 = i
 #0 = #0 DIV 1
 #0 = #0 MUL 1
 #1 = #0
-@be #1 0 select_L_3_case
-@be #1 1 select_L_4_case
-@be #1 2 select_L_5_case
-@be #1 3 select_L_6_case
-@be #1 4 select_L_7_case
-@be #1 5 select_L_8_case
-@j select_L_9_default
-select_L_3_case :
-@j select_L_2_switch_over
+@j select_L_2_switch_branch
 select_L_4_case :
-@call sort
-@j select_L_2_switch_over
+@j select_L_3_switch_over
 select_L_5_case :
-@call fibonacci
-@j select_L_2_switch_over
+@call sort
+@j select_L_3_switch_over
 select_L_6_case :
-@call fluctuations
-@j select_L_2_switch_over
+@call fibonacci
+@j select_L_3_switch_over
 select_L_7_case :
-@call zigzag
-@j select_L_2_switch_over
+@call fluctuations
+@j select_L_3_switch_over
 select_L_8_case :
-@printf string S_31
+@call zigzag
+@j select_L_3_switch_over
+select_L_9_case :
+@printf string S_29
 @scanf int num
 @push 0
 @push 99
@@ -788,20 +772,28 @@ select_L_8_case :
 #3 = #2
 @push #3
 @call find
-@j select_L_2_switch_over
-select_L_9_default :
+@j select_L_3_switch_over
+select_L_10_default :
 @printf string S_9
-@j select_L_2_switch_over
-select_L_2_switch_over :
+@j select_L_3_switch_over
+select_L_2_switch_branch :
+@be #1 0 select_L_4_case
+@be #1 1 select_L_5_case
+@be #1 2 select_L_6_case
+@be #1 3 select_L_7_case
+@be #1 4 select_L_8_case
+@be #1 5 select_L_9_case
+@j select_L_10_default
+select_L_3_switch_over :
 #0 = i
 #1 = #0
 #1 = #1 EQ 0
-@bz #1 select_L_10_else_begin
-@printf string S_32
+@bz #1 select_L_11_else_begin
+@printf string S_30
 @ret
-@j select_L_11_else_over
-select_L_10_else_begin :
-select_L_11_else_over :
+@j select_L_12_else_over
+select_L_11_else_begin :
+select_L_12_else_over :
 @j select_L_0_while_begin
 select_L_1_while_over :
 @ret

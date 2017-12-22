@@ -14,6 +14,7 @@ extern bool success;
 extern FILE* progf;
 extern ofstream fout;
 extern ifstream fin;
+extern ofstream fswt;
 
 extern char cur_c;	// current char
 extern char token[TOKEN_MAX_LENTH];	// store sign

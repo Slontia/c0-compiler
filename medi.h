@@ -15,6 +15,7 @@ extern int level;
 extern vector<int> temp_counts;
 
 extern vector<string> str_set;
+extern bool in_switch;
 
 void init_temp();
 string new_temp();
@@ -71,5 +72,7 @@ void printf_medi(Type type, int v);
 void printf_medi(Type type, string str);
 
 void scanf_medi(Type type, string v);
+
+void medi(string line);
 
 #endif // MEDI_H_INCLUDED

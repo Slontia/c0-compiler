@@ -129,14 +129,18 @@ void FluctuATions {
 	while (-(-(-(-(i)))) < n) {
 		scanf (a);
 		sub = (a - b);
+printf("sub: ", sub);printf("\n");
 		if (sub <= 0) sub = -(+sub);
 		else;
 
 		if (sub > max_sub) {
+
 			ra =a;
 			rb =b;
 max_sub = sub;
 		}else;
+printf("BEST: ", max_sub);
+printf("\n");
 		b=a;
 i=i+1;
 	}
