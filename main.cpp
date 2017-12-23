@@ -4,16 +4,23 @@
 #include "vars.h"
 #include "tar.h"
 #include "dag_opt.h"
+#define INPUT_FILENAME 0
 
 using namespace std;
 
 
 int main()
 {
-    gram_main();
+    string filename = "prog01.txt";
+    if (INPUT_FILENAME)
+    {
+        cout << "Enter the filename:" << endl;
+        cin >> filename;
+    }
+    filename = gram_main(filename);
     if (!success) return 0;
-    dag_main();
-    tar_main();
-
+    filename = dag_main(filename);
+    filename = dag_main(filename);
+    filename = tar_main(filename);
     return 0;
 }

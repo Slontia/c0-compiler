@@ -20,7 +20,7 @@ typedef map<string, VarItem*> VAR_MAP;
 extern VAR_MAP global_vars;
 extern FUNC_MAP funcs;
 
-int gram_main();
+string gram_main(string);
 VarItem* get_global_var(string name);
 FuncItem* get_func(string name);
 

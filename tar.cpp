@@ -898,14 +898,16 @@ void set_data_str()
     MIPS_OUTPUT("andi $gp, $gp, 0xFFFFFFFC");
 }
 
-void tar_main()
+string tar_main(string filename)
 {
-    fin.open("intermediate_dag.txt");
-    fout.open("target.asm");
+    fin.open((filename + ".txt").c_str());
+    string tar_filename = "target";
+    fout.open((tar_filename + ".asm").c_str());
 
     set_data_str();
     readline();
 
     fout.close();
     fin.close();
+    return tar_filename;
 }

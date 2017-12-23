@@ -1348,13 +1348,11 @@ void declare_func()
 
 FILE* progf;
 
-int gram_main()
+string gram_main(string filename)
 {
-    string filename = "prog01.txt";
-    //cout << "filename: ";
-    //cin >> filename;
     progf = fopen(filename.c_str(), "r");
-    fout.open("intermediate.txt");
+    string medi_filename = "intermediate";
+    fout.open((medi_filename + ".txt").c_str());
 
     getsym_check();
     cout << "=== CONST BEGIN ===" << endl;
@@ -1370,5 +1368,5 @@ int gram_main()
 
     fout.close();
     fclose(progf);
-    return 0;
+    return medi_filename;
 }

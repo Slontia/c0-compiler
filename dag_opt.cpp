@@ -539,14 +539,16 @@ void read_medis()
     }
 }
 
-void dag_main()
+string dag_main(string filename)
 {
-    fin.open("intermediate.txt");
-    fout.open("intermediate_dag.txt");
+    fin.open((filename + ".txt").c_str());
+    string dag_filename = filename + "_DAG";
+    fout.open((dag_filename + ".txt").c_str());
     read_medis();
 
     fout.close();
     fin.close();
+    return dag_filename;
 }
 
 

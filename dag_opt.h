@@ -44,7 +44,7 @@ void set_name(Node* node);
 string get_name(Node* node);
 string get_name(string old_name);
 void build_DAG(vector<string> code);
-void dag_main();
+string dag_main(string);
 string use_new_name(string name);
 
 #endif // DAG_OPT_H_INCLUDED

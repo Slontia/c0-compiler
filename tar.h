@@ -35,6 +35,6 @@ void output();
 
 
 
-void tar_main();
+string tar_main(string);
 
 #endif // TAR_H_INCLUDED
