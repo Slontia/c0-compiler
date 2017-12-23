@@ -13,7 +13,7 @@ select_L_7_case :
 @call zigzag
 @j select_L_2_switch_over
 select_L_8_case :
-@printf string S_31
+@printf string S_37
 @scanf int num
 @push 0
 @push 99

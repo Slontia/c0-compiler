@@ -38,7 +38,7 @@ void refresh_vars();
 void init_DAG();
 bool has_node(string name);
 void add_to_map(string name, Node* nodeptr);
-void set_node(string name, Node* nodeptr);
+void set_node(string name, Node* nodeptr, bool);
 Node* get_node(string name);
 void set_name(Node* node);
 string get_name(Node* node);

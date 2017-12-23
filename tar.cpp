@@ -223,6 +223,7 @@ int get_reg(string name)
         }
         else
         {
+            cout << name <<endl;
             type = get_ele(name, global_vars)->get_type();
         }
     }
@@ -244,12 +245,12 @@ int get_reg(string name)
             if (recorder->global)
             {
                 MIPS_OUTPUT(((recorder->type == CHAR) ? "sb" : "sw") << " $s"
-                            << next_reg << ", " << recorder->offset << "($gp)");
+                            << next_reg << ", " << recorder->offset << "($gp) # store reg to mem");
             }
             else
             {
                 MIPS_OUTPUT(((recorder->type == CHAR) ? "sb" : "sw") << " $s"
-                            << next_reg << ", " << recorder->offset << "($fp)");
+                            << next_reg << ", " << recorder->offset << "($fp) # store reg to mem");
             }
             keep_active = true;
         }
@@ -293,15 +294,16 @@ int get_reg(string name)
             }
         }
         // load value
+        string note = (string)"# " + name;
         if (recorder->global)   // is global variable
         {
             MIPS_OUTPUT(((type == CHAR) ? "lb" : "lw") << " $s" << next_reg
-                        << ", " << recorder->offset << "($gp)");
+                        << ", " << recorder->offset << "($gp)" << note);
         }
         else
         {
             MIPS_OUTPUT(((type == CHAR) ? "lb" : "lw") << " $s" << next_reg
-                        << ", " << recorder->offset << "($fp)");
+                        << ", " << recorder->offset << "($fp)" << note);
         }
 
         recorder->type = type;

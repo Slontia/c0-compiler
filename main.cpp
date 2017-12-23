@@ -13,7 +13,7 @@ int main()
     gram_main();
     if (!success) return 0;
     dag_main();
-    //tar_main();
+    tar_main();
 
     return 0;
 }

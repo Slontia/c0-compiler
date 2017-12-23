@@ -115,7 +115,8 @@ NODE_MAP::iterator export_code(NODE_MAP::iterator it)
     if (it->first != get_name(it->second))   // var = temp
     {
         MIPS_OUTPUT(it->first << " = " << get_name(it->second));
-        node_map.erase(it++);
+        node_map.erase(it++); // why erase?
+        // need not to set name cause it's the end of the block
     }
     else
     {
@@ -204,7 +205,13 @@ void add_to_map(string name, Node* nodeptr)
     node_map[name] = nodeptr;
 }
 
-void set_node(string name, Node* nodeptr)
+/* @REQUIRES: len(name) > 0 && nodeptr != NULL
+ * @MODIFIES: node_map
+ * @EFFECTS:
+ *  has_node => record_code
+ *  node_map[name] = nodeptr
+ */
+void set_node(string name, Node* nodeptr, bool change_name = true)
 {
     //if (IS_VAR(name) && has_node(name))
     if (has_node(name))
@@ -212,9 +219,18 @@ void set_node(string name, Node* nodeptr)
         record_code(node_map.find(name));
     }
     node_map[name] = nodeptr;   // change value in map
-    set_name(nodeptr);  // set name
+    if (true)
+    {
+        set_name(nodeptr);  // set name
+    }
 }
 
+/* @REQUIRES: len(name) > 0
+ * @MODIFIES: node_map, nodes
+ * @EFFECTS:
+ *  has_node => return node_map[name]
+ *  !has_node => return new node of which the content is name
+ */
 Node* get_node(string name)
 {
     if (!has_node(name))
@@ -226,28 +242,53 @@ Node* get_node(string name)
     return node_map[name];
 }
 
+/* @REQUIRES: node != NULL
+ * @MODIFIES: node
+ * @EFFECTS:
+ *  is_num => name = content
+ *  \exists key in node_map : is_var(key) && value is node => name = key
+ *  \except => name = "#" + id (could be #-1)
+ */
 void set_name(Node* node)
 {
-    if (IS_NUM(node->content))
+    if (IS_NUM(node->content)/* || IS_VAR(node->content)*/)
     {
         node->name = node->content;
         return;
     }
     NODE_MAP::iterator it = node_map.begin();
+    string content = node->content;
+    // points to it self
+    if (IS_VAR(content) && has_node(content) && node_map[content] == node)
+    {
+        node->name = content;
+        return;
+    }
+    /*
     while (it != node_map.end())
     {
-        if (IS_VAR(it->first) && it->second == node)
+        //if (IS_VAR(it->first) && it->second == node)
+        // could not be old temp ($x)
+        if (IS_VAR(it->first) && it->first == node->content && it->second == node)
         {
             node->name = it->first;
             return;
         }
         it++;
     }
+    */
     stringstream ss;
     ss << "#" << node->no;
     node->name = ss.str();
 }
 
+/* @REQUIRES: node != NULL
+ * @MODIFIES: node
+ * @EFFECTS:
+ *  name == "#-1" => no = temp_count++
+ *                => name = "#" + no
+ *  return name
+ */
 string get_name(Node* node)
 {
     if (node->name == "#-1")
@@ -267,17 +308,24 @@ void build_DAG(vector<string> code)
 {
     if (code.size() == 3)   // assign
     {
-        set_node(code[0], get_node(code[2]));
+        set_node(code[0], get_node(code[2]), false);
     }
     else if (code.size() == 5 && code[3] == "ARSET")
     {
-        for (unsigned int i = 0; i < nodes.size(); i++)
+        if (has_node(code[0]))
         {
-            if (!nodes[i]->is_leaf && nodes[i]->lptr->name == code[0])
+            Node* node = get_node(code[0]);
+            node_map.erase(node_map.find(code[0]));
+            for (unsigned int i = 0; i < nodes.size(); i++)
             {
-                nodes[i]->lptr->make_certain();
+                if (!nodes[i]->is_leaf && nodes[i]->lptr == node)
+                {
+                    nodes[i]->make_certain();
+                    set_name(nodes[i]);
+                }
             }
         }
+
         MIPS_OUTPUT(code[0] << " = " << use_new_name(code[2]) <<
                     " ARSET " << use_new_name(code[4]));
     }
@@ -322,10 +370,19 @@ void build_DAG(vector<string> code)
 
 string use_new_name(string name)
 {
+    cout << name << endl;
     if (!has_node(name))
     {
-        return name;
+        if (IS_VAR(name) || IS_NUM(name))
+        {
+            return name;
+        }
+        else
+        {
+            return get_name(get_node(name));
+        }
     }
+    cout << GET_NEW_NAME(name) << endl;
     node_map[name]->make_certain();
     return GET_NEW_NAME(name);
 }
@@ -381,8 +438,9 @@ void read_medis()
         }
         else if (strs[0] == "@get")
         {
+            string name = use_new_name(strs[1]);
             remove_var(strs[1]);    // var <- function return value
-            MIPS_OUTPUT(line);
+            MIPS_OUTPUT("@get " << name);
         }
         else if (strs[0] == "@ret")
         {
@@ -447,6 +505,10 @@ void read_medis()
             if (strs[1] == "string")
             {
                 MIPS_OUTPUT(line);
+                if (strs[2] == "S_23")
+                {
+                    cout << "The World!" << endl;
+                }
             }
             else
             {
