@@ -32,6 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="ass_opt.cpp" />
+		<Unit filename="ass_opt.h" />
 		<Unit filename="dag_opt.cpp" />
 		<Unit filename="dag_opt.h" />
 		<Unit filename="gram.cpp" />

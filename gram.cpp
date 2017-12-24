@@ -1,9 +1,4 @@
-/*
-10 free string
-12 div 0
-if/switch need not to save
-*/
-
+#define INT2CHAR 0
 #include "lexical.h"
 #include <cstdlib>
 #include "vars.h"
@@ -300,6 +295,10 @@ Item* read_ident(string* index_name)    // address of the pointer to temp_name
         return NULL;
     }
     getsym_check();
+    if (item->get_kind() == VAR && ((VarItem*)item)->isarray() && symbol != LBKT)
+    {
+        error((string)"array \'" + name + "\' without an index");
+    }
 
     // is array
     if (symbol == LBKT)   // '['
@@ -944,7 +943,7 @@ void statement()
             bool assign_certain;
             if (expr(&assign_value, &assign_certain, name) == INT && item->get_type() == CHAR)
             {
-                error((string)"cannot convert 'int' to 'char'");
+                if (!INT2CHAR) error((string)"cannot convert 'int' to 'char'");
             }
             if (assign_certain)
             {

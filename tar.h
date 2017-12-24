@@ -2,6 +2,7 @@
 #define TAR_H_INCLUDED
 #include <iostream>
 #include <map>
+#include <vector>
 #include "vars.h"
 
 using namespace std;

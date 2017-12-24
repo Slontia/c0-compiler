@@ -1,0 +1,18 @@
+测试样例一:
+输入:
+-1
+0
+ab
+输出:wrong input!
+测试样例二:
+输入:
+0
+2
+ba
+输出:baThe result of case i is done!The result of case c is done!result one is:6result two is:1The sum of numbers between two results is:21
+测试样例三:
+输入:
+7
+3
+79
+输出:79The result of case i is done!The result of case c is done!result one is:40320result two is:24no result!

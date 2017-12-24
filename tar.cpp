@@ -223,7 +223,6 @@ int get_reg(string name)
         }
         else
         {
-            cout << name <<endl;
             type = get_ele(name, global_vars)->get_type();
         }
     }
@@ -429,14 +428,10 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
         {
             mips << ", $0";
         }
-        else if (!is_cal)
-        {
-            MIPS_OUTPUT("li $t0, " << immed1);
-            mips << ", $t0";
-        }
         else
         {
-            error_debug("cal1 is a number");
+            MIPS_OUTPUT("li $t8, " << immed1);
+            mips << ", $t8";
         }
     }
     else
@@ -453,8 +448,8 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
         }
         else
         {
-            MIPS_OUTPUT("li $t0, " << immed2);
-            mips << ", $t0";
+            MIPS_OUTPUT("li $t9, " << immed2);
+            mips << ", $t9";
         }
     }
     else

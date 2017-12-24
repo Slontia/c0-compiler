@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-    string filename = "prog01.txt";
+    string filename = "prog00.txt";
     if (INPUT_FILENAME)
     {
         cout << "Enter the filename:" << endl;

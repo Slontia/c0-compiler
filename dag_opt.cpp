@@ -14,6 +14,7 @@
 #define IS_GLOBAL_VAR(name) !cur_func_DAG->has_var(name) && global_vars.find(name) != global_vars.end()
 #define GET_NEW_NAME(name) (get_name(node_map[name]))
 # define DEBUG 0
+
 # if DEBUG
 # define MIPS_LEFT cout << "<==="
 # define MIPS_RIGHT "===>" << endl
@@ -77,25 +78,8 @@ void remove_var(string name)
     }
 }
 
-// after calling function, global vars may be modified
-/*
-void remove_global_vars() {
-    NODE_MAP::iterator it = node_map.begin();
-    while (it != node_map.end()) {
-        string name = it->first;
-        // is global var?
-        if (IS_GLOBAL_VAR(name)) {
-            node_map.erase(it++);    // remove
-        } else {
-            it++;
-        }
-    }
-}
-*/
-
 // assign: to record vars' value, for other blocks' using
 // remove: values of vars may be modified
-
 void init_DAG()
 {
     refresh_vars();
@@ -111,6 +95,7 @@ void init_DAG()
 // finish block
 NODE_MAP::iterator export_code(NODE_MAP::iterator it)
 {
+    set_name(it->second);
     it->second->make_certain();
     if (it->first != get_name(it->second))   // var = temp
     {
@@ -134,7 +119,6 @@ NODE_MAP::iterator record_code(NODE_MAP::iterator it)
     {
         node_map.erase(it++);
         set_name(node); // refresh node's name
-        MIPS_OUTPUT(get_name(node) << " = " << name);
     }
     else
     {
@@ -213,7 +197,6 @@ void add_to_map(string name, Node* nodeptr)
  */
 void set_node(string name, Node* nodeptr, bool change_name = true)
 {
-    //if (IS_VAR(name) && has_node(name))
     if (has_node(name))
     {
         record_code(node_map.find(name));
@@ -251,12 +234,11 @@ Node* get_node(string name)
  */
 void set_name(Node* node)
 {
-    if (IS_NUM(node->content)/* || IS_VAR(node->content)*/)
+    if (IS_NUM(node->content))
     {
         node->name = node->content;
         return;
     }
-    NODE_MAP::iterator it = node_map.begin();
     string content = node->content;
     // points to it self
     if (IS_VAR(content) && has_node(content) && node_map[content] == node)
@@ -264,21 +246,51 @@ void set_name(Node* node)
         node->name = content;
         return;
     }
-    /*
-    while (it != node_map.end())
+    bool has_name = (node->name[0] != '#');
+    if (has_name)   // already has name
     {
-        //if (IS_VAR(it->first) && it->second == node)
-        // could not be old temp ($x)
-        if (IS_VAR(it->first) && it->first == node->content && it->second == node)
-        {
-            node->name = it->first;
-            return;
+        NODE_MAP::iterator it = node_map.begin();
+        while (it != node_map.end()) {
+            if (IS_VAR(it->first) && it->second == node)
+            {
+                MIPS_OUTPUT(it->first << " = " << node->name);
+                node->content = it->first;
+                node->name = it->first;
+                return;
+            }
+            it ++;
         }
-        it++;
     }
-    */
+    else if (!node->is_certain)
+    {
+        NODE_MAP::iterator it = node_map.begin();
+        while (it != node_map.end()) {
+            if (IS_VAR(it->first) && it->second == node)
+            {
+                if (it->first == "temp")
+                {
+                    cout << "THE WORLD!!" << endl;
+                }
+                node->name = it->first;
+                node->make_certain();
+                node->content = it->first;
+                return;
+            }
+            it ++;
+        }
+    }
+
     stringstream ss;
-    ss << "#" << node->no;
+    if (has_name)
+    {
+        node->no = temp_count++;
+        ss << "#" << node->no;
+        MIPS_OUTPUT(ss.str() << " = " << node->name);
+    }
+    else
+    {
+        ss << "#" << node->no;
+    }
     node->name = ss.str();
 }
 
@@ -308,6 +320,7 @@ void build_DAG(vector<string> code)
 {
     if (code.size() == 3)   // assign
     {
+        if (IS_VAR(code[0])) refresh_vars();
         set_node(code[0], get_node(code[2]), false);
     }
     else if (code.size() == 5 && code[3] == "ARSET")
@@ -320,8 +333,8 @@ void build_DAG(vector<string> code)
             {
                 if (!nodes[i]->is_leaf && nodes[i]->lptr == node)
                 {
-                    nodes[i]->make_certain();
                     set_name(nodes[i]);
+                    nodes[i]->make_certain();
                 }
             }
         }
@@ -331,14 +344,8 @@ void build_DAG(vector<string> code)
     }
     else if (code.size() == 5)
     {
+        if (IS_VAR(code[0])) refresh_vars();
         string op = code[3];
-        /*if (op == "ARGET")
-        {
-            remove_var(code[0]);
-            MIPS_OUTPUT(get_name(get_node(code[0])) << " = " << use_new_name(code[2]) <<
-                        " ARGET " << use_new_name(code[4]));
-            return;
-        }*/
         Node* node1 = get_node(code[2]);
         Node* node2 = get_node(code[4]);
         bool could_reverse = (op == "ADD" || op == "MUL" || op == "BE" || op == "EQ");
@@ -370,7 +377,6 @@ void build_DAG(vector<string> code)
 
 string use_new_name(string name)
 {
-    cout << name << endl;
     if (!has_node(name))
     {
         if (IS_VAR(name) || IS_NUM(name))
@@ -382,7 +388,6 @@ string use_new_name(string name)
             return get_name(get_node(name));
         }
     }
-    cout << GET_NEW_NAME(name) << endl;
     node_map[name]->make_certain();
     return GET_NEW_NAME(name);
 }
@@ -438,6 +443,7 @@ void read_medis()
         }
         else if (strs[0] == "@get")
         {
+            if (IS_VAR(strs[1])) refresh_vars();
             string name = use_new_name(strs[1]);
             remove_var(strs[1]);    // var <- function return value
             MIPS_OUTPUT("@get " << name);
@@ -505,10 +511,6 @@ void read_medis()
             if (strs[1] == "string")
             {
                 MIPS_OUTPUT(line);
-                if (strs[2] == "S_23")
-                {
-                    cout << "The World!" << endl;
-                }
             }
             else
             {
@@ -517,6 +519,7 @@ void read_medis()
         }
         else if (strs[0] == "@scanf")
         {
+            refresh_vars();
             remove_var(strs[2]);
             MIPS_OUTPUT(line);
         }
@@ -543,10 +546,9 @@ string dag_main(string filename)
 {
     fin.open((filename + ".txt").c_str());
     string dag_filename = filename + "_DAG";
-    fout.open((dag_filename + ".txt").c_str());
+    if(!DEBUG)fout.open((dag_filename + ".txt").c_str());
     read_medis();
-
-    fout.close();
+    if(!DEBUG)fout.close();
     fin.close();
     return dag_filename;
 }

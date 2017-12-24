@@ -51,7 +51,7 @@
 	<iostream>
 	<fstream>
 
-1514038623 source:d:\projects\console\c0-compiler\main.cpp
+1514116243 source:d:\projects\console\c0-compiler\main.cpp
 	<iostream>
 	"lexical.h"
 	"gram.h"
@@ -70,7 +70,7 @@
 	<map>
 	<vector>
 
-1514038544 source:d:\projects\console\c0-compiler\gram.cpp
+1514105585 source:d:\projects\console\c0-compiler\gram.cpp
 	"lexical.h"
 	<cstdlib>
 	"vars.h"
@@ -107,7 +107,7 @@
 	<vector>
 	"vars.h"
 
-1514038580 source:d:\projects\console\c0-compiler\tar.cpp
+1514104700 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -120,9 +120,10 @@
 	"gram.h"
 	"medi.h"
 
-1514037959 d:\projects\console\c0-compiler\tar.h
+1514100675 d:\projects\console\c0-compiler\tar.h
 	<iostream>
 	<map>
+	<vector>
 	"vars.h"
 
 1513243034 source:c:\users\65486_000\desktop\15061183_刘畅_目标代码执行\c0-compiler\item.cpp
@@ -374,7 +375,7 @@
 	"gram.h"
 	"medi.h"
 
-1514038530 source:d:\projects\console\c0-compiler\dag_opt.cpp
+1514117386 source:d:\projects\console\c0-compiler\dag_opt.cpp
 	<iostream>
 	<vector>
 	<fstream>
@@ -391,4 +392,12 @@
 	<iostream>
 	<map>
 	<vector>
+
+1514100687 source:d:\projects\console\c0-compiler\ass_opt.cpp
+	<iostream>
+	<map>
+	"vars.h"
+	"tar.h"
+	<vector>
+	<sstream>
 

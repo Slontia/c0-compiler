@@ -1,0 +1,9 @@
+
+
+void main(){
+int a, b, c;
+a = b + 1;
+scanf(b);
+printf(a);
+
+}
