@@ -1,0 +1,15 @@
+void function(int a)
+{
+	int as;
+	as=a;
+	if(a==1)return;
+	else
+	{
+		function(a-1);
+		printf("as:",as);
+	}
+}
+void main()
+{
+	function(12);
+}

@@ -14,7 +14,6 @@
 #define IS_GLOBAL_VAR(name) !cur_func_DAG->has_var(name) && global_vars.find(name) != global_vars.end()
 #define GET_NEW_NAME(name) (get_name(node_map[name]))
 # define DEBUG 0
-
 # if DEBUG
 # define MIPS_LEFT cout << "<==="
 # define MIPS_RIGHT "===>" << endl

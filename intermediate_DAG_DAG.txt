@@ -1,11 +1,22 @@
 @call main
 @exit
+@func function
+@para int a
+@var int as
+#0 = a EQ 1
+as = a
+@bz #0 function_L_0_else_begin
+@ret
+@j function_L_1_else_over
+function_L_0_else_begin :
+#0 = a SUB 1
+@push #0
+@call function
+@printf string S_0
+@printf int as
+function_L_1_else_over :
+@ret
 @func main
-@var int a
-@var int b
-@var int c
-a = b ADD 1
-#0 = b
-@scanf int b
-@printf int a
+@push 12
+@call function
 @ret

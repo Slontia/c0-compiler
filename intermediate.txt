@@ -1,15 +1,30 @@
 @call main
 @exit
-@func main
-@var int a
-@var int b
-@var int c
-#0 = b
-#1 = #0
-#1 = #1 ADD 1
-a = #1
-@scanf int b
+@func function
+@para int a
+@var int as
 #0 = a
 #1 = #0
-@printf int #1
+as = #1
+#0 = a
+#1 = #0
+#1 = #1 EQ 1
+@bz #1 function_L_0_else_begin
+@ret
+@j function_L_1_else_over
+function_L_0_else_begin :
+#2 = a
+#3 = #2
+#3 = #3 SUB 1
+@push #3
+@call function
+@printf string S_0
+#2 = as
+#3 = #2
+@printf int #3
+function_L_1_else_over :
+@ret
+@func main
+@push 12
+@call function
 @ret
