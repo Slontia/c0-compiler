@@ -1,9 +1,11 @@
+test {
 
+}
 
 void main(){
-int a, b, c;
-a = b + 1;
-scanf(b);
+int a, b, c, d,e,f,g,h,i,j,k,l;
+a = (b+c)*(a+b)*(b+c);
+b = (c + (c + (b + 1))) / (b + c);
 printf(a);
 
 }

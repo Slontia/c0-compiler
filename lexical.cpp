@@ -19,10 +19,11 @@ char cur_c;	// current char
 char token[TOKEN_MAX_LENTH] = {0};	// store sign
 int token_len = 0;
 int num; // currrent integer
+int error_line = 1;
 
 void error_debug(string info)
 {
-    cout << "[D_ERROR] " << info << endl;
+    cout << "[D_ERROR] " << info << " in " << error_line << endl;
     if (ERROR_EXIT) exit(0);
 }
 
@@ -205,6 +206,9 @@ bool readchar()
 {
     cur_c = fgetc(progf);
     if (OUTPUT_PROG) cout << cur_c;
+    if (cur_c == '\n') {
+        error_line++;
+    }
     return (cur_c != EOF);
 }
 

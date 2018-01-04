@@ -9,8 +9,7 @@ init_array_L_0_while_begin :
 #0 = a LT 100
 @bz #0 init_array_L_1_while_over
 find_array = a ARSET a
-#1 = a
-a = #1 ADD 1
+a = a ADD 1
 @j init_array_L_0_while_begin
 init_array_L_1_while_over :
 @ret
@@ -32,7 +31,6 @@ find_L_2_else_begin :
 @printf string S_2
 find_L_3_else_over :
 @ret
-@j find_L_1_else_over
 find_L_0_else_begin :
 find_L_1_else_over :
 #0 = begin ADD end
@@ -78,7 +76,6 @@ find_L_5_else_over :
 #2 = col SUB 1
 #3 = #1 ADD #2
 @ret #3
-@ret 0
 @func zigzag
 @var int a
 @var int i
@@ -93,24 +90,22 @@ zigzag_L_0_while_begin :
 #0 = a GE 10
 @bz #0 zigzag_L_1_while_over
 @printf string S_5
-#1 = a
 @scanf int a
 @j zigzag_L_0_while_begin
 zigzag_L_1_while_over :
 @printf string S_6
 i = 0
 zigzag_L_2_while_begin :
-#1 = a MUL a
-#0 = i LT #1
-@bz #0 zigzag_L_3_while_over
+#0 = a MUL a
+#1 = i LT #0
+@bz #1 zigzag_L_3_while_over
 @scanf char temp
 matrix = i ARSET temp
-#2 = i
-i = #2 ADD 1
-#3 = i DIV a
-#4 = #3 MUL a
-#5 = #4 EQ i
-@bz #5 zigzag_L_4_else_begin
+i = i ADD 1
+#2 = i DIV a
+#3 = #2 MUL a
+#4 = #3 EQ i
+@bz #4 zigzag_L_4_else_begin
 @printf string S_1
 @j zigzag_L_5_else_over
 zigzag_L_4_else_begin :
@@ -120,7 +115,7 @@ zigzag_L_3_while_over :
 @printf string S_7
 row = 1
 @push a
-@push row
+@push 1
 @push 1
 @call get_index
 @get #0
@@ -129,17 +124,15 @@ row = 1
 col = 1
 zigzag_L_6_while_begin :
 #0 = row MUL col
-#2 = a MUL a
-#1 = #0 NE #2
-@bz #1 zigzag_L_7_while_over
+#1 = a MUL a
+#2 = #0 NE #1
+@bz #2 zigzag_L_7_while_over
 #3 = col EQ a
 @bz #3 zigzag_L_8_else_begin
-#4 = row
-row = #4 ADD 1
+row = row ADD 1
 @j zigzag_L_9_else_over
 zigzag_L_8_else_begin :
-#0 = col
-col = #0 ADD 1
+col = col ADD 1
 zigzag_L_9_else_over :
 @push a
 @push row
@@ -153,29 +146,24 @@ tempi = col SUB row
 zigzag_L_10_while_begin :
 #0 = i LT tempi
 @bz #0 zigzag_L_11_while_over
-#1 = i
-i = #1 ADD 1
-#2 = col
-col = #2 SUB 1
-#3 = row
-row = #3 ADD 1
+i = i ADD 1
+col = col SUB 1
+row = row ADD 1
 @push a
 @push row
 @push col
 @call get_index
-@get #4
-#5 = matrix ARGET #4
-@printf char #5
+@get #1
+#2 = matrix ARGET #1
+@printf char #2
 @j zigzag_L_10_while_begin
 zigzag_L_11_while_over :
 #0 = row EQ a
 @bz #0 zigzag_L_12_else_begin
-#1 = col
-col = #1 ADD 1
+col = col ADD 1
 @j zigzag_L_13_else_over
 zigzag_L_12_else_begin :
-#0 = row
-row = #0 ADD 1
+row = row ADD 1
 zigzag_L_13_else_over :
 @push a
 @push row
@@ -190,19 +178,16 @@ tempi = #2 ADD row
 zigzag_L_14_while_begin :
 #0 = i LT tempi
 @bz #0 zigzag_L_15_while_over
-#1 = i
-i = #1 ADD 1
-#2 = row
-row = #2 SUB 1
-#3 = col
-col = #3 ADD 1
+i = i ADD 1
+row = row SUB 1
+col = col ADD 1
 @push a
 @push row
 @push col
 @call get_index
-@get #4
-#5 = matrix ARGET #4
-@printf char #5
+@get #1
+#2 = matrix ARGET #1
+@printf char #2
 @j zigzag_L_14_while_begin
 zigzag_L_15_while_over :
 @j zigzag_L_6_while_begin
@@ -224,7 +209,6 @@ fluctuations_L_0_while_begin :
 @bz #0 fluctuations_L_1_while_over
 @printf string S_9
 @printf string S_8
-#1 = n
 @scanf int n
 @j fluctuations_L_0_while_begin
 fluctuations_L_1_while_over :
@@ -233,12 +217,12 @@ b = 0
 max_sub = #0
 i = 0
 fluctuations_L_2_while_begin :
-#2 = 0 SUB i
+#0 = 0 SUB i
+#1 = 0 SUB #0
+#2 = 0 SUB #1
 #3 = 0 SUB #2
-#4 = 0 SUB #3
-#0 = 0 SUB #4
-#1 = #0 LT n
-@bz #1 fluctuations_L_3_while_over
+#4 = #3 LT n
+@bz #4 fluctuations_L_3_while_over
 @scanf int a
 sub = a SUB b
 @printf string S_10
@@ -246,8 +230,7 @@ sub = a SUB b
 @printf string S_1
 #5 = sub LE 0
 @bz #5 fluctuations_L_4_else_begin
-#6 = sub
-sub = 0 SUB #6
+sub = 0 SUB sub
 @j fluctuations_L_5_else_over
 fluctuations_L_4_else_begin :
 fluctuations_L_5_else_over :
@@ -255,7 +238,6 @@ fluctuations_L_5_else_over :
 @bz #0 fluctuations_L_6_else_begin
 ra = a
 rb = b
-#1 = max_sub
 max_sub = sub
 @j fluctuations_L_7_else_over
 fluctuations_L_6_else_begin :
@@ -264,8 +246,7 @@ fluctuations_L_7_else_over :
 @printf int max_sub
 @printf string S_1
 b = a
-#0 = i
-i = #0 ADD 1
+i = i ADD 1
 @j fluctuations_L_2_while_begin
 fluctuations_L_3_while_over :
 @printf string S_12
@@ -290,7 +271,6 @@ b = 1
 @bz #0 fibonacci_L_0_else_begin
 @printf string S_16
 @ret
-@j fibonacci_L_1_else_over
 fibonacci_L_0_else_begin :
 fibonacci_L_1_else_over :
 @printf int a
@@ -298,7 +278,6 @@ fibonacci_L_1_else_over :
 #0 = n LE 1
 @bz #0 fibonacci_L_2_else_begin
 @ret
-@j fibonacci_L_3_else_over
 fibonacci_L_2_else_begin :
 fibonacci_L_3_else_over :
 @printf int b
@@ -306,7 +285,6 @@ fibonacci_L_3_else_over :
 #0 = n LE 2
 @bz #0 fibonacci_L_4_else_begin
 @ret
-@j fibonacci_L_5_else_over
 fibonacci_L_4_else_begin :
 fibonacci_L_5_else_over :
 i = 3
@@ -314,23 +292,20 @@ fibonacci_L_6_while_begin :
 #0 = i LE n
 @bz #0 fibonacci_L_7_while_over
 sum = a ADD b
-#1 = b
 b = a
-#2 = a
 @printf int sum
 @printf string S_17
-#3 = n DIV 10
-#4 = #3 MUL 10
-#6 = i ADD 1
-#5 = #4 EQ #6
+#1 = n DIV 10
+#2 = #1 MUL 10
+#3 = i ADD 1
+#4 = #2 EQ #3
 a = sum
-@bz #5 fibonacci_L_8_else_begin
+@bz #4 fibonacci_L_8_else_begin
 @printf string S_1
 @j fibonacci_L_9_else_over
 fibonacci_L_8_else_begin :
 fibonacci_L_9_else_over :
-#0 = i
-i = #0 ADD 1
+i = i ADD 1
 @j fibonacci_L_6_while_begin
 fibonacci_L_7_while_over :
 @ret
@@ -347,7 +322,6 @@ sort_L_0_while_begin :
 #0 = size GE 100
 @bz #0 sort_L_1_while_over
 @printf string S_19
-#1 = size
 @scanf int size
 @j sort_L_0_while_begin
 sort_L_1_while_over :
@@ -364,43 +338,40 @@ a = i ARSET temp
 #1 = a ARGET i
 @printf int #1
 @printf string S_1
-#2 = i
-i = #2 ADD 1
+i = i ADD 1
 @j sort_L_2_while_begin
 sort_L_3_while_over :
 i = 0
 sort_L_4_while_begin :
-#1 = size SUB 1
-#0 = i LT #1
-@bz #0 sort_L_5_while_over
+#0 = size SUB 1
+#1 = i LT #0
+@bz #1 sort_L_5_while_over
 j = 0
 sort_L_6_while_begin :
 #0 = size SUB 1
-#2 = #0 SUB i
-#1 = j LT #2
-@bz #1 sort_L_7_while_over
+#1 = #0 SUB i
+#2 = j LT #1
+@bz #2 sort_L_7_while_over
 #3 = a ARGET j
-#5 = j ADD 1
-#6 = a ARGET #5
-#4 = #3 GT #6
-@bz #4 sort_L_8_else_begin
+#4 = j ADD 1
+#5 = a ARGET #4
+#6 = #3 GT #5
+@bz #6 sort_L_8_else_begin
 @printf string S_23
 @printf int #3
 @printf string S_24
-@printf int #6
+@printf int #5
 @printf string S_1
-a = j ARSET #6
-a = #5 ARSET #3
+a = j ARSET #5
+a = #4 ARSET #3
 temp = #3
 @j sort_L_9_else_over
 sort_L_8_else_begin :
 sort_L_9_else_over :
-#0 = j
-j = #0 ADD 1
+j = j ADD 1
 @j sort_L_6_while_begin
 sort_L_7_while_over :
-#0 = i
-i = #0 ADD 1
+i = i ADD 1
 @j sort_L_4_while_begin
 sort_L_5_while_over :
 @printf string S_25
@@ -412,20 +383,19 @@ i = 0
 sort_L_10_while_begin :
 #0 = i LT size
 @bz #0 sort_L_11_while_over
-#1 = i
-i = #1 ADD 1
+i = i ADD 1
 @printf string S_27
-#2 = i SUB 1
-@printf int #2
+#1 = i SUB 1
+@printf int #1
 @printf string S_28
-#3 = a ARGET #2
-@printf int #3
+#2 = a ARGET #1
+@printf int #2
 @printf string S_17
-#4 = i ADD 1
-#5 = #4 DIV 10
-#6 = #5 MUL 10
-#7 = #6 EQ #4
-@bz #7 sort_L_12_else_begin
+#3 = i ADD 1
+#4 = #3 DIV 10
+#5 = #4 MUL 10
+#6 = #5 EQ #3
+@bz #6 sort_L_12_else_begin
 @printf string S_1
 @j sort_L_13_else_over
 sort_L_12_else_begin :
@@ -433,7 +403,6 @@ sort_L_13_else_over :
 @j sort_L_10_while_begin
 sort_L_11_while_over :
 @ret 48
-@ret 0
 @func select
 @var int i
 @var int num
@@ -488,7 +457,6 @@ select_L_2_switch_over :
 @bz #0 select_L_10_else_begin
 @printf string S_38
 @ret
-@j select_L_11_else_over
 select_L_10_else_begin :
 select_L_11_else_over :
 @j select_L_0_while_begin

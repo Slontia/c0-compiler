@@ -16,19 +16,32 @@
 # define MIPS_RIGHT endl
 # endif // DEBUG
 # define MIPS_OUTPUT(x) MIPS_LEFT << x << MIPS_RIGHT
-#define IS_GLOBAL_VAR(name) !cur_func_ASS->has_var(name) && global_vars.find(name) != global_vars.end()
+# define IS_VAR(name) (name[0] == '_' || (name[0] >= 'a' && name[0] <= 'z'))
+# define IS_TEMP(name) (name[0] == '#')
+# define IS_GLOBAL_VAR(name) !cur_func_ASS->has_var(name) && global_vars.find(name) != global_vars.end()
 using namespace std;
 
 // temp <- temp
 // var <- temp
 // temp <- var
 // var <- var
+class Line {
+public:
+    bool active = false;
+    vector<string> last_use_names;
+
+    Line(bool active)
+    {
+        this->active = active;
+    }
+};
 
 class Block {
 public:
     int def_line;
     string name;
     Block* nature = NULL;
+    int last_used_line = -1;
 
     Block(int line, string name)
     {
@@ -47,12 +60,34 @@ public:
 };
 
 FuncItem* cur_func_ASS = NULL;
-vector<bool> code_actives;
+typedef map<int, Line*> LINE_MAP;
+LINE_MAP line_map;
 typedef map<string, Block*> BLOCK_MAP;
 BLOCK_MAP block_map;
+typedef map<string, string> TEMP_MAP;
+vector<int> temp_storage;
+int new_temp_count = 0;
+TEMP_MAP temp_map;
 int lineno = 0;
 bool skip = false;
 stringstream code_storage;
+
+bool has_line(int line)
+{
+    return (line_map.end() != line_map.find(line));
+}
+
+void save_used_to_line(Block* useblock)
+{
+    // cout << "defline:" << useblock->def_line << endl;
+    if (has_line(useblock->def_line))    // defined by "="
+    {
+        // cout << "set:" << lineno << endl;
+        useblock->last_used_line = lineno;
+        Line* line = line_map[useblock->def_line];
+        line->active = true;
+    }
+}
 
 bool has_block(string name)
 {
@@ -84,6 +119,13 @@ void def(int line, string defname, string usename = "")
             it++;
         }
         defblock->def_line = line;  // refresh def_line
+        // cout << "line:" << defblock->last_used_line << endl;
+        if (has_line(defblock->last_used_line) && defblock->name[0] == '#')
+        {
+            line_map[defblock->last_used_line]->last_use_names
+                .push_back(defblock->name);
+            defblock->last_used_line = -1;
+        }
     }
     else
     {
@@ -118,10 +160,8 @@ string use(string usename)
     if (has_block(usename))
     {
         Block* useblock_nature = block_map[usename]->get_nature();
-        if (useblock_nature->def_line >= 0)
-        {
-            code_actives[useblock_nature->def_line] = true;
-        }
+        // cout << "use:" << usename << endl;
+        save_used_to_line(useblock_nature);
         return useblock_nature->name;
     }
     else
@@ -133,30 +173,115 @@ string use(string usename)
 void store_medi(vector<string> code)
 {
     int len = code.size();
+    // cout << code_storage.str() << endl;
     code_storage << code[0];
+    // cout << code_storage.str() << endl;
     for (int i = 1; i < len; i++)
     {
         code_storage << " " << code[i];
     }
-    code_storage << endl;
+    code_storage << "\n";
+    // cout << code_storage.str() << endl;
     lineno++;
 }
 
 void init_blocks()
 {
-    code_actives.clear();
+    new_temp_count = 0;
+    temp_storage.clear();
+    LINE_MAP::iterator line_it = line_map.begin();
+    while (line_it != line_map.end())
+    {
+        delete(line_it->second);
+        line_it++;
+    }
+    line_map.clear();
+    BLOCK_MAP::iterator block_it = block_map.begin();
+    while (block_it != block_map.end())
+    {
+        delete(block_it->second);
+        block_it++;
+    }
     block_map.clear();
+    temp_map.clear();
     lineno = 0;
     skip = false;
 }
 
+string get_new_temp(string tempname)
+{
+    if (temp_map.find(tempname) != temp_map.end())
+    {   // has temp
+        return temp_map[tempname];
+    }
+    else if (!temp_storage.empty())
+    {
+        temp_map[tempname] = temp_storage.front();
+        temp_storage.erase(temp_storage.begin());
+        return temp_map[tempname];
+    }
+    else
+    {
+        int tempno = new_temp_count++;
+        stringstream ss;
+        ss << "#" << tempno;
+        temp_map[tempname] = ss.str();
+        return temp_map[tempname];
+    }
+}
+
 void output_medis()
 {
-    // 1. set vars used
+    BLOCK_MAP::iterator it = block_map.begin();
+    while (it != block_map.end())
+    {
+        if (IS_VAR(it->first) && has_line(it->second->def_line))
+        {
+            line_map[it->second->def_line]->active = true;
+        }
+        else if (IS_TEMP(it->first) && has_line(it->second->last_used_line))
+        {
+            // cout << it->second->last_used_line << endl;
+            line_map[it->second->last_used_line]->last_use_names
+                .push_back(it->first);
+        }
+        it++;
+    }
 
-    int output_lineno = 0;
-
-    // 2. output if active
+    string line;
+    int l = 0;
+    // cout << code_storage.str() << endl;
+    while (getline(code_storage, line))
+    {
+        if (!has_line(l))
+        {
+            MIPS_OUTPUT(line);
+        }
+        else if (line_map[l]->active)
+        {
+            istringstream is(line);
+            stringstream ss;
+            string str;
+            is >> str;
+            if (IS_TEMP(str))
+            {
+                str = get_new_temp(str);
+            }
+            ss << str;
+            while (is >> str)
+            {
+                ss << " ";
+                if (IS_TEMP(str))
+                {
+                    str = get_new_temp(str);
+                }
+                ss << str;
+            }
+            MIPS_OUTPUT(ss.str());
+        }
+        l++;
+    }
+    code_storage.clear();
 
     // 3. refresh temp map
 
@@ -175,6 +300,8 @@ void ass_read_medis()
             strs.push_back(str);
         }
 
+        // cout << line << endl;
+
         if (strs[0] == "@var" || strs[0] == "@array")
         {
             MIPS_OUTPUT(line);
@@ -185,63 +312,65 @@ void ass_read_medis()
         }
         else if (strs[0] == "@func")
         {
+            output_medis();
             init_blocks();
             cur_func_ASS = get_func(strs[1]);
             MIPS_OUTPUT(line);
         }
         else if (strs[0] == "@push" && !skip)
         {   // use
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             store_medi(strs);
         }
         else if (strs[0] == "@call" && !skip)
         {   //
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             BLOCK_MAP::iterator it = block_map.begin();
             while (it != block_map.end())
             {
                 if (IS_GLOBAL_VAR(it->first))
                 {
+                    save_used_to_line(it->second);
                     def(lineno, it->first);    // may be modified in function called
-                    if (it->second->def_line >= 0)
-                    {
-                        code_actives[it->second->def_line] = true;
-                        // save last assignment
-                    }
                 }
+                it++;
             }
             store_medi(strs);
         }
         else if (strs[0] == "@get" && !skip)
         {   // def
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             def(lineno, strs[1]);
             store_medi(strs);
         }
         else if (strs[0] == "@ret" && !skip)
         {   // use | output | skip
-            code_actives.push_back(true);
-            strs[1] = use(strs[1]);
+            line_map[lineno] = new Line(true);
+            if (strs.size() > 1)
+            {
+                strs[1] = use(strs[1]);
+            }
             store_medi(strs);
             output_medis();
             skip = true;
         }
         else if (strs[0] == "@be" && !skip)
         {   // use
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             strs[2] = use(strs[2]);
             store_medi(strs);
         }
         else if (strs[0] == "@bz" && !skip)
         {   // use
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             store_medi(strs);
         }
         else if (strs[0] == "@j" && !skip)
         {   // output | skip
+            line_map[lineno] = new Line(true);
             output_medis();
             MIPS_OUTPUT(line);
             skip = true;
@@ -252,7 +381,7 @@ void ass_read_medis()
         }
         else if (strs[0] == "@printf" && !skip)
         {   // use
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             if (strs[1] != "string")
             {
                 strs[2] = use(strs[2]);
@@ -261,34 +390,44 @@ void ass_read_medis()
         }
         else if (strs[0] == "@scanf" && !skip)
         {   // def
-            code_actives.push_back(true);
+            line_map[lineno] = new Line(true);
             def(lineno, strs[2]);
             store_medi(strs);
         }
         else if (strs[0] == "@exit")
         {
+            output_medis();
+            init_blocks();
+            MIPS_OUTPUT(line);
         }
         else if (strs[1] == ":")
         {   // output | stop
-            init_blocks();
             output_medis();
+            init_blocks();
             MIPS_OUTPUT(line);
         }
         else if (strs.size() == 3 && !skip)
         {   // def
-            code_actives.push_back(false);
+            line_map[lineno] = new Line(false);
             def(lineno, strs[0], strs[2]);
             store_medi(strs);
         }
         else if (strs.size() == 5 && !skip)
         {   // def | use
-            code_actives.push_back(false);
             strs[2] = use(strs[2]);
             strs[4] = use(strs[4]);
-            def(lineno, strs[0]);
+            if (strs[3] == "ARSET")
+            {
+                line_map[lineno] = new Line(true);
+            }
+            else
+            {
+                line_map[lineno] = new Line(false);
+                def(lineno, strs[0]);
+            }
             store_medi(strs);
         }
-        else
+        else if (!skip)
         {
             error_debug("cal len not 3 or 5 in ass");
         }
