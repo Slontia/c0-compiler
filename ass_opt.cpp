@@ -19,6 +19,7 @@
 # define IS_VAR(name) (name[0] == '_' || (name[0] >= 'a' && name[0] <= 'z'))
 # define IS_TEMP(name) (name[0] == '#')
 # define IS_GLOBAL_VAR(name) !cur_func_ASS->has_var(name) && global_vars.find(name) != global_vars.end()
+# define HAS_TEMP(tempname) temp_map.find(tempname) != temp_map.end()
 using namespace std;
 
 // temp <- temp
@@ -28,7 +29,7 @@ using namespace std;
 class Line {
 public:
     bool active = false;
-    vector<string> last_use_names;
+    vector<string> last_use_names;  // must be temp
 
     Line(bool active)
     {
@@ -65,7 +66,7 @@ LINE_MAP line_map;
 typedef map<string, Block*> BLOCK_MAP;
 BLOCK_MAP block_map;
 typedef map<string, string> TEMP_MAP;
-vector<int> temp_storage;
+vector<string> temp_storage;
 int new_temp_count = 0;
 TEMP_MAP temp_map;
 int lineno = 0;
@@ -79,13 +80,11 @@ bool has_line(int line)
 
 void save_used_to_line(Block* useblock)
 {
-    // cout << "defline:" << useblock->def_line << endl;
     if (has_line(useblock->def_line))    // defined by "="
     {
-        // cout << "set:" << lineno << endl;
-        useblock->last_used_line = lineno;
+        useblock->last_used_line = lineno;  // seems not necessary
         Line* line = line_map[useblock->def_line];
-        line->active = true;
+        line->active = true;    // set line active
     }
 }
 
@@ -119,7 +118,6 @@ void def(int line, string defname, string usename = "")
             it++;
         }
         defblock->def_line = line;  // refresh def_line
-        // cout << "line:" << defblock->last_used_line << endl;
         if (has_line(defblock->last_used_line) && defblock->name[0] == '#')
         {
             line_map[defblock->last_used_line]->last_use_names
@@ -192,6 +190,7 @@ void init_blocks()
     LINE_MAP::iterator line_it = line_map.begin();
     while (line_it != line_map.end())
     {
+        line_it->second->last_use_names.clear();
         delete(line_it->second);
         line_it++;
     }
@@ -230,12 +229,36 @@ string get_new_temp(string tempname)
     }
 }
 
-void output_medis()
+void remove_temp(string tempname)
+{
+    TEMP_MAP::iterator it = temp_map.find(tempname);
+    if (it != temp_map.end())
+    {
+        temp_storage.push_back(it->second);
+        temp_map.erase(it);
+    }
+}
+
+void save_vars()
 {
     BLOCK_MAP::iterator it = block_map.begin();
     while (it != block_map.end())
     {
         if (IS_VAR(it->first) && has_line(it->second->def_line))
+        {
+            line_map[it->second->def_line]->active = true;
+        }
+        it++;
+    }
+}
+
+void output_medis(bool is_return = false)
+{
+    BLOCK_MAP::iterator it = block_map.begin();
+    while (it != block_map.end())
+    {
+        if (((!is_return && IS_VAR(it->first)) || IS_GLOBAL_VAR(it->first))
+            && has_line(it->second->def_line))
         {
             line_map[it->second->def_line]->active = true;
         }
@@ -278,6 +301,11 @@ void output_medis()
                 ss << str;
             }
             MIPS_OUTPUT(ss.str());
+            int len = line_map[l]->last_use_names.size();
+            for (int i = 0; i < len; i++)
+            {
+                remove_temp(line_map[l]->last_use_names[i]);
+            }
         }
         l++;
     }
@@ -352,7 +380,7 @@ void ass_read_medis()
                 strs[1] = use(strs[1]);
             }
             store_medi(strs);
-            output_medis();
+            output_medis(true);
             skip = true;
         }
         else if (strs[0] == "@be" && !skip)
@@ -361,12 +389,14 @@ void ass_read_medis()
             strs[1] = use(strs[1]);
             strs[2] = use(strs[2]);
             store_medi(strs);
+            save_vars();
         }
         else if (strs[0] == "@bz" && !skip)
         {   // use
             line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             store_medi(strs);
+            save_vars();
         }
         else if (strs[0] == "@j" && !skip)
         {   // output | skip
@@ -396,7 +426,7 @@ void ass_read_medis()
         }
         else if (strs[0] == "@exit")
         {
-            output_medis();
+            output_medis(true);
             init_blocks();
             MIPS_OUTPUT(line);
         }

@@ -1,11 +1,7 @@
-test {
-
-}
 
 void main(){
-int a, b, c, d,e,f,g,h,i,j,k,l;
-a = (b+c)*(a+b)*(b+c);
-b = (c + (c + (b + 1))) / (b + c);
+int a;
+a = 1;
 printf(a);
 
 }
