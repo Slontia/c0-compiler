@@ -29,6 +29,11 @@ typedef enum
     CONST_STATE, VAR_STATE, FUNC_STATE, FUNC_CONST_STATE, FUNC_VAR_STATE, FUNC_STATEMENT_STATE
 } State;
 
+bool is_local_var(string funcname, string name)
+{
+    return funcs[funcname]->has_var(name);
+}
+
 void getsym_check()
 {
     if (!getsym())

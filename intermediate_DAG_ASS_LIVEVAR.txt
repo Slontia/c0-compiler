@@ -234,7 +234,7 @@ fluctuations_L_0_while_begin :
 fluctuations_L_1_while_over :
 a = 0
 b = 0
-max_sub = #0
+max_sub = -1
 i = 0
 fluctuations_L_2_while_begin :
 #0 = 0 SUB i

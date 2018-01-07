@@ -39,6 +39,24 @@ bool first_term = true;
 set<Var_node*> var_graph;
 list<Var_node*> var_stack;
 
+/*====================
+|        extern      |
+====================*/
+
+// @REQUIRES: funcname & blockname must be right
+int get_regno(string funcname, string cblockname, string varname)
+{
+    Code_block* cblk = (*(func_cblock_map[funcname]))[cblockname];
+    if (cblk->has_live(varname))
+    {
+        return cblk->lives[varname]->regno;
+    }
+    else
+    {
+        return -1; // not in lives
+    }
+}
+
 
 /*====================
 |     Code_block     |
@@ -133,7 +151,7 @@ bool Code_block::has_live(string name)
 
 void Code_block::try_use(string name)
 {
-    if (IS_VAR(name) && !has_def(name))
+    if (is_local_var(cur_funcname, name) && !has_def(name))
     {
         this->uses.insert(name);
     }
@@ -141,7 +159,7 @@ void Code_block::try_use(string name)
 
 void Code_block::try_def(string name)
 {
-    if (IS_VAR(name) && !has_use(name))
+    if (is_local_var(cur_funcname, name) && !has_use(name))
     {
         this->defs.insert(name);
     }

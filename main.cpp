@@ -25,6 +25,6 @@ int main()
     //filename = dag_main(filename);
     filename = ass_main(filename);
     filename = livevar_main(filename);
-    //filename = tar_main(filename);
+    filename = tar_main(filename);
     return 0;
 }

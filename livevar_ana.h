@@ -5,6 +5,9 @@
 #include <set>
 using namespace std;
 
+class Code_block;
+extern map<string, map<string, Code_block*>*> func_cblock_map;
+
 class Var_node
 {
 public:
@@ -43,6 +46,7 @@ public:
     void refresh_in();
 };
 
+int get_regno(string funcname, string cblockname, string varname);
 string livevar_main(string filename);
 string set_temp_label();
 void turn_next_block(string label);

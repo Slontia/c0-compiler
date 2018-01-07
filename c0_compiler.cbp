@@ -47,6 +47,8 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="medi.cpp" />
 		<Unit filename="medi.h" />
+		<Unit filename="reg_recorder.cpp" />
+		<Unit filename="reg_recorder.h" />
 		<Unit filename="tar.cpp" />
 		<Unit filename="tar.h" />
 		<Unit filename="vars.h" />
