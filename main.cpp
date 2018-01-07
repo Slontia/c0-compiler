@@ -5,7 +5,8 @@
 #include "tar.h"
 #include "dag_opt.h"
 #include "ass_opt.h"
-#define INPUT_FILENAME 0
+#include "livevar_ana.h"
+#define INPUT_FILENAME 1
 
 using namespace std;
 
@@ -23,6 +24,7 @@ int main()
     filename = dag_main(filename);
     //filename = dag_main(filename);
     filename = ass_main(filename);
-    filename = tar_main(filename);
+    filename = livevar_main(filename);
+    //filename = tar_main(filename);
     return 0;
 }

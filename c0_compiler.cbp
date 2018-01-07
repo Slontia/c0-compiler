@@ -42,6 +42,8 @@
 		<Unit filename="item.h" />
 		<Unit filename="lexical.cpp" />
 		<Unit filename="lexical.h" />
+		<Unit filename="livevar_ana.cpp" />
+		<Unit filename="livevar_ana.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="medi.cpp" />
 		<Unit filename="medi.h" />

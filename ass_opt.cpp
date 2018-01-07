@@ -26,7 +26,8 @@ using namespace std;
 // var <- temp
 // temp <- var
 // var <- var
-class Line {
+class Line
+{
 public:
     bool active = false;
     vector<string> last_use_names;  // must be temp
@@ -37,7 +38,8 @@ public:
     }
 };
 
-class Block {
+class Block
+{
 public:
     int def_line;
     string name;
@@ -53,7 +55,8 @@ public:
     Block* get_nature()
     {
         Block* block = this;
-        while (block->nature != NULL) {
+        while (block->nature != NULL)
+        {
             block = block->nature;
         }
         return block;
@@ -121,7 +124,7 @@ void def(int line, string defname, string usename = "")
         if (has_line(defblock->last_used_line) && defblock->name[0] == '#')
         {
             line_map[defblock->last_used_line]->last_use_names
-                .push_back(defblock->name);
+            .push_back(defblock->name);
             defblock->last_used_line = -1;
         }
     }
@@ -210,7 +213,8 @@ void init_blocks()
 string get_new_temp(string tempname)
 {
     if (temp_map.find(tempname) != temp_map.end())
-    {   // has temp
+    {
+        // has temp
         return temp_map[tempname];
     }
     else if (!temp_storage.empty())
@@ -258,7 +262,7 @@ void output_medis(bool is_return = false)
     while (it != block_map.end())
     {
         if (((!is_return && IS_VAR(it->first)) || IS_GLOBAL_VAR(it->first))
-            && has_line(it->second->def_line))
+                && has_line(it->second->def_line))
         {
             line_map[it->second->def_line]->active = true;
         }
@@ -266,7 +270,7 @@ void output_medis(bool is_return = false)
         {
             // cout << it->second->last_used_line << endl;
             line_map[it->second->last_used_line]->last_use_names
-                .push_back(it->first);
+            .push_back(it->first);
         }
         it++;
     }
@@ -346,13 +350,15 @@ void ass_read_medis()
             MIPS_OUTPUT(line);
         }
         else if (strs[0] == "@push" && !skip)
-        {   // use
+        {
+            // use
             line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             store_medi(strs);
         }
         else if (strs[0] == "@call" && !skip)
-        {   //
+        {
+            //
             line_map[lineno] = new Line(true);
             BLOCK_MAP::iterator it = block_map.begin();
             while (it != block_map.end())
@@ -367,13 +373,15 @@ void ass_read_medis()
             store_medi(strs);
         }
         else if (strs[0] == "@get" && !skip)
-        {   // def
+        {
+            // def
             line_map[lineno] = new Line(true);
             def(lineno, strs[1]);
             store_medi(strs);
         }
         else if (strs[0] == "@ret" && !skip)
-        {   // use | output | skip
+        {
+            // use | output | skip
             line_map[lineno] = new Line(true);
             if (strs.size() > 1)
             {
@@ -384,7 +392,8 @@ void ass_read_medis()
             skip = true;
         }
         else if (strs[0] == "@be" && !skip)
-        {   // use
+        {
+            // use
             line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             strs[2] = use(strs[2]);
@@ -392,14 +401,16 @@ void ass_read_medis()
             save_vars();
         }
         else if (strs[0] == "@bz" && !skip)
-        {   // use
+        {
+            // use
             line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
             store_medi(strs);
             save_vars();
         }
         else if (strs[0] == "@j" && !skip)
-        {   // output | skip
+        {
+            // output | skip
             line_map[lineno] = new Line(true);
             output_medis();
             MIPS_OUTPUT(line);
@@ -410,7 +421,8 @@ void ass_read_medis()
             MIPS_OUTPUT(line);
         }
         else if (strs[0] == "@printf" && !skip)
-        {   // use
+        {
+            // use
             line_map[lineno] = new Line(true);
             if (strs[1] != "string")
             {
@@ -419,7 +431,8 @@ void ass_read_medis()
             store_medi(strs);
         }
         else if (strs[0] == "@scanf" && !skip)
-        {   // def
+        {
+            // def
             line_map[lineno] = new Line(true);
             def(lineno, strs[2]);
             store_medi(strs);
@@ -431,19 +444,22 @@ void ass_read_medis()
             MIPS_OUTPUT(line);
         }
         else if (strs[1] == ":")
-        {   // output | stop
+        {
+            // output | stop
             output_medis();
             init_blocks();
             MIPS_OUTPUT(line);
         }
         else if (strs.size() == 3 && !skip)
-        {   // def
+        {
+            // def
             line_map[lineno] = new Line(false);
             def(lineno, strs[0], strs[2]);
             store_medi(strs);
         }
         else if (strs.size() == 5 && !skip)
-        {   // def | use
+        {
+            // def | use
             strs[2] = use(strs[2]);
             strs[4] = use(strs[4]);
             if (strs[3] == "ARSET")
@@ -464,7 +480,8 @@ void ass_read_medis()
     }
 }
 
-string ass_main(string filename) {
+string ass_main(string filename)
+{
     fin.open((filename + ".txt").c_str());
     string ass_filename = filename + "_ASS";
     fout.open((ass_filename + ".txt").c_str());
