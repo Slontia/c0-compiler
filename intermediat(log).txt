@@ -1,0 +1,1552 @@
+label:init_array_L_1_while_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:1
+uses:
+a 
+defs:
+
+lives:
+a 
+in:
+a 
+out:
+a 
+
+label:init_array_L_0_while_begin
+uses:
+a 
+defs:
+
+lives:
+a 
+in:
+a 
+out:
+a 
+
+label:0
+uses:
+
+defs:
+a 
+lives:
+a 
+in:
+
+out:
+a 
+
+=============
+a 0
+=============
+
+label:find_L_5_else_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:find_L_7_else_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:find_L_9_else_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:find_L_8_else_begin
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:5
+uses:
+mid 
+defs:
+
+lives:
+mid 
+in:
+mid 
+out:
+
+
+label:find_L_6_else_begin
+uses:
+mid num 
+defs:
+
+lives:
+mid num 
+in:
+mid num 
+out:
+mid 
+
+label:4
+uses:
+begin mid num 
+defs:
+
+lives:
+begin mid num 
+in:
+begin mid num 
+out:
+mid num 
+
+label:find_L_4_else_begin
+uses:
+mid num 
+defs:
+
+lives:
+begin mid num 
+in:
+begin mid num 
+out:
+begin mid num 
+
+label:3
+uses:
+end mid num 
+defs:
+
+lives:
+begin end mid num 
+in:
+begin end mid num 
+out:
+begin mid num 
+
+label:find_L_1_else_over
+uses:
+begin end num 
+defs:
+mid 
+lives:
+begin end mid num 
+in:
+begin end num 
+out:
+begin end mid num 
+
+label:find_L_0_else_begin
+uses:
+
+defs:
+
+lives:
+begin end num 
+in:
+begin end num 
+out:
+begin end num 
+
+label:find_L_3_else_over
+uses:
+
+defs:
+
+lives:
+begin end num 
+in:
+begin end num 
+out:
+begin end num 
+
+label:find_L_2_else_begin
+uses:
+
+defs:
+
+lives:
+begin end num 
+in:
+begin end num 
+out:
+begin end num 
+
+label:2
+uses:
+begin 
+defs:
+
+lives:
+begin end num 
+in:
+begin end num 
+out:
+begin end num 
+
+label:1
+uses:
+begin num 
+defs:
+
+lives:
+begin end num 
+in:
+begin end num 
+out:
+begin end num 
+
+label:0
+uses:
+begin end 
+defs:
+
+lives:
+begin end num 
+in:
+begin end num 
+out:
+begin end num 
+
+=============
+begin 3
+=============
+
+=============
+end 3
+=============
+
+=============
+num 3
+=============
+
+=============
+mid 3
+=============
+
+label:0
+uses:
+col row size 
+defs:
+
+lives:
+col row size 
+in:
+col row size 
+out:
+
+
+=============
+row 2
+=============
+
+=============
+col 2
+=============
+
+=============
+size 2
+=============
+
+label:zigzag_L_7_while_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:zigzag_L_15_while_over
+uses:
+
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:8
+uses:
+a col i row 
+defs:
+
+lives:
+a col i row tempi 
+in:
+a col i row tempi 
+out:
+a col i row tempi 
+
+label:zigzag_L_14_while_begin
+uses:
+i tempi 
+defs:
+
+lives:
+a col i row tempi 
+in:
+a col i row tempi 
+out:
+a col i row tempi 
+
+label:zigzag_L_13_else_over
+uses:
+a col row 
+defs:
+i tempi 
+lives:
+a col i row tempi 
+in:
+a col row 
+out:
+a col i row tempi 
+
+label:zigzag_L_12_else_begin
+uses:
+row 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:7
+uses:
+col 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:zigzag_L_11_while_over
+uses:
+a row 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:6
+uses:
+a col i row 
+defs:
+
+lives:
+a col i row tempi 
+in:
+a col i row tempi 
+out:
+a col i row tempi 
+
+label:zigzag_L_10_while_begin
+uses:
+i tempi 
+defs:
+
+lives:
+a col i row tempi 
+in:
+a col i row tempi 
+out:
+a col i row tempi 
+
+label:zigzag_L_9_else_over
+uses:
+a col row 
+defs:
+i tempi 
+lives:
+a col i row tempi 
+in:
+a col row 
+out:
+a col i row tempi 
+
+label:zigzag_L_8_else_begin
+uses:
+col 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:5
+uses:
+row 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:4
+uses:
+a col 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:zigzag_L_6_while_begin
+uses:
+a col row 
+defs:
+
+lives:
+a col row 
+in:
+a col row 
+out:
+a col row 
+
+label:zigzag_L_3_while_over
+uses:
+a 
+defs:
+col row 
+lives:
+a col row 
+in:
+a 
+out:
+a col row 
+
+label:zigzag_L_5_else_over
+uses:
+
+defs:
+
+lives:
+a i 
+in:
+a i 
+out:
+a i 
+
+label:zigzag_L_4_else_begin
+uses:
+
+defs:
+
+lives:
+a i 
+in:
+a i 
+out:
+a i 
+
+label:3
+uses:
+
+defs:
+
+lives:
+a i 
+in:
+a i 
+out:
+a i 
+
+label:2
+uses:
+a i 
+defs:
+temp 
+lives:
+a i 
+in:
+a i 
+out:
+a i 
+
+label:zigzag_L_2_while_begin
+uses:
+a i 
+defs:
+
+lives:
+a i 
+in:
+a i 
+out:
+a i 
+
+label:zigzag_L_1_while_over
+uses:
+
+defs:
+i 
+lives:
+a i 
+in:
+a 
+out:
+a i 
+
+label:1
+uses:
+
+defs:
+a 
+lives:
+a 
+in:
+
+out:
+a 
+
+label:zigzag_L_0_while_begin
+uses:
+a 
+defs:
+
+lives:
+a 
+in:
+a 
+out:
+a 
+
+label:0
+uses:
+
+defs:
+a 
+lives:
+a 
+in:
+
+out:
+a 
+
+=============
+row 6
+=============
+
+=============
+i 4
+=============
+
+=============
+i 4
+=============
+
+=============
+tempi 4
+=============
+
+=============
+a 7
+=============
+
+=============
+i 1
+=============
+
+=============
+col 6
+=============
+
+=============
+tempi 4
+=============
+
+label:fluctuations_L_3_while_over
+uses:
+max_sub ra rb 
+defs:
+
+lives:
+max_sub ra rb 
+in:
+max_sub ra rb 
+out:
+
+
+label:fluctuations_L_7_else_over
+uses:
+a i max_sub 
+defs:
+b 
+lives:
+a b i max_sub n ra rb 
+in:
+a i max_sub n ra rb 
+out:
+b i max_sub n ra rb 
+
+label:fluctuations_L_6_else_begin
+uses:
+
+defs:
+
+lives:
+a i max_sub n ra rb 
+in:
+a i max_sub n ra rb 
+out:
+a i max_sub n ra rb 
+
+label:4
+uses:
+a b sub 
+defs:
+max_sub ra rb 
+lives:
+a b i max_sub n ra rb sub 
+in:
+a b i n sub 
+out:
+a i max_sub n ra rb 
+
+label:fluctuations_L_5_else_over
+uses:
+max_sub sub 
+defs:
+
+lives:
+a b i max_sub n ra rb sub 
+in:
+a b i max_sub n ra rb sub 
+out:
+a b i max_sub n ra rb sub 
+
+label:fluctuations_L_4_else_begin
+uses:
+
+defs:
+
+lives:
+a b i max_sub n ra rb sub 
+in:
+a b i max_sub n ra rb sub 
+out:
+a b i max_sub n ra rb sub 
+
+label:3
+uses:
+sub 
+defs:
+
+lives:
+a b i max_sub n ra rb sub 
+in:
+a b i max_sub n ra rb sub 
+out:
+a b i max_sub n ra rb sub 
+
+label:2
+uses:
+b 
+defs:
+a sub 
+lives:
+a b i max_sub n ra rb sub 
+in:
+b i max_sub n ra rb 
+out:
+a b i max_sub n ra rb sub 
+
+label:fluctuations_L_2_while_begin
+uses:
+i n 
+defs:
+
+lives:
+b i max_sub n ra rb 
+in:
+b i max_sub n ra rb 
+out:
+b i max_sub n ra rb 
+
+label:fluctuations_L_1_while_over
+uses:
+
+defs:
+a b i max_sub 
+lives:
+b i max_sub n ra rb 
+in:
+n ra rb 
+out:
+b i max_sub n ra rb 
+
+label:1
+uses:
+
+defs:
+n 
+lives:
+n ra rb 
+in:
+ra rb 
+out:
+n ra rb 
+
+label:fluctuations_L_0_while_begin
+uses:
+n 
+defs:
+
+lives:
+n ra rb 
+in:
+n ra rb 
+out:
+n ra rb 
+
+label:0
+uses:
+
+defs:
+n 
+lives:
+n ra rb 
+in:
+ra rb 
+out:
+n ra rb 
+
+=============
+max_sub 7
+=============
+
+=============
+b 7
+=============
+
+=============
+sub 7
+=============
+
+=============
+n 7
+=============
+
+=============
+ra 7
+=============
+
+=============
+rb 7
+=============
+
+=============
+i 7
+=============
+
+=============
+a 7
+=============
+
+label:fibonacci_L_7_while_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:fibonacci_L_9_else_over
+uses:
+i 
+defs:
+
+lives:
+a b i n 
+in:
+a b i n 
+out:
+a b i n 
+
+label:fibonacci_L_8_else_begin
+uses:
+
+defs:
+
+lives:
+a b i n 
+in:
+a b i n 
+out:
+a b i n 
+
+label:5
+uses:
+
+defs:
+
+lives:
+a b i n 
+in:
+a b i n 
+out:
+a b i n 
+
+label:4
+uses:
+a b i n 
+defs:
+sum 
+lives:
+a b i n 
+in:
+a b i n 
+out:
+a b i n 
+
+label:fibonacci_L_6_while_begin
+uses:
+i n 
+defs:
+
+lives:
+a b i n 
+in:
+a b i n 
+out:
+a b i n 
+
+label:fibonacci_L_5_else_over
+uses:
+
+defs:
+i 
+lives:
+a b i n 
+in:
+a b n 
+out:
+a b i n 
+
+label:fibonacci_L_4_else_begin
+uses:
+
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:3
+uses:
+
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:fibonacci_L_3_else_over
+uses:
+b n 
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:fibonacci_L_2_else_begin
+uses:
+
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:2
+uses:
+
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:fibonacci_L_1_else_over
+uses:
+a n 
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:fibonacci_L_0_else_begin
+uses:
+
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:1
+uses:
+
+defs:
+
+lives:
+a b n 
+in:
+a b n 
+out:
+a b n 
+
+label:0
+uses:
+
+defs:
+a b n 
+lives:
+a b n 
+in:
+
+out:
+a b n 
+
+=============
+i 3
+=============
+
+=============
+a 3
+=============
+
+=============
+b 3
+=============
+
+=============
+n 3
+=============
+
+label:sort_L_11_while_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:sort_L_13_else_over
+uses:
+
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_12_else_begin
+uses:
+
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:7
+uses:
+
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:6
+uses:
+i 
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_10_while_begin
+uses:
+i size 
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_5_while_over
+uses:
+
+defs:
+i 
+lives:
+i size 
+in:
+size 
+out:
+i size 
+
+label:sort_L_7_while_over
+uses:
+i 
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_9_else_over
+uses:
+j 
+defs:
+
+lives:
+i j size 
+in:
+i j size 
+out:
+i j size 
+
+label:sort_L_8_else_begin
+uses:
+
+defs:
+
+lives:
+i j size 
+in:
+i j size 
+out:
+i j size 
+
+label:5
+uses:
+j 
+defs:
+temp 
+lives:
+i j size 
+in:
+i j size 
+out:
+i j size 
+
+label:4
+uses:
+j 
+defs:
+
+lives:
+i j size 
+in:
+i j size 
+out:
+i j size 
+
+label:sort_L_6_while_begin
+uses:
+i j size 
+defs:
+
+lives:
+i j size 
+in:
+i j size 
+out:
+i j size 
+
+label:3
+uses:
+
+defs:
+j 
+lives:
+i j size 
+in:
+i size 
+out:
+i j size 
+
+label:sort_L_4_while_begin
+uses:
+i size 
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_3_while_over
+uses:
+
+defs:
+i 
+lives:
+i size 
+in:
+size 
+out:
+i size 
+
+label:2
+uses:
+i 
+defs:
+temp 
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_2_while_begin
+uses:
+i size 
+defs:
+
+lives:
+i size 
+in:
+i size 
+out:
+i size 
+
+label:sort_L_1_while_over
+uses:
+size 
+defs:
+i 
+lives:
+i size 
+in:
+size 
+out:
+i size 
+
+label:1
+uses:
+
+defs:
+size 
+lives:
+size 
+in:
+
+out:
+size 
+
+label:sort_L_0_while_begin
+uses:
+size 
+defs:
+
+lives:
+size 
+in:
+size 
+out:
+size 
+
+label:0
+uses:
+
+defs:
+size 
+lives:
+size 
+in:
+
+out:
+size 
+
+=============
+i 1
+=============
+
+=============
+size 4
+=============
+
+=============
+i 2
+=============
+
+=============
+j 2
+=============
+
+=============
+i 1
+=============
+
+label:select_L_1_while_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:select_L_11_else_over
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:select_L_10_else_begin
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:7
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+label:select_L_2_switch_over
+uses:
+i 
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+
+
+label:select_L_9_default
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_8_case
+uses:
+
+defs:
+num 
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_7_case
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_6_case
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_5_case
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_4_case
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_3_case
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:6
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:5
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:4
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:3
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:2
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:1
+uses:
+
+defs:
+
+lives:
+i 
+in:
+i 
+out:
+i 
+
+label:select_L_0_while_begin
+uses:
+
+defs:
+i 
+lives:
+i 
+in:
+
+out:
+i 
+
+label:0
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+
+=============
+i 0
+=============
+
+label:0
+uses:
+
+defs:
+
+lives:
+
+in:
+
+out:
+
+

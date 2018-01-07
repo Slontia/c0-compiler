@@ -12,9 +12,10 @@ public:
     Var_node* redirect_ptr = NULL;
     set<Var_node*> conflicts;
     int conf_count = 0;
-    int regno = 0;
+    int regno = -1;
     Var_node(string name);
     Var_node* get_terminal_ptr();
+    void set_regno(int reg_max);
 };
 
 class Code_block

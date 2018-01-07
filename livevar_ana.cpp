@@ -10,7 +10,8 @@
 #include "item.h"
 #include "lexical.h"
 #include "livevar_ana.h"
-# define DEBUG 1
+# define REG_MAX 8
+# define DEBUG 0
 # if DEBUG
 # define MIPS_LEFT cout << "<==="
 # define MIPS_RIGHT "===>" << endl
@@ -18,18 +19,19 @@
 # define MIPS_LEFT fout
 # define MIPS_RIGHT endl
 # endif // DEBUG
-# define MIPS_OUTPUT(x) ;
+# define MIPS_OUTPUT(x) MIPS_LEFT << x << MIPS_RIGHT
 # define IS_VAR(name) (name[0] == '_' || (name[0] >= 'a' && name[0] <= 'z'))
 
 using namespace std;
 
+ofstream flog;
 typedef map<string, Code_block*> CBLOCK_MAP;
-typedef map<string, list<Code_block*> > CBLOCK_LIST_MAP;
+typedef map<string, CBLOCK_MAP*> FUNC_CBLOCK_MAP;
 typedef map<string, Var_node*> VARNODE_MAP;
-CBLOCK_LIST_MAP cblock_list_map;
+FUNC_CBLOCK_MAP func_cblock_map;
 
 list<Code_block*> cblock_list;
-CBLOCK_MAP cblock_map;
+CBLOCK_MAP* cblock_map_ptr;
 Code_block* cur_cblock;
 string cur_funcname = "";
 int temp_label_count = 0;
@@ -44,59 +46,59 @@ list<Var_node*> var_stack;
 
 void Code_block::print_info()
 {
-    fout << "label:" << this->label << endl;
+    flog << "label:" << this->label << endl;
 
     set<string>::iterator it;
 
     it = this->uses.begin();
-    fout << "uses:" << endl;
+    flog << "uses:" << endl;
     while (it != this->uses.end())
     {
-        fout << *it << " ";
+        flog << *it << " ";
         it++;
     }
 
-    fout <<endl;
+    flog <<endl;
 
     it = this->defs.begin();
-    fout << "defs:" << endl;
+    flog << "defs:" << endl;
     while (it != this->defs.end())
     {
-        fout << *it << " ";
+        flog << *it << " ";
         it++;
     }
-    fout <<endl;
+    flog <<endl;
 
     VARNODE_MAP::iterator map_it;
 
     map_it = this->lives.begin();
-    fout << "lives:" << endl;
+    flog << "lives:" << endl;
     while (map_it != this->lives.end())
     {
-        fout << map_it->first << " ";
+        flog << map_it->first << " ";
         map_it++;
     }
-    fout <<endl;
+    flog <<endl;
 
     map_it = this->ins.begin();
-    fout << "in:" << endl;
+    flog << "in:" << endl;
     while (map_it != this->ins.end())
     {
-        fout << map_it->first << " ";
+        flog << map_it->first << " ";
         map_it++;
     }
-    fout <<endl;
+    flog <<endl;
 
     map_it = this->outs.begin();
-    fout << "out:" << endl;
+    flog << "out:" << endl;
     while (map_it != this->outs.end())
     {
-        fout << map_it->first << " ";
+        flog << map_it->first << " ";
         map_it++;
     }
-    fout <<endl;
+    flog <<endl;
 
-    fout <<endl;
+    flog <<endl;
 }
 
 Code_block::Code_block(string label)
@@ -153,11 +155,8 @@ bool Code_block::refresh_out()
 {
     bool changed = false;
     set<Code_block*>::iterator cblock_it = this->nexts.begin();
-    int i = 0;
     while (cblock_it != this->nexts.end()) // nexts
     {
-        cout << i;
-        i++;
         Code_block* next_cblock = *cblock_it;
         VARNODE_MAP::iterator var_it = next_cblock->ins.begin();
         while (var_it != next_cblock->ins.end()) // ins of a next
@@ -246,19 +245,49 @@ Var_node* Var_node::get_terminal_ptr()
     return vn;
 }
 
+void Var_node::set_regno(int reg_max)
+{
+    // initial
+    vector<bool> reg_occupied;
+    for (int i = 0; i < reg_max; i++)
+    {
+        reg_occupied[i] = false;
+    }
+    // record
+    set<Var_node*>::iterator it = this->conflicts.begin();
+    while (it != this->conflicts.end()) // conflict vnodes
+    {
+        Var_node* vnode = *it;
+        if (vnode->regno != -1)
+        {
+            reg_occupied[vnode->regno] = true;
+        }
+        it++;
+    }
+    // select
+    for (int i = 0; i < reg_max; i++)
+    {
+        if (reg_occupied[i] == false)
+        {
+            this->regno = i;
+            return;
+        }
+    }
+    error_debug("cannot distribute!");
+}
+
 /*====================
 |     in / out       |
 ====================*/
 
-void finish_function_in_out(string funcname)
+void finish_function_in_out()
 {
     bool changed = true;
     while (changed) // term
     {
         changed = false;
-        //cout << cblock_list_map[funcname].size() << endl;
-        list<Code_block*>::iterator it = cblock_list_map[funcname].begin();
-        while (it != cblock_list_map[funcname].end()) // code_blocks
+        list<Code_block*>::iterator it = cblock_list.begin();
+        while (it != cblock_list.end()) // code_blocks
         {
             Code_block* cblock = *it;
             changed |= cblock->refresh_out();
@@ -314,13 +343,13 @@ void refresh_conflict(Code_block* cblock)
 
 // delete useless varnodes
 // add
-void complete_function_varnodes(string funcname)
+void complete_function_varnodes()
 {
     //cout << funcname << endl;
     set<Var_node*> useless_vns;
-    list<Code_block*>::iterator cb_it = cblock_list_map[funcname].begin();
+    list<Code_block*>::iterator cb_it = cblock_list.begin();
     // put into lives | refresh conflict
-    while (cb_it != cblock_list_map[funcname].end()) // code_blocks
+    while (cb_it != cblock_list.end()) // code_blocks
     {
         Code_block* cblock = *cb_it;
         complete_set_varnodes(&useless_vns, cblock, &cblock->ins);
@@ -339,32 +368,105 @@ void complete_function_varnodes(string funcname)
     useless_vns.clear();
 }
 
-void reg_distri(string funcname)
+void init_conflict_count()
 {
     set<Var_node*>::iterator it = var_graph.begin();
-    while (it != var_graph.end())
+    while (it != var_graph.end()) // go through var_graph
     {
         Var_node* vnode = *it;
         vnode->conf_count = vnode->conflicts.size(); // init conflict count
-        if (DEBUG) fout << "=============\n" << vnode->name << " " << vnode->conf_count << "\n=============\n" << endl;
+        flog << "=============\n" << vnode->name
+             << " " << vnode->conf_count << "\n=============\n" << endl;
         it++;
     }
 }
 
-void complete_function(string funcname)
+// push vnode to stack, reduce conflict count of vnode in conflicts
+void push_vnode_stack(Var_node* vnode)
 {
-    finish_function_in_out(funcname);
-    complete_function_varnodes(funcname);
-    reg_distri(funcname);
+    // push stack
+    var_stack.push_front(vnode);
+    var_graph.erase(vnode);
+    // reduce conflict count
+    set<Var_node*>::iterator it = vnode->conflicts.begin();
+    while (it != vnode->conflicts.end())
+    {
+        Var_node* conf_vnode = *it;
+        conf_vnode->conf_count--; // reduce
+        it++;
+    }
 }
 
-void complete_functions()
+// one term of trying push vnodes into stack as many as possible
+bool repush_stack(int reg_max)
 {
-    CBLOCK_LIST_MAP::iterator it = cblock_list_map.begin();
-    while (it != cblock_list_map.end())
+    bool put = false;
+    set<Var_node*>::iterator it = var_graph.begin();
+    while (it != var_graph.end())
     {
-        complete_function(it->first);
+        Var_node* vnode = *it;
+        if (vnode->conf_count < reg_max)
+        {
+            push_vnode_stack(vnode);
+            put = true;
+        }
+        it++;
     }
+    return put;
+}
+
+// @REQUIRES: var_graph not empty
+// select one vnode which will not be distributed a reg
+// could be optimize
+void select_vnode_without_reg()
+{
+    Var_node* vnode_remove = *(var_graph.begin()); // select one
+    var_graph.erase(vnode_remove); // remove from graph
+}
+
+void graph_to_stack(int reg_max)
+{
+    while (true)
+    {
+        bool put = true;
+        do
+        {
+            put = repush_stack(reg_max);
+        } while (put); // push as many as possible
+        if (var_graph.empty())
+        {
+            break; // all moved to stack
+        }
+        else
+        {
+            select_vnode_without_reg();
+        }
+    }
+}
+
+void stack_reg_distri(int reg_max)
+{
+    list<Var_node*>::iterator it = var_stack.begin();
+    while (it != var_stack.end())
+    {
+        Var_node* vnode = *it; // will be distributed with reg
+        vnode->set_regno(reg_max);
+        it++;
+    }
+}
+
+void reg_distri(int reg_max)
+{
+    init_conflict_count();
+    graph_to_stack(reg_max);
+    stack_reg_distri(reg_max);
+}
+
+void complete_function()
+{
+    finish_function_in_out();
+    complete_function_varnodes();
+    reg_distri(REG_MAX);
 }
 
 
@@ -374,7 +476,7 @@ void complete_functions()
 
 bool has_code_block(string label)
 {
-    return (cblock_map.find(label) != cblock_map.end());
+    return (cblock_map_ptr->find(label) != cblock_map_ptr->end());
 }
 
 // redirect use/define information to file (debug)
@@ -396,11 +498,11 @@ void clear_graph()
     if (cur_funcname != "")
     {
         //cout << cblock_list.size() << endl;
-        cblock_list_map.insert(CBLOCK_LIST_MAP::value_type(cur_funcname, cblock_list));
+        func_cblock_map.insert(FUNC_CBLOCK_MAP::value_type(cur_funcname, cblock_map_ptr));
     }
-    complete_function(cur_funcname);
+    complete_function();
     cblock_list.clear();
-    cblock_map.clear();
+    cblock_map_ptr = new CBLOCK_MAP;
     var_graph.clear();
     if (var_stack.size() != 0)
     {
@@ -433,12 +535,12 @@ Code_block* get_code_block(string label)
 {
     if (has_code_block(label))
     {
-        return cblock_map[label];
+        return (*cblock_map_ptr)[label];
     }
     else
     {
         Code_block* cb = new Code_block(label);
-        cblock_map[label] = cb;
+        (*cblock_map_ptr)[label] = cb;
         return cb;
     }
 }
@@ -571,14 +673,17 @@ void livevar_read_medis()
 string livevar_main(string filename)
 {
     fin.open((filename + ".txt").c_str());
-    string ass_filename = filename + "_LIVEVAR";
-    fout.open((ass_filename + ".txt").c_str());
+    string lv_filename = filename + "_LIVEVAR";
+    fout.open((lv_filename + ".txt").c_str());
+    string log_filename = lv_filename + "(log)";
+    flog.open((log_filename + ".txt").c_str());
 
     livevar_read_medis();
     clear_graph();
 
+    flog.close();
     fout.close();
     fin.close();
 
-    return ass_filename;
+    return lv_filename;
 }
