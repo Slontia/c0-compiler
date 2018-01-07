@@ -251,7 +251,7 @@ void Var_node::set_regno(int reg_max)
     vector<bool> reg_occupied;
     for (int i = 0; i < reg_max; i++)
     {
-        reg_occupied[i] = false;
+        reg_occupied.push_back(false);
     }
     // record
     set<Var_node*>::iterator it = this->conflicts.begin();
@@ -375,21 +375,22 @@ void init_conflict_count()
     {
         Var_node* vnode = *it;
         vnode->conf_count = vnode->conflicts.size(); // init conflict count
-        flog << "=============\n" << vnode->name
-             << " " << vnode->conf_count << "\n=============\n" << endl;
+        //flog << "=============\n" << vnode->name
+        //     << " " << vnode->conf_count << "\n=============\n" << endl;
         it++;
     }
 }
 
 // push vnode to stack, reduce conflict count of vnode in conflicts
-void push_vnode_stack(Var_node* vnode)
+void push_vnode_stack(set<Var_node*>::iterator graph_it)
 {
+    Var_node* vnode = *graph_it;
     // push stack
     var_stack.push_front(vnode);
-    var_graph.erase(vnode);
+    var_graph.erase(graph_it);
     // reduce conflict count
     set<Var_node*>::iterator it = vnode->conflicts.begin();
-    while (it != vnode->conflicts.end())
+    while (it != vnode->conflicts.end()) // conflicts
     {
         Var_node* conf_vnode = *it;
         conf_vnode->conf_count--; // reduce
@@ -407,10 +408,13 @@ bool repush_stack(int reg_max)
         Var_node* vnode = *it;
         if (vnode->conf_count < reg_max)
         {
-            push_vnode_stack(vnode);
+            push_vnode_stack(it++);
             put = true;
         }
-        it++;
+        else
+        {
+            it++;
+        }
     }
     return put;
 }
@@ -421,6 +425,8 @@ bool repush_stack(int reg_max)
 void select_vnode_without_reg()
 {
     Var_node* vnode_remove = *(var_graph.begin()); // select one
+    flog << "=============\n" << vnode_remove->name
+         << "\t" << vnode_remove->conflicts.size() << "\t" << vnode_remove->regno << "\n=============\n" << endl;
     var_graph.erase(vnode_remove); // remove from graph
 }
 
@@ -451,6 +457,8 @@ void stack_reg_distri(int reg_max)
     {
         Var_node* vnode = *it; // will be distributed with reg
         vnode->set_regno(reg_max);
+        flog << "=============\n" << vnode->name
+             << "\t" << vnode->conflicts.size() << "\t" << vnode->regno << "\n=============\n" << endl;
         it++;
     }
 }
@@ -504,10 +512,7 @@ void clear_graph()
     cblock_list.clear();
     cblock_map_ptr = new CBLOCK_MAP;
     var_graph.clear();
-    if (var_stack.size() != 0)
-    {
-        error_debug("stack not clear!");
-    }
+    var_stack.clear();
 }
 
 void init_graph(string funcname)
