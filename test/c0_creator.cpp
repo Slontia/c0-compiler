@@ -7,20 +7,31 @@
 #include <sstream>
 #define ARRAY_LEN 2
 #define MAX_POINT 100
+#define IF_INS_COUNT 10
+#define FUNC_INS_COUNT 50
+#define DEBUG 0
+#if DEBUG
+#define OUTPUT(stream) cout << stream;
+#else
+#define OUTPUT(stream) { ftxt << stream; fcpp << stream; }
+#endif
 using namespace std;
 
 string global_vars[] = {"glo_a", "glo_b", "glo_c"};
 string global_arrays[] = {"glo_array_a", "glo_array_b"};
-string local_vars[] = {"a", "b", "c", "d"};
+string local_vars[] = {"a", "b", "c"};
 string local_arrays[] = {"array_a", "array_b"};
-string cal_ops[] = {"+", "-", "*", "/"};
+string cal_ops[] = {"+", "-", "*"};
 string comp_ops[] = {"<", ">", "<=", ">=", "==", "!="};
+string funcnames[] = {"foo1", "foo2", "foo3", "foo4"};
+string paras[] = {"para_a", "para_b"};
 
-ofstream fout;
+ofstream ftxt;
+ofstream fcpp;
 
-int get_random_num(int range)
+int get_random_num(int range, int lower = 0)
 {
-    return rand() % range;
+    return rand() % range + lower;
 }
 
 bool get_random_bool()
@@ -54,7 +65,7 @@ public:
 	// {{print_array, 50},{print_var, 40}, {print_item, 9}}
 	T get()
 	{
-		int rand_result = get_random_num(MAX_POINT) + 1;
+		int rand_result = get_random_num(MAX_POINT, 1);
 		int odd_sum = 0;
 		typename ODD_MAP::iterator it = odd_map.begin();
 		while (it != odd_map.end())
@@ -72,7 +83,7 @@ public:
 
 void print_immed()
 {
-    cout << rand() % 10;
+    OUTPUT(get_random_num(10, 1))
 }
 
 int get_index()
@@ -88,120 +99,211 @@ string get_arrayname()
 
 void print_array()
 {
-	cout << get_arrayname() << "[" << get_index() << "]";
+	OUTPUT(get_arrayname() << "[" << get_index() << "]")
+}
+
+void print_global_var()
+{
+    OUTPUT(get_random_ele(global_vars))
+}
+
+void print_local_var()
+{
+    OUTPUT(get_random_ele(local_vars))
+}
+
+void print_para_var()
+{
+    OUTPUT(get_random_ele(paras))
 }
 
 void print_var()
 {
-    bool is_global = get_random_bool();
-    cout << get_random_ele(is_global ? global_vars : local_vars);
+    typedef void(*handle)();
+    RandomGetter<handle> rgetter;
+    rgetter.put(print_global_var, 30);
+    rgetter.put(print_local_var, 50);
+    rgetter.put(print_para_var, 20);
+    void (*func)() = rgetter.get();
+    (*func)();
 }
 
 void print_expression();
-void print_item(bool with_para = true)
+void print_item(bool to_use)
 {
     typedef void(*handle)();
     RandomGetter<handle> rgetter;
-    rgetter.put(print_array, with_para ? 30 : 60);
-    rgetter.put(print_var, with_para ? 30 : 40);
-    rgetter.put(print_immed, with_para ? 15 : 0);
-    rgetter.put(print_expression, with_para ? 15 : 0);
+    rgetter.put(print_array, to_use ? 30 : 60);
+    rgetter.put(print_var, to_use ? 30 : 40);
+    rgetter.put(print_immed, to_use ? 15 : 0);
+    rgetter.put(print_expression, to_use ? 15 : 0);
     void (*func)() = rgetter.get();
-    if (func != NULL)
-    {
-        (*func)();
-    }
+    (*func)();
 }
 
 void print_cal_op()
 {
-    cout << get_random_ele(cal_ops);
+    OUTPUT(get_random_ele(cal_ops))
 }
 
 void print_expression()
 {
-    cout << "(";
-    print_item();
+    OUTPUT("(")
+    print_item(true);
     while (get_random_num(100) < 70)
     {
-        cout << " ";
+        OUTPUT(" ")
         print_cal_op();
-        cout << " ";
+        OUTPUT(" ")
         print_item(true);
     }
-    cout << ")";
+    OUTPUT(")");
+}
+
+void print_return()
+{
+	OUTPUT("return ")
+	print_expression();
+	OUTPUT(";" << endl)
 }
 
 void print_assign()
 {
     print_item(false);
-    cout << " = ";
+    OUTPUT(" = ")
     print_expression();
-    cout << ";" << endl;
+    OUTPUT(";" << endl)
 }
 
 void print_comp_op()
 {
-    cout << get_random_ele(comp_ops);
+    OUTPUT(get_random_ele(comp_ops))
 }
 
 void print_conf()
 {
     print_expression();
-    cout << " ";
+    OUTPUT(" ")
     print_comp_op();
-    cout << " ";
+    OUTPUT(" ")
     print_expression();
 }
 
 void print_printf()
 {
-    cout << "printf";
+    OUTPUT("printf")
     print_expression();
-    cout << ";" << endl;
+    OUTPUT(";" << endl)
 }
 
 void print_if();
-void print_instructors()
+void print_instructors(int count)
 {
-    cout << "{" << endl;
-    while (get_random_num(100) < 90)
+    OUTPUT(endl << "{" << endl)
+    for (int i = 0; i < count; i++)
     {
         typedef void(*handle)();
         RandomGetter<handle> rgetter;
-        rgetter.put(print_assign, 80);
-        rgetter.put(print_if, 10);
+        rgetter.put(print_assign, 85);
+        rgetter.put(print_if, 5);
         rgetter.put(print_printf, 10);
         (*(rgetter.get()))();
     }
-    cout << "}" << endl;
+    OUTPUT("}" << endl)
 }
 
-void print_function()
+template<int N>
+void print_declare_vars(string (&ar)[N])
 {
+    for (int i = 0; i < N; i++)
+    {
+        OUTPUT("int " << ar[i] << ";" << endl)
+    }
+}
 
+template<int N>
+void print_init_vars(string (&ar)[N])
+{
+    for (int i = 0; i < N; i++)
+    {
+        OUTPUT(ar[i] << " = " << get_random_num(100) << ";" << endl)
+    }
+}
+
+template<int N>
+void print_declare_arrays(string (&ar)[N])
+{
+    for (int i = 0; i < N; i++)
+    {
+        OUTPUT("int " << ar[i] << "[" << ARRAY_LEN << "];" << endl)
+    }
+}
+
+template<int N>
+void print_init_arrays(string (&ar)[N])
+{
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < ARRAY_LEN; j++)
+        {
+            OUTPUT(ar[i] << "[" << j << "] = " << get_random_num(100) << ";" << endl)
+        }
+    }
+}
+
+void print_function(string funcname)
+{
+    OUTPUT("int " << funcname)
+    int len = sizeof(paras) / sizeof(paras[0]);
+    if (len != 0)
+    {
+        OUTPUT("(int " << paras[0]);
+        for (int i = 1; i < len; i++)
+        {
+            OUTPUT(", int " << paras[i]);
+        }
+        OUTPUT(")" << endl << "{" << endl);
+    }
+    print_declare_vars(local_vars);
+    print_declare_arrays(local_arrays);
+    print_init_vars(local_vars);
+    print_init_arrays(local_arrays);
+    print_instructors(FUNC_INS_COUNT);
+    print_return();
+    OUTPUT("}");
+}
+
+void print_main()
+{
+	ftxt << "void ";
+	fcpp << "int ";
+	OUTPUT("main() {")
+	print_init_vars(global_vars);
+	print_init_arrays(global_arrays);
+	OUTPUT("}")
 }
 
 void print_if()
 {
-    cout << "if (";
+    OUTPUT("if (")
     print_conf();
-    cout << ")";
-    print_instructors();
+    OUTPUT(")")
+    print_instructors(IF_INS_COUNT);
+    OUTPUT("else")
+    print_instructors(IF_INS_COUNT);
 }
 
-void print_while()
-{
-
-}
 
 
 
 void print_prog()
 {
-    //PrintValues(global_arrays);
-	//print_array();
-	print_if();
+    print_declare_vars(global_vars);
+    print_declare_arrays(global_arrays);
+    OUTPUT(endl)
+	print_function("foo1");
+	OUTPUT(endl)
+	print_main();
 }
 
 int main()
@@ -209,10 +311,13 @@ int main()
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < 1; i++)
 	{
-		stringstream ss;
-		ss << "prog_" << i << ".txt";
-		fout.open(ss.str().c_str());
+		stringstream ss_txt, ss_cpp;
+		ss_txt << "prog_" << i << ".txt";
+		ss_cpp << "prog_" << i << ".cpp";
+		ftxt.open(ss_txt.str().c_str());
+		fcpp.open(ss_cpp.str().c_str());
 		print_prog();
-		fout.close();
+		ftxt.close();
+		fcpp.close();
 	}
 }
