@@ -21,9 +21,14 @@ int main()
     }
     filename = gram_main(filename);
     if (!success) return 0;
-    filename = dag_main(filename);
-    //filename = dag_main(filename);
-    filename = ass_main(filename);
+    int line_count = 0;
+    int last_line_count = 0;
+    do
+    {
+        last_line_count = line_count;
+        filename = dag_main(filename);
+        filename = ass_main(filename, &line_count);
+    } while (line_count != last_line_count);
     filename = livevar_main(filename);
     filename = tar_main(filename);
     return 0;

@@ -35,6 +35,11 @@ void error(string info)
     if (ERROR_EXIT) exit(0);
 }
 
+void warning(string info)
+{
+    cout << "[WARNING] " << info << endl;
+}
+
 void suspend_handle()
 {
     error("unfinished code");

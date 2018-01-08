@@ -3,6 +3,6 @@
 
 
 
-string ass_main(string);
+string ass_main(string, int*);
 
 #endif // ASS_OPT_H_INCLUDED

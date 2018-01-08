@@ -1,27 +1,69 @@
-select_L_3_case :
-@j select_L_2_switch_over
-select_L_4_case :
-@call sort
-@j select_L_2_switch_over
-select_L_5_case :
-@call fibonacci
-@j select_L_2_switch_over
-select_L_6_case :
-@call fluctuations
-@j select_L_2_switch_over
-select_L_7_case :
-@call zigzag
-@j select_L_2_switch_over
-select_L_8_case :
-@printf string S_37
-@scanf int num
-@push 0
-@push 99
-#2 = num
+process_L_1_case :
+@call expre
+@j process_L_0_switch_over
+process_L_2_case :
+@scanf int n
+#2 = n
 #3 = #2
 @push #3
-@call find
-@j select_L_2_switch_over
-select_L_9_default :
-@printf string S_9
-@j select_L_2_switch_over
+@call fibo
+@get #4
+#5 = #4
+#6 = #5
+ans = #6
+@printf string S_5
+#2 = ans
+#3 = #2
+@printf int #3
+@call printspace
+@j process_L_0_switch_over
+process_L_3_case :
+@scanf int x
+@scanf int y
+@scanf int kind
+#2 = x
+#3 = #2
+@push #3
+#4 = y
+#5 = #4
+@push #5
+#6 = kind
+#7 = #6
+@push #7
+@call operation
+@get #8
+#9 = #8
+#10 = #9
+ans = #10
+@call printspace
+@j process_L_0_switch_over
+process_L_4_case :
+@scanf int m
+#2 = m
+#3 = #2
+@push #3
+@call display
+@j process_L_0_switch_over
+process_L_5_case :
+@scanf int _a
+@scanf int _b
+@printf string S_6
+#2 = _a
+#3 = #2
+@push #3
+#4 = _b
+#5 = #4
+@push #5
+@call gcd
+@get #6
+#7 = #6
+#8 = #7
+@printf int #8
+@call printspace
+@j process_L_0_switch_over
+process_L_6_case :
+@printf string S_7
+@j process_L_0_switch_over
+process_L_7_default :
+@call optimize
+@j process_L_0_switch_over

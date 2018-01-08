@@ -15,12 +15,14 @@
 # define MIPS_LEFT fout
 # define MIPS_RIGHT endl
 # endif // DEBUG
-# define MIPS_OUTPUT(x) MIPS_LEFT << x << MIPS_RIGHT
+# define MIPS_OUTPUT(x) MIPS_LEFT << x << MIPS_RIGHT; line_count++
 # define IS_VAR(name) (name[0] == '_' || (name[0] >= 'a' && name[0] <= 'z'))
 # define IS_TEMP(name) (name[0] == '#')
-# define IS_GLOBAL_VAR(name) !cur_func_ASS->has_var(name) && global_vars.find(name) != global_vars.end()
+# define IS_GLOBAL_VAR(name) (!cur_func_ASS->has_var(name) && global_vars.find(name) != global_vars.end())
 # define HAS_TEMP(tempname) temp_map.find(tempname) != temp_map.end()
 using namespace std;
+
+int line_count = 0;
 
 // temp <- temp
 // var <- temp
@@ -314,9 +316,88 @@ void output_medis(bool is_return = false)
         l++;
     }
     code_storage.clear();
+}
 
-    // 3. refresh temp map
-
+// @REQUIRES: len(strs) == 5
+void expre_opt(vector<string>* strs)
+{
+    if (strs->size() != 5 || (*strs)[0][0] == '@')
+    {
+        return;
+    }
+    string tar = (*strs)[0];
+    string op = (*strs)[3];
+    string cal1 = (*strs)[2];
+    string cal2 = (*strs)[4];
+    string result = "";
+    if (is_num(cal1) && is_num(cal2))
+    {
+        int num1, num2, result_value;
+        sscanf(cal1.c_str(), "%d", &num1);
+        sscanf(cal1.c_str(), "%d", &num2);
+        if (op == "SUB") result_value = num1 - num2;
+        else if (op == "ADD") result_value = num1 + num2;
+        else if (op == "DIV")
+        {
+            if (num2 == 0)
+            {
+                warning("may division by zero");
+                result_value = 0;
+            }
+            else
+            {
+                result_value = num1 / num2;
+            }
+        }
+        else if (op == "MUL") result_value = num1 * num2;
+        else if (op == "GT") result_value = (num1 > num2);
+        else if (op == "EG") result_value = (num1 >= num2);
+        else if (op == "LT") result_value = (num1 < num2);
+        else if (op == "LE") result_value = (num1 <= num2);
+        else if (op == "EQ") result_value = (num1 == num2);
+        else if (op == "NE") result_value = (num1 != num2);
+        else error_debug("unknown op in expression opt");
+        stringstream ss;
+        ss << result_value;
+        result = ss.str();
+    }
+    else if (op == "ADD")
+    {
+        if (cal1 == "0") result = cal2;
+        else if (cal2 == "0") result = cal1;
+    }
+    else if (op == "SUB") // a = b - b
+    {
+        if (cal1 == cal2) result = "0";
+        else if (cal2 == "0") result = cal1;
+    }
+    else if (op == "MUL")
+    {
+        if (cal1 == "0" || cal2 == "0") result = "0";
+        else if (cal1 == "1") result = cal2;
+        else if (cal2 == "1") result = cal1;
+    }
+    else if (op == "DIV")
+    {
+        if (cal1 == "0") result = "0";
+        else if (cal2 == "1") result = cal1;
+        else if (cal1 == cal2) result = "1";
+    }
+    else if (op == "NE" && cal1 == cal2)
+    {
+        result = "0";
+    }
+    else if (op == "EQ" && cal1 == cal2)
+    {
+        result = "1";
+    }
+    if (result != "")
+    {
+        strs->clear();
+        strs->push_back(tar);
+        strs->push_back("=");
+        strs->push_back(result);
+    }
 }
 
 void ass_read_medis()
@@ -332,8 +413,7 @@ void ass_read_medis()
             strs.push_back(str);
         }
 
-        // cout << line << endl;
-
+        expre_opt(&strs);
         if (strs[0] == "@var" || strs[0] == "@array")
         {
             MIPS_OUTPUT(line);
@@ -480,13 +560,16 @@ void ass_read_medis()
     }
 }
 
-string ass_main(string filename)
+string ass_main(string filename, int *lc)
 {
+    init_blocks();
+    line_count = 0;
     fin.open((filename + ".txt").c_str());
     string ass_filename = filename + "_ASS";
     fout.open((ass_filename + ".txt").c_str());
     ass_read_medis();
     fout.close();
     fin.close();
+    *lc = line_count;
     return ass_filename;
 }

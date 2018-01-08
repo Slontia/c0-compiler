@@ -1355,7 +1355,7 @@ FILE* progf;
 string gram_main(string filename)
 {
     progf = fopen(filename.c_str(), "r");
-    string medi_filename = "intermediate";
+    string medi_filename = "./output/intermediate";
     fout.open((medi_filename + ".txt").c_str());
 
     getsym_check();

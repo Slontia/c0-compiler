@@ -370,6 +370,7 @@ void build_DAG(vector<string> code)
     }
     else
     {
+        for (int i=0;i<code.size();i++) cout << code[i] << " ";
         error_debug("cal len not 3 or 5 in dag.add_and_output");
     }
 }
