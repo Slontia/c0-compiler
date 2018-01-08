@@ -20,6 +20,7 @@
 #include "medi.h"
 #include "reg_recorder.h"
 #include "livevar_ana.h"
+# define OUTPUT_MEDI 0
 
 using namespace std;
 
@@ -731,23 +732,24 @@ void call_tar(string funcname)
         // save regs
         list<string> reg_save_list;
         Reg_recorder::record_occu_regs(&reg_save_list);
-        int stack_offset = (reg_save_list.size() + 2) * 4;
+        int store_count = 1;
+        int stack_offset = (reg_save_list.size() + store_count) * 4;
         MIPS_OUTPUT("addi $sp, $sp, -" << stack_offset);
         MIPS_OUTPUT("sw $ra, 0($sp)");
-        MIPS_OUTPUT("sw $fp, 4($sp)");
-        Reg_recorder::save_occu_regs(&reg_save_list, 2 * 4);
+        Reg_recorder::save_occu_regs(&reg_save_list, store_count * 4);
         Reg_recorder::save_modi_regs();
 
         // refresh $fp
-        MIPS_OUTPUT("addi $fp, $fp, " << round_up(cur_addr, 4) + len * 4);
+        int fp_offset = round_up(cur_addr, 4) + len * 4;
+        MIPS_OUTPUT("addi $fp, $fp, " << fp_offset);
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
         MIPS_OUTPUT("nop");
         // load regs
 
+        MIPS_OUTPUT("addi $fp, $fp, -" << fp_offset);
         MIPS_OUTPUT("lw $ra, 0($sp)");
-        MIPS_OUTPUT("lw $fp, 4($sp)");
-        Reg_recorder::load_occu_regs(&reg_save_list, 2 * 4);
+        Reg_recorder::load_occu_regs(&reg_save_list, store_count * 4);
         MIPS_OUTPUT("addi $sp, $sp, " << stack_offset);
     }
     else
@@ -768,7 +770,7 @@ void readline()
     string line;
     while(getline(fin, line))
     {
-        MIPS_OUTPUT("   # " << line);
+        if (OUTPUT_MEDI) MIPS_OUTPUT("   # " << line);
         istringstream is(line);
         string str;
         vector<string> strs;

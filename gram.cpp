@@ -1,4 +1,4 @@
-#define INT2CHAR 0
+#define INT2CHAR 1
 #include "lexical.h"
 #include <cstdlib>
 #include "vars.h"
