@@ -44,5 +44,8 @@ extern Symbol cur_type;
 extern bool skip_type_ident;
 
 string int2string(int n);
+string get_filename(string info);
+string get_tarname();
+string get_logname();
 
 #endif // VARS_H_INCLUDED

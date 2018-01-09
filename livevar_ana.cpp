@@ -695,11 +695,10 @@ void livevar_read_medis()
 
 string livevar_main(string filename)
 {
-    fin.open((filename + ".txt").c_str());
-    string lv_filename = filename + "_LIVEVAR";
-    fout.open((lv_filename + ".txt").c_str());
-    string log_filename = lv_filename + "(log)";
-    flog.open((log_filename + ".txt").c_str());
+    fin.open(filename.c_str());
+    string lv_filename = get_filename("LIVEVAR");
+    fout.open(lv_filename.c_str());
+    flog.open(get_logname().c_str());
 
     livevar_read_medis();
     clear_graph();

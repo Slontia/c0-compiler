@@ -544,9 +544,9 @@ void read_medis()
 
 string dag_main(string filename)
 {
-    fin.open((filename + ".txt").c_str());
-    string dag_filename = filename + "_DAG";
-    if(!DEBUG)fout.open((dag_filename + ".txt").c_str());
+    fin.open(filename.c_str());
+    string dag_filename = get_filename("DAG");
+    if(!DEBUG)fout.open(dag_filename.c_str());
     read_medis();
     if(!DEBUG)fout.close();
     fin.close();

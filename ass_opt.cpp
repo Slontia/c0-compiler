@@ -330,11 +330,11 @@ void expre_opt(vector<string>* strs)
     string cal1 = (*strs)[2];
     string cal2 = (*strs)[4];
     string result = "";
-    if (is_num(cal1) && is_num(cal2))
+    if (is_num(cal1) && is_num(cal2) && op != "ARSET")
     {
         int num1, num2, result_value;
         sscanf(cal1.c_str(), "%d", &num1);
-        sscanf(cal1.c_str(), "%d", &num2);
+        sscanf(cal2.c_str(), "%d", &num2);
         if (op == "SUB") result_value = num1 - num2;
         else if (op == "ADD") result_value = num1 + num2;
         else if (op == "DIV")
@@ -356,7 +356,7 @@ void expre_opt(vector<string>* strs)
         else if (op == "LE") result_value = (num1 <= num2);
         else if (op == "EQ") result_value = (num1 == num2);
         else if (op == "NE") result_value = (num1 != num2);
-        else error_debug("unknown op in expression opt");
+        else error_debug((string)"unknown op \'" + op + "\' in expression opt");
         stringstream ss;
         ss << result_value;
         result = ss.str();
@@ -482,6 +482,10 @@ void ass_read_medis()
         }
         else if (strs[0] == "@bz" && !skip)
         {
+            if (is_num(strs[1]) != 0)
+            {
+                continue;
+            }
             // use
             line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
@@ -564,9 +568,9 @@ string ass_main(string filename, int *lc)
 {
     init_blocks();
     line_count = 0;
-    fin.open((filename + ".txt").c_str());
-    string ass_filename = filename + "_ASS";
-    fout.open((ass_filename + ".txt").c_str());
+    fin.open(filename.c_str());
+    string ass_filename = get_filename("ASS");
+    fout.open(ass_filename.c_str());
     ass_read_medis();
     fout.close();
     fin.close();

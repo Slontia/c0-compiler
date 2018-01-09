@@ -1355,8 +1355,8 @@ FILE* progf;
 string gram_main(string filename)
 {
     progf = fopen(filename.c_str(), "r");
-    string medi_filename = "./output/intermediate";
-    fout.open((medi_filename + ".txt").c_str());
+    string medi_filename = get_filename("");
+    fout.open(medi_filename.c_str());
 
     getsym_check();
     cout << "=== CONST BEGIN ===" << endl;

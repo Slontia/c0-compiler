@@ -8,7 +8,7 @@
 #define ARRAY_LEN 2
 #define MAX_POINT 100
 #define IF_INS_COUNT 10
-#define FUNC_INS_COUNT 50
+#define FUNC_INS_COUNT 30
 #define DEBUG 0
 #if DEBUG
 #define OUTPUT(stream) cout << stream;
@@ -150,7 +150,7 @@ void print_expression()
 {
     OUTPUT("(")
     print_item(true);
-    while (get_random_num(100) < 70)
+    while (get_random_num(100) <= 50)
     {
         OUTPUT(" ")
         print_cal_op();
@@ -251,6 +251,15 @@ void print_init_arrays(string (&ar)[N])
     }
 }
 
+void print_call(string funcname)
+{
+	OUTPUT(funcname << "(")
+	print_expression();
+	OUTPUT(", ");
+	print_expression();
+	OUTPUT(");" << endl);
+}
+
 void print_function(string funcname)
 {
     OUTPUT("int " << funcname)
@@ -277,9 +286,10 @@ void print_main()
 {
 	ftxt << "void ";
 	fcpp << "int ";
-	OUTPUT("main() {")
+	OUTPUT("main()" << endl << "{" << endl)
 	print_init_vars(global_vars);
 	print_init_arrays(global_arrays);
+	OUTPUT("foo1(" << get_random_num(20, -10) << ", " << get_random_num(20, -10) << ");" << endl)
 	OUTPUT("}")
 }
 

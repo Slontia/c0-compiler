@@ -6,7 +6,7 @@
 #define OUTPUT_LEX 0
 #define DEBUG 0
 #define OUTPUT_ERROR_C 0
-#define OUTPUT_PROG 1
+#define OUTPUT_PROG 0
 
 using namespace std;
 

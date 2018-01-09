@@ -953,9 +953,9 @@ void set_data_str()
 
 string tar_main(string filename)
 {
-    fin.open((filename + ".txt").c_str());
-    string tar_filename = "target";
-    fout.open((tar_filename + ".asm").c_str());
+    fin.open(filename.c_str());
+    string tar_filename = get_tarname();
+    fout.open(tar_filename.c_str());
 
     init_reg_map();
     set_data_str();

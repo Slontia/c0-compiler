@@ -41,18 +41,19 @@
 	<iostream>
 	<fstream>
 
-1515393787 source:d:\projects\console\c0-compiler\lexical.cpp
+1515434113 source:d:\projects\console\c0-compiler\lexical.cpp
 	<iostream>
 	<string.h>
 	<cstdlib>
 	"vars.h"
 
-1513959196 d:\projects\console\c0-compiler\vars.h
+1515402270 d:\projects\console\c0-compiler\vars.h
 	<iostream>
 	<fstream>
 
-1515395809 source:d:\projects\console\c0-compiler\main.cpp
+1515402198 source:d:\projects\console\c0-compiler\main.cpp
 	<iostream>
+	<sstream>
 	"lexical.h"
 	"gram.h"
 	"vars.h"
@@ -72,7 +73,7 @@
 	<map>
 	<vector>
 
-1515398515 source:d:\projects\console\c0-compiler\gram.cpp
+1515401619 source:d:\projects\console\c0-compiler\gram.cpp
 	"lexical.h"
 	<cstdlib>
 	"vars.h"
@@ -109,7 +110,7 @@
 	<vector>
 	"vars.h"
 
-1515392046 source:d:\projects\console\c0-compiler\tar.cpp
+1515402216 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -379,7 +380,7 @@
 	"gram.h"
 	"medi.h"
 
-1515397027 source:d:\projects\console\c0-compiler\dag_opt.cpp
+1515401639 source:d:\projects\console\c0-compiler\dag_opt.cpp
 	<iostream>
 	<vector>
 	<fstream>
@@ -397,7 +398,7 @@
 	<map>
 	<vector>
 
-1515398145 source:d:\projects\console\c0-compiler\ass_opt.cpp
+1515467031 source:d:\projects\console\c0-compiler\ass_opt.cpp
 	<iostream>
 	<map>
 	"vars.h"
@@ -410,7 +411,7 @@
 
 1515395783 d:\projects\console\c0-compiler\ass_opt.h
 
-1515347756 source:d:\projects\console\c0-compiler\livevar_ana.cpp
+1515402249 source:d:\projects\console\c0-compiler\livevar_ana.cpp
 	<iostream>
 	<vector>
 	<map>
