@@ -47,6 +47,7 @@ public:
 };
 
 int get_regno(string funcname, string cblockname, string varname);
+bool is_local_var(string funcname, string cblockname, string varname);
 string livevar_main(string filename);
 string set_temp_label();
 void turn_next_block(string label);

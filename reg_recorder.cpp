@@ -3,6 +3,8 @@
 # include "vars.h"
 # include "lexical.h"
 # include "reg_recorder.h"
+# include "livevar_ana.h"
+# include "item.h"
 # define DEBUG 0
 # if DEBUG
 # define MIPS_LEFT cout
@@ -183,4 +185,51 @@ void Reg_recorder::save_global_modi_regs()
         }
         it++;
     }
+}
+
+void Reg_recorder::local_modi_regs(void(Reg_recorder::*func)(), bool not_reverse = true)
+{
+    REG_MAP::iterator it = reg_regmap.begin();
+    while (it != reg_regmap.end())
+    {
+        Reg_recorder* rec = it->second;
+        if (is_local_var(cur_func->get_name(), cur_label, rec->name) ^ (!not_reverse))
+        {
+            if (not_reverse) cout << "LOCAL" << rec->name << endl;
+            (rec->*func)();
+        }
+        it++;
+    }
+}
+
+// a, #0, #8, global_a, local_a, not_occup_a
+
+
+void Reg_recorder::before_branch_jump()
+{
+    Reg_recorder::local_modi_regs(&Reg_recorder::save, false);
+    Reg_recorder::init_var_occu_regs();
+    Reg_recorder::local_modi_regs(&Reg_recorder::init, true);
+}
+
+void Reg_recorder::before_call()
+{
+
+}
+
+void Reg_recorder::after_call()
+{
+
+}
+
+void Reg_recorder::before_label()
+{
+    Reg_recorder::local_modi_regs(&Reg_recorder::save, false);
+    Reg_recorder::init_all();
+}
+
+void Reg_recorder::before_return()
+{
+    Reg_recorder::save_global_modi_regs();
+    Reg_recorder::init_all();
 }

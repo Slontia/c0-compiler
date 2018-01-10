@@ -30,6 +30,7 @@ extern map<string, int> offset_map;    // variable-offset map
 extern map<string, int> reg_map;       // name-register map
 extern int temp_base_addr;     // address records tamps
 extern FuncItem* cur_func;  // current function
+extern string cur_label;
 
 bool is_num(string str);
 bool has_name(string name);

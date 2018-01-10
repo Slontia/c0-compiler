@@ -20,7 +20,7 @@
 #include "medi.h"
 #include "reg_recorder.h"
 #include "livevar_ana.h"
-# define OUTPUT_MEDI 1
+# define OUTPUT_MEDI 0
 
 using namespace std;
 
@@ -240,6 +240,7 @@ Reg_recorder* get_min_use_recorder()
         }
         it++;
     }
+    cout << "NULL:" << (rec_selected == NULL) << endl;
     return rec_selected;
 }
 
@@ -253,6 +254,7 @@ string get_reg(string name, bool is_def)
     // has register
     if (has_name(name))
     {
+        cout << "HAS:" << name << endl;
         rec = name_regmap[name];
         rec->use_count = use_counter++;
         if (rec->state == INACTIVE && is_def) // value may be modified
@@ -337,125 +339,6 @@ string get_reg(string name, bool is_def)
     name_regmap.insert(REG_MAP::value_type(name, rec));
     return rec->regname;
 }
-
-// name: "#x" or var_name
-/*int get_reg(string name)
-{
-    bool is_tempname = is_temp(name);
-    map<string, int>::iterator it;
-    Type type = INT;
-    // get type
-    if (!is_tempname)
-    {
-        if (cur_func->has_var(name))
-        {
-            type = cur_func->get_var(name)->get_type();
-        }
-        else
-        {
-            type = get_ele(name, global_vars)->get_type();
-        }
-    }
-    // whether has got reg
-    it = reg_map.find(name);
-    if (it != reg_map.end())
-    {
-        return it->second;
-    }
-    else
-    {
-        bool keep_active = false;
-        Reg_recorder* recorder = &reg_recorders[next_reg];
-        // store value
-        if (recorder->active)
-        {
-            if (recorder->global)
-            {
-                MIPS_OUTPUT(((recorder->type == CHAR) ? "sb" : "sw") << " $s"
-                            << next_reg << ", " << recorder->offset << "($gp) # store reg to mem");
-            }
-            else
-            {
-                MIPS_OUTPUT(((recorder->type == CHAR) ? "sb" : "sw") << " $s"
-                            << next_reg << ", " << recorder->offset << "($fp) # store reg to mem");
-            }
-            keep_active = true;
-        }
-        else
-        {
-            keep_active = false;
-            recorder->active = true;
-        }
-        // record offset
-        if (is_tempname)
-        {
-            int offset = temp_base_addr + get_temp_no(name) * 4;
-            recorder->offset = offset;
-            if (offset + 4 > cur_addr)
-            {
-                cur_addr = offset + 4;
-            }
-            recorder->global = false;
-        }
-        else
-        {
-            map<string, int>::iterator off_it = offset_map.find(name);
-            if (off_it == offset_map.end())
-            {
-                off_it = global_addr_map.find(name);
-                if (off_it == global_addr_map.end())
-                {
-                    error_debug(name + " not exists");
-                }
-                else
-                {
-                    recorder->offset = off_it->second;
-                    recorder->global = true;
-                }
-            }
-            else
-            {
-                recorder->offset = off_it->second;
-                recorder->global = false;
-            }
-        }
-        // load value
-        string note = (string)"# " + name;
-        if (recorder->global)   // is global variable
-        {
-            MIPS_OUTPUT(((type == CHAR) ? "lb" : "lw") << " $s" << next_reg
-                        << ", " << recorder->offset << "($gp)" << note);
-        }
-        else
-        {
-            MIPS_OUTPUT(((type == CHAR) ? "lb" : "lw") << " $s" << next_reg
-                        << ", " << recorder->offset << "($fp)" << note);
-        }
-        recorder->type = type;
-        recorder->use_count = 0;
-        // erase old key
-        string last_name = recorder->name;
-        if (keep_active)
-        {
-            map<string, int>::iterator last_user = reg_map.find(last_name);
-            if (last_user == reg_map.end())
-            {
-                error_debug(last_name + " not in map");
-            }
-            else
-            {
-                reg_map.erase(last_user);
-            }
-        }
-        // insert new key
-        recorder->name = name;
-        reg_map.insert(map<string, int>::value_type(name, next_reg));
-        int return_reg = next_reg;
-        next_reg = (next_reg + 1) % reg_count;
-        return return_reg;
-    }
-}
-*/
 
 void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
 {
@@ -663,7 +546,7 @@ void name_handle(vector<string> strs)
     else if (strs[1] == ":")
     {
         cur_label = strs[0];
-        Reg_recorder::clear_and_init_all();
+        Reg_recorder::before_label();
         init_global_regs();
         MIPS_OUTPUT(strs[0] << ":");    // [MIPS] label
     }
@@ -737,7 +620,7 @@ void call_tar(string funcname)
         MIPS_OUTPUT("addi $sp, $sp, -" << stack_offset);
         MIPS_OUTPUT("sw $ra, 0($sp)");
         Reg_recorder::save_occu_regs(&reg_save_list, store_count * 4);
-        Reg_recorder::save_modi_regs();
+        Reg_recorder::init_all();
 
         // refresh $fp
         int fp_offset = round_up(cur_addr, 4) + len * 4;
@@ -836,15 +719,13 @@ void readline()
                     MIPS_OUTPUT("move $v0, " << get_reg(strs[1], false));
                 }
             }
-            Reg_recorder::init_all();
-            Reg_recorder::save_global_modi_regs();
+            Reg_recorder::before_return();
             MIPS_OUTPUT("jr $ra");
             //MIPS_OUTPUT("nop");
         }
         else if (strs[0] == "@be" || strs[0] == "@bne")
         {
-            Reg_recorder::init_var_occu_regs();
-            Reg_recorder::save_modi_regs();
+            Reg_recorder::before_branch_jump();
             string br_op = "";
             if (strs[0] == "@be") br_op = "beq ";
             else if (strs[0] == "@bne") br_op = "bne ";
@@ -853,37 +734,36 @@ void readline()
                 MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", " << get_reg(strs[2], false) << ", " << strs[3]);
                 //MIPS_OUTPUT("nop");
             }
+            else if (strs[2] == "0")
+            {
+                MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", $0, " << strs[3]);
+                //MIPS_OUTPUT("nop");
+            }
             else
             {
                 MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", " << strs[2] << ", " << strs[3]);
-                //MIPS_OUTPUT("nop");
             }
         }
         else if (strs[0] == "@bz")
         {
-            Reg_recorder::init_var_occu_regs();
-            Reg_recorder::save_modi_regs();
+            Reg_recorder::before_branch_jump();
             MIPS_OUTPUT("beq " << get_reg(strs[1], false) << ", $0, " << strs[2]);
             //MIPS_OUTPUT("nop");
         }
         else if (strs[0] == "@bgtz" || strs[0] == "@bgez" ||
                  strs[0] == "@blez" || strs[0] == "@bltz")
         {
-            Reg_recorder::init_var_occu_regs();
-            Reg_recorder::save_modi_regs();
+            Reg_recorder::before_branch_jump();
             MIPS_OUTPUT(strs[0].substr(1) << " " << get_reg(strs[1], false) << ", " << strs[2]);
         }
         else if (strs[0] == "@j")
         {
-            Reg_recorder::init_var_occu_regs();
-            Reg_recorder::save_modi_regs();
+            Reg_recorder::before_branch_jump();
             MIPS_OUTPUT("j " << strs[1]);
             //MIPS_OUTPUT("nop");
         }
         else if (strs[0] == "@jal")
         {
-            Reg_recorder::init_var_occu_regs();
-            Reg_recorder::save_modi_regs();
             MIPS_OUTPUT("jal " << strs[1]);
             //MIPS_OUTPUT("nop");
         }

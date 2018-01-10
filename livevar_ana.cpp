@@ -57,6 +57,13 @@ int get_regno(string funcname, string cblockname, string varname)
     }
 }
 
+bool is_local_var(string funcname, string cblockname, string varname)
+{
+    Code_block* cblk = (*(func_cblock_map[funcname]))[cblockname];
+    //if (varname == "a") cout << "OH!" << cblk->has_live(varname) <<cblk->has_def(varname);
+    return (cblk->has_def(varname) && !cblk->has_live(varname));
+}
+
 
 /*====================
 |     Code_block     |

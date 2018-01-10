@@ -39,6 +39,13 @@ public:
     static void init_var_occu_regs();
     static void init_all();
     static void save_global_modi_regs();
+    static void before_branch_jump();
+    static void before_call();
+    static void after_call();
+    static void before_label();
+    static void before_return();
+    static void local_modi_regs(void(Reg_recorder::*func)(), bool not_reverse);
+
 };
 
 #endif // REG_RECORDER_H_INCLUDED

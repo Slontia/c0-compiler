@@ -111,7 +111,7 @@
 	<vector>
 	"vars.h"
 
-1515575002 source:d:\projects\console\c0-compiler\tar.cpp
+1515590890 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -126,7 +126,7 @@
 	"reg_recorder.h"
 	"livevar_ana.h"
 
-1515349813 d:\projects\console\c0-compiler\tar.h
+1515588095 d:\projects\console\c0-compiler\tar.h
 	<iostream>
 	<map>
 	<vector>
@@ -412,7 +412,7 @@
 
 1515395783 d:\projects\console\c0-compiler\ass_opt.h
 
-1515574566 source:d:\projects\console\c0-compiler\livevar_ana.cpp
+1515593142 source:d:\projects\console\c0-compiler\livevar_ana.cpp
 	<iostream>
 	<vector>
 	<map>
@@ -426,23 +426,25 @@
 	"lexical.h"
 	"livevar_ana.h"
 
-1515347705 d:\projects\console\c0-compiler\livevar_ana.h
+1515583875 d:\projects\console\c0-compiler\livevar_ana.h
 	<iostream>
 	<set>
 
-1515351108 source:d:\projects\console\c0-compiler\reg_recorder.cpp
+1515593393 source:d:\projects\console\c0-compiler\reg_recorder.cpp
 	<iostream>
 	"tar.h"
 	"vars.h"
 	"lexical.h"
 	"reg_recorder.h"
+	"livevar_ana.h"
+	"item.h"
 
-1515349654 d:\projects\console\c0-compiler\reg_recorder.h
+1515592484 d:\projects\console\c0-compiler\reg_recorder.h
 	<iostream>
 	<list>
 	"vars.h"
 
-1515574381 source:d:\projects\console\c0-compiler\rem_opt.cpp
+1515575534 source:d:\projects\console\c0-compiler\rem_opt.cpp
 	<iostream>
 	<list>
 	<vector>
