@@ -119,17 +119,22 @@ void label_medi(string label)
     MIPS_OUTPUT(label << " :");
 }
 
+// cond must not be zero
 void cal_medi(Symbol op, string result, string a1, string a2)
 {
     MIPS_OUTPUT(result << " = " << a1 << " " << symbol2string(op) << " " << a2);
 }
 void cal_medi(Symbol op, string result, string a1, int a2)
 {
-    MIPS_OUTPUT(result << " = " << a1 << " " << symbol2string(op) << " " << a2);
+    stringstream ss;
+    ss << a2;
+    cal_medi(op, result, a1, ss.str());
 }
 void cal_medi(Symbol op, string result, int a1, string a2)
 {
-    MIPS_OUTPUT(result << " = " << a1 << " " << symbol2string(op) << " " << a2);
+    stringstream ss;
+    ss << a1;
+    cal_medi(op, result, ss.str(), a2);
 }
 
 void assign_medi(string n1, string n2)

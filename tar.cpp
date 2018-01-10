@@ -20,7 +20,7 @@
 #include "medi.h"
 #include "reg_recorder.h"
 #include "livevar_ana.h"
-# define OUTPUT_MEDI 0
+# define OUTPUT_MEDI 1
 
 using namespace std;
 
@@ -232,6 +232,7 @@ Reg_recorder* get_min_use_recorder()
     while (it != reg_regmap.end())
     {
         Reg_recorder* rec = it->second;
+        cout << rec->regname << " " << rec->use_count << (rec->state == OCCUPIED ? "OCC" : "") << endl;
         if (rec->state != OCCUPIED &&
             (min_use_count == -1 || rec->use_count < min_use_count))
         {
@@ -240,7 +241,7 @@ Reg_recorder* get_min_use_recorder()
         }
         it++;
     }
-    cout << "NULL:" << (rec_selected == NULL) << endl;
+    cout << "SEL" << rec_selected->regname << endl;
     return rec_selected;
 }
 
@@ -270,6 +271,7 @@ string get_reg(string name, bool is_def)
     {
         stringstream ss;
         ss << "$t" << regno;
+        cout << "========" << ss.str() << "========\n";
         rec = reg_regmap[ss.str()];
         rec->clear_and_init();
         rec->name = name; // "#?"
@@ -340,6 +342,42 @@ string get_reg(string name, bool is_def)
     return rec->regname;
 }
 
+bool is_power(int number)
+{
+    return (number & number - 1) == 0;
+}
+
+int log2(int number)
+{
+    int result = 0;
+    while (number > 1)
+    {
+        number >>= 1;
+        result++;
+    }
+    return result;
+}
+
+void output_shift_mul_div(string op, string tar, string str_cal, int num_cal)
+{
+    bool nega = num_cal < 0;
+    int pos_num_cal = nega ? -num_cal : num_cal;
+    string usereg = get_reg(str_cal, false);
+    string defreg = get_reg(tar, true);
+    if (op == "DIV")
+    {
+        MIPS_OUTPUT("sra " << defreg << ", " << usereg << ", " << log2(pos_num_cal));
+    }
+    else if (op == "MUL")
+    {
+        MIPS_OUTPUT("sll " << defreg << ", " << usereg << ", " << log2(pos_num_cal));
+    }
+    if (nega)
+    {
+        MIPS_OUTPUT("sub " << defreg << ", $0, " << defreg);
+    }
+}
+
 void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
 {
     stringstream mips;
@@ -368,11 +406,26 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
     }
     else if (op == "MUL")
     {
+        if (is_immed1 && is_power(immed1))
+        {
+            output_shift_mul_div(op, tar_str, cal_str2, immed1);
+            return;
+        }
+        if (is_immed2 && is_power(immed2))
+        {
+            output_shift_mul_div(op, tar_str, cal_str1, immed2);
+            return;
+        }
         mips << "mul";
         is_cal = true;
     }
     else if (op == "DIV")
     {
+        if (is_immed2 && is_power(immed2))
+        {
+            output_shift_mul_div(op, tar_str, cal_str1, immed2);
+            return;
+        }
         mips << "div";
         is_cal = true;
     }
@@ -428,7 +481,7 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
     }
     else
     {
-        mips << " " << get_reg(tar_str, true) << " " << name1 << " " << name2;
+        mips << " " << get_reg(tar_str, true) << ", " << name1 << ", " << name2;
     }
     MIPS_OUTPUT(mips.str());
 }

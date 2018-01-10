@@ -21,6 +21,7 @@ int use_counter = 0;
 Reg_recorder::Reg_recorder(string regname)
 {
     this->regname = regname;
+    this->state = INACTIVE;
 }
 
 void Reg_recorder::clear_and_init()
