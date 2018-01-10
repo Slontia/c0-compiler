@@ -47,6 +47,7 @@ void Reg_recorder::save()
 {
     if (this->state == MODIFIED)
     {
+        cout << "SAVE" << this->name << endl;
         // store old value
         if (this->global)
         {
@@ -196,7 +197,7 @@ void Reg_recorder::local_modi_regs(void(Reg_recorder::*func)(), bool not_reverse
         Reg_recorder* rec = it->second;
         if (is_local_var(cur_func->get_name(), cur_label, rec->name) ^ (!not_reverse))
         {
-            if (not_reverse) cout << "LOCAL" << rec->name << endl;
+            if (!not_reverse) cout << "LOCAL" << rec->name << endl;
             (rec->*func)();
         }
         it++;

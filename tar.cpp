@@ -232,7 +232,7 @@ Reg_recorder* get_min_use_recorder()
     while (it != reg_regmap.end())
     {
         Reg_recorder* rec = it->second;
-        cout << rec->regname << " " << rec->use_count << (rec->state == OCCUPIED ? "OCC" : "") << endl;
+        cout << rec->regname << " " << rec->use_count << (rec->state == OCCUPIED ? " OCC" : "" + rec->name) << endl;
         if (rec->state != OCCUPIED &&
             (min_use_count == -1 || rec->use_count < min_use_count))
         {
@@ -778,24 +778,28 @@ void readline()
         }
         else if (strs[0] == "@be" || strs[0] == "@bne")
         {
-            Reg_recorder::before_branch_jump();
             string br_op = "";
-            if (strs[0] == "@be") br_op = "beq ";
-            else if (strs[0] == "@bne") br_op = "bne ";
+            string name1 = "";
+            string name2 = "";
+            if (strs[0] == "@be") br_op = "beq";
+            else if (strs[0] == "@bne") br_op = "bne";
             if (!is_num(strs[2]))
             {
-                MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", " << get_reg(strs[2], false) << ", " << strs[3]);
-                //MIPS_OUTPUT("nop");
+                name1 = get_reg(strs[1], false);
+                name2 = get_reg(strs[2], false);
             }
             else if (strs[2] == "0")
             {
-                MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", $0, " << strs[3]);
-                //MIPS_OUTPUT("nop");
+                name1 = get_reg(strs[1], false);
+                name2 = "$0";
             }
             else
             {
-                MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", " << strs[2] << ", " << strs[3]);
+                name1 = get_reg(strs[1], false);
+                name2 = strs[2];
             }
+            Reg_recorder::before_branch_jump();
+            MIPS_OUTPUT(br_op << " " << name1 << ", " << name2 << ", " << strs[3]);
         }
         else if (strs[0] == "@bz")
         {
