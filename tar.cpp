@@ -20,7 +20,7 @@
 #include "medi.h"
 #include "reg_recorder.h"
 #include "livevar_ana.h"
-# define OUTPUT_MEDI 0
+# define OUTPUT_MEDI 1
 
 using namespace std;
 
@@ -744,7 +744,7 @@ void call_tar(string funcname)
         MIPS_OUTPUT("addi $fp, $fp, " << fp_offset);
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
-        MIPS_OUTPUT("nop");
+        //MIPS_OUTPUT("nop");
         // load regs
 
         MIPS_OUTPUT("addi $fp, $fp, -" << fp_offset);
@@ -759,7 +759,7 @@ void call_tar(string funcname)
         MIPS_OUTPUT("add $fp, $fp, $gp");
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
-        MIPS_OUTPUT("nop");
+        //MIPS_OUTPUT("nop");
         MIPS_OUTPUT("li $v0, 10");
         MIPS_OUTPUT("syscall");
     }
@@ -839,20 +839,24 @@ void readline()
             Reg_recorder::init_all();
             Reg_recorder::save_global_modi_regs();
             MIPS_OUTPUT("jr $ra");
-            MIPS_OUTPUT("nop");
+            //MIPS_OUTPUT("nop");
         }
-        else if (strs[0] == "@be")
+        else if (strs[0] == "@be" || strs[0] == "@bne")
         {
             Reg_recorder::init_var_occu_regs();
             Reg_recorder::save_modi_regs();
+            string br_op = "";
+            if (strs[0] == "@be") br_op = "beq ";
+            else if (strs[0] == "@bne") br_op = "bne ";
             if (!is_num(strs[2]))
             {
-                error_debug("be not num");
+                MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", " << get_reg(strs[2], false) << ", " << strs[3]);
+                //MIPS_OUTPUT("nop");
             }
             else
             {
-                MIPS_OUTPUT("beq " << get_reg(strs[1], false) << ", " << strs[2] << ", " << strs[3]);
-                MIPS_OUTPUT("nop");
+                MIPS_OUTPUT(br_op << get_reg(strs[1], false) << ", " << strs[2] << ", " << strs[3]);
+                //MIPS_OUTPUT("nop");
             }
         }
         else if (strs[0] == "@bz")
@@ -860,21 +864,28 @@ void readline()
             Reg_recorder::init_var_occu_regs();
             Reg_recorder::save_modi_regs();
             MIPS_OUTPUT("beq " << get_reg(strs[1], false) << ", $0, " << strs[2]);
-            MIPS_OUTPUT("nop");
+            //MIPS_OUTPUT("nop");
+        }
+        else if (strs[0] == "@bgtz" || strs[0] == "@bgez" ||
+                 strs[0] == "@blez" || strs[0] == "@bltz")
+        {
+            Reg_recorder::init_var_occu_regs();
+            Reg_recorder::save_modi_regs();
+            MIPS_OUTPUT(strs[0].substr(1) << " " << get_reg(strs[1], false) << ", " << strs[2]);
         }
         else if (strs[0] == "@j")
         {
             Reg_recorder::init_var_occu_regs();
             Reg_recorder::save_modi_regs();
             MIPS_OUTPUT("j " << strs[1]);
-            MIPS_OUTPUT("nop");
+            //MIPS_OUTPUT("nop");
         }
         else if (strs[0] == "@jal")
         {
             Reg_recorder::init_var_occu_regs();
             Reg_recorder::save_modi_regs();
             MIPS_OUTPUT("jal " << strs[1]);
-            MIPS_OUTPUT("nop");
+            //MIPS_OUTPUT("nop");
         }
         else if (strs[0] == "@printf")
         {

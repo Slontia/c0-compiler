@@ -7,6 +7,7 @@
 #include "dag_opt.h"
 #include "ass_opt.h"
 #include "livevar_ana.h"
+#include "rem_opt.h"
 #define INPUT_FILENAME 1
 #define CACHE_SIZE 3
 #define FILE_PATH "./output/"
@@ -61,6 +62,7 @@ int main()
         filename = dag_main(filename);
         filename = ass_main(filename, &line_count_cache[0]);
     } while (!output_is_stable());
+    filename = brjp_main(filename);
     filename = livevar_main(filename);
     filename = tar_main(filename);
     return 0;

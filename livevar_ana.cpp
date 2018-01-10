@@ -626,7 +626,7 @@ void livevar_read_medis()
                 cur_cblock->try_use(strs[1]);
             }
         }
-        else if (strs[0] == "@be")
+        else if (strs[0] == "@be" || strs[0] == "@bne")
         {
             cur_cblock->try_use(strs[1]);
             cur_cblock->try_use(strs[2]);
@@ -635,7 +635,8 @@ void livevar_read_medis()
             link_code_blocks(cur_cblock, get_code_block(temp_label));
             turn_next_block(temp_label);
         }
-        else if (strs[0] == "@bz")
+        else if (strs[0] == "@bz" || strs[0] == "@bgtz" || strs[0] == "@bltz" ||
+                 strs[0] == "@blez" || strs[0] == "@bgez")
         {
             cur_cblock->try_use(strs[1]);
             link_code_blocks(cur_cblock, get_code_block(strs[2]));
