@@ -691,6 +691,7 @@ void call_tar(string funcname)
         MIPS_OUTPUT("addi $sp, $sp, -" << stack_offset);
         MIPS_OUTPUT("sw $ra, 0($sp)");
         Reg_recorder::save_occu_regs(&reg_save_list, store_count * 4);
+        Reg_recorder::save_global_modi_regs();
         Reg_recorder::init_all();
 
         // refresh $fp

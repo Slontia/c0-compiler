@@ -8,9 +8,11 @@
 #include "ass_opt.h"
 #include "livevar_ana.h"
 #include "rem_opt.h"
+#include "c0_compiler.h"
 #define INPUT_FILENAME 1
 #define CACHE_SIZE 3
 #define FILE_PATH "./output/"
+#define AUTO_TEST 0
 
 using namespace std;
 
@@ -49,11 +51,15 @@ string get_tarname()
 
 int main()
 {
-    string filename = "prog01.txt";
-    if (INPUT_FILENAME)
+    string filename = "";
+    if (!AUTO_TEST)
     {
         cout << "Enter the filename:" << endl;
         cin >> filename;
+    }
+    else
+    {
+        filename = creator_main();
     }
     filename = gram_main(filename);
     if (!success) return 0;

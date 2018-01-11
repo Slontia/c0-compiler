@@ -1,62 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="rem_opt.cpp" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="7" zoom_2="0">
+	<File name="gram.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2707" topLine="113" />
+			<Cursor1 position="312" topLine="2" />
 		</Cursor>
 	</File>
-	<File name="rem_opt.h" open="1" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="gram.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="170" topLine="0" />
+			<Cursor1 position="716" topLine="24" />
 		</Cursor>
 	</File>
-	<File name="ass_opt.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
+	<File name="item.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="14884" topLine="6" />
+			<Cursor1 position="3808" topLine="180" />
 		</Cursor>
 	</File>
-	<File name="dag_opt.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="13794" topLine="533" />
-		</Cursor>
-	</File>
-	<File name="gram.cpp" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="548" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ass_opt.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="126" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="dag_opt.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1086" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="gram.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="212" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="item.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3806" topLine="193" />
-		</Cursor>
-	</File>
-	<File name="item.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+	<File name="item.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="622" topLine="77" />
 		</Cursor>
 	</File>
-	<File name="lexical.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="lexical.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7719" topLine="448" />
+			<Cursor1 position="1177" topLine="42" />
 		</Cursor>
 	</File>
-	<File name="lexical.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="medi.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2124" topLine="77" />
+		</Cursor>
+	</File>
+	<File name="lexical.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="322" topLine="0" />
 		</Cursor>
@@ -66,39 +41,14 @@
 			<Cursor1 position="1970" topLine="46" />
 		</Cursor>
 	</File>
-	<File name="livevar_ana.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1572" topLine="42" />
-		</Cursor>
-	</File>
-	<File name="reg_recorder.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5207" topLine="204" />
-		</Cursor>
-	</File>
-	<File name="livevar_ana.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1136" topLine="27" />
-		</Cursor>
-	</File>
-	<File name="reg_recorder.h" open="1" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="668" topLine="8" />
-		</Cursor>
-	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="572" topLine="19" />
+			<Cursor1 position="225" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="tar.cpp" open="1" top="1" tabpos="13" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
+	<File name="tar.cpp" open="1" top="1" tabpos="8" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11183" topLine="421" />
-		</Cursor>
-	</File>
-	<File name="medi.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2337" topLine="89" />
+			<Cursor1 position="17396" topLine="687" />
 		</Cursor>
 	</File>
 	<File name="tar.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
@@ -106,9 +56,9 @@
 			<Cursor1 position="918" topLine="12" />
 		</Cursor>
 	</File>
-	<File name="vars.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="vars.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="197" topLine="3" />
+			<Cursor1 position="197" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

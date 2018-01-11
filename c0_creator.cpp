@@ -8,8 +8,8 @@
 
 #define ARRAY_LEN 2
 #define MAX_POINT 100
-#define IF_INS_COUNT 0
-#define FUNC_INS_COUNT 10
+#define IF_INS_COUNT 10
+#define FUNC_INS_COUNT 30
 #define VAR_MIN -5
 #define VAR_RANGE 10
 #define PARA_MIN -5
@@ -41,12 +41,12 @@ using namespace std;
 
 string cal_ops[] = {"+", "-", "*"};
 string comp_ops[] = {"<", ">", "<=", ">=", "==", "!="};
-string global_vars[GLOBAL_VAR_COUNT];
+string glo_vars[GLOBAL_VAR_COUNT];
 string global_arrays[GLOBAL_ARRAY_COUNT];
 string local_vars[LOCAL_VAR_COUNT];
 string local_arrays[LOCAL_ARRAY_COUNT];
 string funcnames[FUNC_COUNT];
-string paras[PARA_COUNT];
+string parameters[PARA_COUNT];
 
 ofstream ftxt;
 ofstream fcpp;
@@ -62,12 +62,12 @@ void init_string_array(T (&ar)[N], string head, char no = 'a')
 
 void init()
 {
-	init_string_array(global_vars, "g_ar_");
+	init_string_array(glo_vars, "g_ar_");
 	init_string_array(global_arrays, "g_");
 	init_string_array(local_vars, "ar_");
 	init_string_array(local_arrays, "");
 	init_string_array(funcnames, "foo", '0');
-	init_string_array(paras, "para_");
+	init_string_array(parameters, "para_");
 }
 
 int get_random_num(int range, int lower = 0)
@@ -125,7 +125,7 @@ public:
 void print_immed()
 {
 	int a = get_random_num(IMMED_RANGE, IMMED_MIN);
-    OUTPUT(a); 
+    OUTPUT(a);
 }
 
 int get_index()
@@ -148,7 +148,7 @@ void print_array()
 
 void print_global_var()
 {
-	string var = get_random_ele(global_vars);
+	string var = get_random_ele(glo_vars);
     OUTPUT(var)
 }
 
@@ -160,7 +160,7 @@ void print_local_var()
 
 void print_para_var()
 {
-	string var = get_random_ele(paras);
+	string var = get_random_ele(parameters);
     OUTPUT(var)
 }
 
@@ -356,7 +356,7 @@ void print_array_results(string (&ar)[N])
 		for (int j = 0; j < ARRAY_LEN; j++)
 		{
 			ftxt << "printf(\" \", " << ar[i] << "[" << j << "]);" << endl;
-			fcpp << "cout << \" \" << " << ar[i] << "[" << j << "];" << endl;			
+			fcpp << "cout << \" \" << " << ar[i] << "[" << j << "];" << endl;
 		}
 	}
 }
@@ -369,8 +369,8 @@ void print_println()
 
 void print_print_all()
 {
-	print_print_string("\\nglobal_vars:");
-	print_var_results(global_vars);
+	print_print_string("\\nglo_vars:");
+	print_var_results(glo_vars);
 	print_println();
 	print_print_string("global_arrays:");
 	print_array_results(global_arrays);
@@ -386,13 +386,13 @@ void print_print_all()
 void print_function(string funcname)
 {
     OUTPUT("int " << funcname)
-    int len = sizeof(paras) / sizeof(paras[0]);
+    int len = sizeof(parameters) / sizeof(parameters[0]);
     if (len != 0)
     {
-        OUTPUT("(int " << paras[0]);
+        OUTPUT("(int " << parameters[0]);
         for (int i = 1; i < len; i++)
         {
-            OUTPUT(", int " << paras[i]);
+            OUTPUT(", int " << parameters[i]);
         }
         OUTPUT(")" << endl << "{" << endl);
     }
@@ -401,7 +401,7 @@ void print_function(string funcname)
     print_init_vars(local_vars);
     print_init_arrays(local_arrays);
     print_instructors(FUNC_INS_COUNT);
-    print_print_all(); 
+    print_print_all();
     print_return();
     OUTPUT("}");
 }
@@ -411,7 +411,7 @@ void print_main()
 	ftxt << "void ";
 	fcpp << "int ";
 	OUTPUT("main()" << endl << "{" << endl)
-	print_init_vars(global_vars);
+	print_init_vars(glo_vars);
 	print_init_arrays(global_arrays);
 	//OUTPUT(funcnames[0] << "(" << get_random_num(PARA_RANGE, PARA_MIN) << ", " << get_random_num(PARA_RANGE, PARA_MIN) << ");" << endl)
 	print_call(funcnames[0]);
@@ -432,7 +432,7 @@ void print_if()
 void print_prog()
 {
 	fcpp << "#include<iostream>\nusing namespace std;\n";
-    print_declare_vars(global_vars);
+    print_declare_vars(glo_vars);
     print_declare_arrays(global_arrays);
     OUTPUT(endl)
 	print_function(funcnames[0]);
@@ -440,7 +440,7 @@ void print_prog()
 	print_main();
 }
 
-int main()
+string creator_main()
 {
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < 1; i++)
@@ -450,12 +450,13 @@ int main()
 		ss_cpp << "prog_" << i << ".cpp";
 		ftxt.open(ss_txt.str().c_str());
 		fcpp.open(ss_cpp.str().c_str());
-		
+
 		init();
 		print_prog();
-		
+
 		ftxt.close();
 		fcpp.close();
 	}
+	return "prog_0.txt";
 }
 
