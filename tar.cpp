@@ -880,6 +880,13 @@ void readline()
         {
 
         }
+        else if (strs[0] == "@free")
+        {
+            if (has_name(strs[1]))
+            {
+                name_regmap[strs[1]]->init();
+            }
+        }
         else
         {
             name_handle(strs);

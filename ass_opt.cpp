@@ -258,7 +258,43 @@ void save_vars()
     }
 }
 
-void output_medis(bool is_return = false)
+void snatch_new_temp(string oldtemp, string newtemp)
+{
+    TEMP_MAP::iterator it = temp_map.begin();
+    while (it != temp_map.end())
+    {
+        string cur_newtemp = it->second;
+        if (cur_newtemp == newtemp)
+        {
+            temp_map.erase(it);
+            break;
+        }
+        it++;
+    }
+    temp_map.insert(TEMP_MAP::value_type(oldtemp, newtemp));
+}
+
+bool is_last_use(string oldname, int lineno)
+{
+    vector<string>::iterator it = line_map[lineno]->last_use_names.begin();
+    while (it != line_map[lineno]->last_use_names.end())
+    {
+        if (*it == oldname) // found
+        {
+            return true;
+        }
+        it++;
+    }
+    return false;
+}
+
+template <class A, class B>
+bool has_key(const map<A, B> &m, const A key)
+{
+    return (m.find(key) != m.end());
+}
+
+void set_last_use_before_output(bool is_return)
 {
     BLOCK_MAP::iterator it = block_map.begin();
     while (it != block_map.end())
@@ -276,6 +312,11 @@ void output_medis(bool is_return = false)
         }
         it++;
     }
+}
+
+void output_medis(bool is_return = false)
+{
+    set_last_use_before_output(is_return);
 
     string line;
     int l = 0;
@@ -292,26 +333,76 @@ void output_medis(bool is_return = false)
             stringstream ss;
             string str;
             is >> str;
+            TEMP_MAP cur_temp_map;
+            string def_oldtemp = "";
+            bool def_got_temp = true;
             if (IS_TEMP(str))
             {
-                str = get_new_temp(str);
+                def_oldtemp = str;
+                def_got_temp = false;
+            }
+            // read line
+            while (is >> str)
+            {
+                // got temp
+                if (IS_TEMP(str) && !has_key(cur_temp_map, str))
+                {
+                    // insert into map
+                    cur_temp_map.insert(TEMP_MAP::value_type
+                        (str, get_new_temp(str)));
+                    // if 'def' = 'use'
+                    if (def_oldtemp == str)
+                    {
+                        def_got_temp = true;
+                    }
+                }
+            }
+            // clear list use temp
+            TEMP_MAP::iterator it = cur_temp_map.begin();
+            while (it != cur_temp_map.end())
+            {
+                string old_temp = it->first;
+                string new_temp = it->second;
+                // 'def' have not got temp and can got now
+                if (!def_got_temp && is_last_use(old_temp, l))
+                {
+                    // change temp map
+                    snatch_new_temp(def_oldtemp, new_temp);
+                    // insert into cur temp map
+                    cur_temp_map.insert(TEMP_MAP::value_type(def_oldtemp, new_temp));
+                    def_got_temp = true;
+                }
+                else
+                {
+                    // remove key 'old temp' from temp map
+                    remove_temp(old_temp);
+                }
+                it++;
+            }
+            if (!def_got_temp)
+            {
+                cur_temp_map.insert(TEMP_MAP::value_type(def_oldtemp, get_new_temp(def_oldtemp)));
+            }
+            // reset istringstream
+            is.clear();
+            is.str(line);
+            is >> str;
+            if (IS_TEMP(str))
+            {
+                str = cur_temp_map[str];
             }
             ss << str;
+            // read and output
             while (is >> str)
             {
                 ss << " ";
                 if (IS_TEMP(str))
                 {
-                    str = get_new_temp(str);
+                    str = cur_temp_map[str];
                 }
                 ss << str;
             }
             MIPS_OUTPUT(ss.str());
-            int len = line_map[l]->last_use_names.size();
-            for (int i = 0; i < len; i++)
-            {
-                remove_temp(line_map[l]->last_use_names[i]);
-            }
         }
         l++;
     }
@@ -527,6 +618,7 @@ void ass_read_medis()
             init_blocks();
             MIPS_OUTPUT(line);
         }
+        else if (strs[0] == "@free") {}
         else if (strs[1] == ":")
         {
             // output | stop

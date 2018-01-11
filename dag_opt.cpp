@@ -10,7 +10,7 @@
 #include "gram.h"
 #include "item.h"
 #define IS_VAR(name) (name[0] == '_' || (name[0] >= 'a' && name[0] <= 'z'))
-#define IS_NUM(name) (name[0] >= '0' && name[0] <= '9' || name[0] == '-')
+#define IS_NUM(name) ((name[0] >= '0' && name[0] <= '9') || name[0] == '-')
 #define IS_GLOBAL_VAR(name) !cur_func_DAG->has_var(name) && global_vars.find(name) != global_vars.end()
 #define GET_NEW_NAME(name) (get_name(node_map[name]))
 # define DEBUG 0
@@ -370,7 +370,7 @@ void build_DAG(vector<string> code)
     }
     else
     {
-        for (int i=0;i<code.size();i++) cout << code[i] << " ";
+        for (unsigned int i=0;i<code.size();i++) cout << code[i] << " ";
         error_debug("cal len not 3 or 5 in dag.add_and_output");
     }
 }
@@ -527,6 +527,7 @@ void read_medis()
         {
             MIPS_OUTPUT(line);
         }
+        else if (strs[0] == "@free") {}
         else
         {
             if (strs[1] == ":")

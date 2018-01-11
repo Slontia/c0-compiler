@@ -486,7 +486,6 @@ void stack_reg_distri(int reg_max)
     {
         Var_node* vnode = *it; // will be distributed with reg
         vnode->set_regno(reg_max);
-        cout << "GOT: " << vnode->name << endl;
         flog << "=============\n" << vnode->name
              << "\t" << vnode->conflicts.size() << "\t" << vnode->regno << "\n=============\n" << endl;
         it++;
@@ -674,9 +673,8 @@ void livevar_read_medis()
         {
             cur_cblock->try_def(strs[2]);
         }
-        else if (strs[0] == "@exit")
-        {
-        }
+        else if (strs[0] == "@exit") {}
+        else if (strs[0] == "@free") {}
         else if (strs[1] == ":")
         {
             link_code_blocks(cur_cblock, get_code_block(strs[0]));
