@@ -111,7 +111,10 @@ void init_global_regs()
     map<string, Var_node*>::iterator it = vn_map->begin();
     while (it != vn_map->end())
     {
-        get_reg(it->first, false);
+        if (it->second->regno != -1)
+        {
+            get_reg(it->first, false);
+        }
         it++;
     }
 }
@@ -434,7 +437,7 @@ void cal_tar(string op, string tar_str, string cal_str1, string cal_str2)
         mips << "sle";
         is_cal = false;
     }
-    else if (op == "GE")
+    else if (op == "GE")    // >=
     {
         mips << "sge";
         is_cal = false;

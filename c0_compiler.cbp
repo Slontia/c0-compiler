@@ -49,6 +49,8 @@
 		<Unit filename="medi.h" />
 		<Unit filename="reg_recorder.cpp" />
 		<Unit filename="reg_recorder.h" />
+		<Unit filename="rem_opt.cpp" />
+		<Unit filename="rem_opt.h" />
 		<Unit filename="tar.cpp" />
 		<Unit filename="tar.h" />
 		<Unit filename="vars.h" />
