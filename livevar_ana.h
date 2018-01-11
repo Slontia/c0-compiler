@@ -19,6 +19,7 @@ public:
     Var_node(string name);
     Var_node* get_terminal_ptr();
     void set_regno(int reg_max);
+    void cut_conflicts();
 };
 
 class Code_block

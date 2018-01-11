@@ -301,6 +301,17 @@ void Var_node::set_regno(int reg_max)
     error_debug("cannot distribute!");
 }
 
+void Var_node::cut_conflicts()
+{
+    set<Var_node*>::iterator it = this->conflicts.begin();
+    while (it != this->conflicts.end()) // conflicts
+    {
+        Var_node* conf_vnode = *it;
+        conf_vnode->conf_count--; // reduce
+        it++;
+    }
+}
+
 /*====================
 |     in / out       |
 ====================*/
@@ -406,21 +417,15 @@ void init_conflict_count()
     }
 }
 
+
 // push vnode to stack, reduce conflict count of vnode in conflicts
-void push_vnode_stack(set<Var_node*>::iterator graph_it)
+void push_vnode_stack(Var_node* vnode)
 {
-    Var_node* vnode = *graph_it;
     // push stack
     var_stack.push_front(vnode);
-    var_graph.erase(graph_it);
+    var_graph.erase(vnode);
     // reduce conflict count
-    set<Var_node*>::iterator it = vnode->conflicts.begin();
-    while (it != vnode->conflicts.end()) // conflicts
-    {
-        Var_node* conf_vnode = *it;
-        conf_vnode->conf_count--; // reduce
-        it++;
-    }
+    vnode->cut_conflicts();
 }
 
 // one term of trying push vnodes into stack as many as possible
@@ -433,13 +438,10 @@ bool repush_stack(int reg_max)
         Var_node* vnode = *it;
         if (vnode->conf_count < reg_max)
         {
-            push_vnode_stack(it++);
+            push_vnode_stack(vnode);
             put = true;
         }
-        else
-        {
-            it++;
-        }
+        it++;
     }
     return put;
 }
@@ -450,9 +452,11 @@ bool repush_stack(int reg_max)
 void select_vnode_without_reg()
 {
     Var_node* vnode_remove = *(var_graph.begin()); // select one
+    cout << "REMOVE: " << vnode_remove->name << endl;
     flog << "=============\n" << vnode_remove->name
          << "\t" << vnode_remove->conflicts.size() << "\t" << vnode_remove->regno << "\n=============\n" << endl;
     var_graph.erase(vnode_remove); // remove from graph
+    vnode_remove->cut_conflicts();
 }
 
 void graph_to_stack(int reg_max)
@@ -482,6 +486,7 @@ void stack_reg_distri(int reg_max)
     {
         Var_node* vnode = *it; // will be distributed with reg
         vnode->set_regno(reg_max);
+        cout << "GOT: " << vnode->name << endl;
         flog << "=============\n" << vnode->name
              << "\t" << vnode->conflicts.size() << "\t" << vnode->regno << "\n=============\n" << endl;
         it++;

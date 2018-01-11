@@ -111,7 +111,7 @@
 	<vector>
 	"vars.h"
 
-1515607503 source:d:\projects\console\c0-compiler\tar.cpp
+1515643714 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -412,7 +412,7 @@
 
 1515395783 d:\projects\console\c0-compiler\ass_opt.h
 
-1515602084 source:d:\projects\console\c0-compiler\livevar_ana.cpp
+1515644522 source:d:\projects\console\c0-compiler\livevar_ana.cpp
 	<iostream>
 	<vector>
 	<map>
@@ -426,11 +426,11 @@
 	"lexical.h"
 	"livevar_ana.h"
 
-1515602084 d:\projects\console\c0-compiler\livevar_ana.h
+1515644227 d:\projects\console\c0-compiler\livevar_ana.h
 	<iostream>
 	<set>
 
-1515603209 source:d:\projects\console\c0-compiler\reg_recorder.cpp
+1515643739 source:d:\projects\console\c0-compiler\reg_recorder.cpp
 	<iostream>
 	"tar.h"
 	"vars.h"

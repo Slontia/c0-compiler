@@ -235,7 +235,7 @@ Reg_recorder* get_min_use_recorder()
     while (it != reg_regmap.end())
     {
         Reg_recorder* rec = it->second;
-        cout << rec->regname << " " << rec->use_count << (rec->state == OCCUPIED ? " OCC" : "" + rec->name) << endl;
+        // cout << rec->regname << " " << rec->use_count << (rec->state == OCCUPIED ? " OCC" : "" + rec->name) << endl;
         if (rec->state != OCCUPIED &&
             (min_use_count == -1 || rec->use_count < min_use_count))
         {
@@ -244,7 +244,7 @@ Reg_recorder* get_min_use_recorder()
         }
         it++;
     }
-    cout << "SEL" << rec_selected->regname << endl;
+    // cout << "SEL" << rec_selected->regname << endl;
     return rec_selected;
 }
 
@@ -258,7 +258,7 @@ string get_reg(string name, bool is_def)
     // has register
     if (has_name(name))
     {
-        cout << "HAS:" << name << endl;
+        // cout << "HAS:" << name << endl;
         rec = name_regmap[name];
         rec->use_count = use_counter++;
         if (rec->state == INACTIVE && is_def) // value may be modified
@@ -274,7 +274,7 @@ string get_reg(string name, bool is_def)
     {
         stringstream ss;
         ss << "$t" << regno;
-        cout << "========" << ss.str() << "========\n";
+        // cout << "========" << ss.str() << "========\n";
         rec = reg_regmap[ss.str()];
         rec->clear_and_init();
         rec->name = name; // "#?"
