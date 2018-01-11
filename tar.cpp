@@ -220,7 +220,15 @@ void assign_para_tar(string paraname)
 {
     para_read_count ++;
     int addr = - para_read_count * 4;
-    MIPS_OUTPUT("lw " << get_reg(paraname, true) << ", " << addr << "($fp)");
+    if (para_read_count <= 4)
+    {
+        MIPS_OUTPUT("move, " << get_reg(paraname, true) << ", $a" << para_read_count - 1);
+    }
+    else
+    {
+        MIPS_OUTPUT("lw " << get_reg(paraname, true) << ", " << addr << "($fp)");
+    }
+
 }
 
 bool is_global_var(string name)
@@ -240,12 +248,13 @@ Reg_recorder* get_min_use_recorder()
         if (rec->state != OCCUPIED &&
             (min_use_count == -1 || rec->use_count < min_use_count))
         {
+            cout << rec->regname;
             min_use_count = rec->use_count;
             rec_selected = rec;
         }
         it++;
     }
-    // cout << "SEL" << rec_selected->regname << endl;
+    cout << "SEL" << rec_selected->regname << endl;
     return rec_selected;
 }
 
@@ -255,8 +264,15 @@ bool set_has_ele(const set<T> &s, const T ele)
     return (s.find(ele) != s.end());
 }
 
+string free_name = "";
+
 string get_reg(string name, bool is_def)
 {
+    if (name == "#9")
+    {
+        cout << (reg_regmap["$t0"]->state == OCCUPIED);
+        cout << "WAIT" << endl;
+    }
     if (name == "0")
     {
         return "$0";
@@ -278,7 +294,14 @@ string get_reg(string name, bool is_def)
         }
         if (set_has_ele(free_temp_set, name)) // @free
         {
-            rec->state = INACTIVE;
+            cout << name << " " << rec->regname << endl;
+            if (rec->regname == "$t0")
+            {
+                cout << " " ;
+            }
+            //rec->state = INACTIVE;
+            //free_temp_set.erase(name);
+            free_name = name;
         }
         return rec->regname;
     }
@@ -287,6 +310,8 @@ string get_reg(string name, bool is_def)
     if (is_temp(name) &&
         (regno = get_temp_no(name)) < temp_max)
     {
+        if (name == "#0")
+            cout << "YES" << endl;
         stringstream ss;
         ss << "$t" << regno;
         // cout << "========" << ss.str() << "========\n";
@@ -356,6 +381,8 @@ string get_reg(string name, bool is_def)
     {
         rec->load();
     }
+    if (name == "#9") cout << rec->regname << " " << (rec->state == OCCUPIED) << endl;
+    cout << ((reg_regmap["$t0"]->state == OCCUPIED) ? "true" : "false") << endl;
     name_regmap.insert(REG_MAP::value_type(name, rec));
     return rec->regname;
 }
@@ -676,12 +703,19 @@ void call_tar(string funcname)
     {
         // store paras
         int len = get_func(funcname)->get_para_count();
-        for (int i = 0; i < len; i++)
+        int i;
+        for (i = 0; i < len - 4; i++)
         {
             int addr = cur_addr + i * 4;
             string paraname = paras.back();
             paras.pop_back();
             MIPS_OUTPUT("sw " << get_reg(paraname, false) << ", " << addr << "($fp)");
+        }
+        for (; i < len; i++)
+        {
+            string paraname = paras.back();
+            paras.pop_back();
+            MIPS_OUTPUT("move $a" << len-i-1 << ", " << get_reg(paraname, false));
         }
         // save regs
         list<string> reg_save_list;
@@ -898,11 +932,18 @@ void readline()
         }
         else if (strs[0] == "@free")
         {
+            if (!is_temp(strs[0]) || get_temp_no(strs[0]) >= temp_max)
             free_temp_set.insert(strs[1]);
         }
         else
         {
             name_handle(strs);
+        }
+        if (free_name != "")
+        {
+            free_temp_set.erase(free_name);
+            name_regmap.erase(free_name);
+            free_name = "";
         }
     }
 }

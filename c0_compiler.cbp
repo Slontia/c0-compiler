@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="ass_opt.cpp" />
 		<Unit filename="ass_opt.h" />
+		<Unit filename="c0_creator.cpp" />
+		<Unit filename="c0_creator.h" />
 		<Unit filename="dag_opt.cpp" />
 		<Unit filename="dag_opt.h" />
 		<Unit filename="gram.cpp" />

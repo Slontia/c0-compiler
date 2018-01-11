@@ -41,6 +41,10 @@ void Reg_recorder::init()
     // init
     this->name = "";
     this->state = INACTIVE;
+    if (this->regname == "$t0")
+    {
+        cout << "NO!" << endl;
+    }
 }
 
 void Reg_recorder::save()

@@ -8,7 +8,7 @@
 
 #define ARRAY_LEN 2
 #define MAX_POINT 100
-#define IF_INS_COUNT 10
+#define IF_INS_COUNT 1
 #define FUNC_INS_COUNT 30
 #define VAR_MIN -5
 #define VAR_RANGE 10
@@ -18,18 +18,12 @@
 #define IMMED_RANGE 10
 
 
-#define PARA_COUNT_INPUT 2
-
+#define PARA_COUNT 5
 #define FUNC_COUNT 4
 #define LOCAL_ARRAY_COUNT 2
 #define LOCAL_VAR_COUNT 3
 #define GLOBAL_ARRAY_COUNT 2
 #define GLOBAL_VAR_COUNT 3
-#if (PARA_COUNT_INPUT > LOCAL_VAR_COUNT)
-#define PARA_COUNT LOCAL_VAR_COUNT
-#else
-#define PARA_COUNT PARA_COUNT_INPUT
-#endif
 
 #define DEBUG 0
 #if DEBUG
@@ -180,14 +174,8 @@ void print_item(bool to_use)
 {
     typedef void(*handle)();
     RandomGetter<handle> rgetter;
-    /*
     rgetter.put(print_array, to_use ? 30 : 60);
     rgetter.put(print_var, to_use ? 30 : 40);
-    rgetter.put(print_immed, to_use ? 15 : 0);
-    rgetter.put(print_expression, to_use ? 15 : 0);
-    */
-    rgetter.put(print_array, to_use ? 0 : 0);
-    rgetter.put(print_var, to_use ? 70 : 100);
     rgetter.put(print_immed, to_use ? 15 : 0);
     rgetter.put(print_expression, to_use ? 15 : 0);
     void (*func)() = rgetter.get();
@@ -251,7 +239,8 @@ void print_assign()
 
 void print_comp_op()
 {
-    OUTPUT(get_random_ele(comp_ops))
+    string op = get_random_ele(comp_ops);
+    OUTPUT(op)
 }
 
 void print_conf()
@@ -280,8 +269,8 @@ void print_instructors(int count)
     {
         typedef void(*handle)();
         RandomGetter<handle> rgetter;
-        rgetter.put(print_assign, 85);
-        rgetter.put(print_if, 5);
+        rgetter.put(print_assign, 75);
+        rgetter.put(print_if, 15);
         rgetter.put(print_printf, 10);
         (*(rgetter.get()))();
     }
@@ -333,8 +322,11 @@ void print_call(string funcname)
 {
 	OUTPUT(funcname << "(")
 	print_immed();
-	OUTPUT(", ");
-	print_immed();
+	for (int i = 1; i < PARA_COUNT; i++)
+    {
+    	OUTPUT(", ");
+        print_immed();
+    }
 	OUTPUT(");" << endl);
 }
 

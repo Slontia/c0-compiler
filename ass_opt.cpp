@@ -505,7 +505,7 @@ void expre_opt(vector<string>* strs)
         strs->push_back(tar);
         strs->push_back("=");
         strs->push_back(result);
-        if (!outed) cout << tar <<" = " << result << endl;
+        // if (!outed) cout << tar <<" = " << result << endl;
     }
 }
 
@@ -649,11 +649,8 @@ void ass_read_medis()
         else if (strs.size() == 3 && !skip)
         {
             // def | use
-            //strs[2] = use(strs[2]);
             line_map[lineno] = new Line(false);
             strs[2] = def(lineno, strs[0], strs[2]);
-            if (!outed) cout << "GOT: " << strs[2] << endl;
-            //def(lineno, strs[0]);
             store_medi(strs);
         }
         else if (strs.size() == 5 && !skip)

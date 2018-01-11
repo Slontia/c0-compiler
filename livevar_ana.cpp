@@ -419,11 +419,12 @@ void init_conflict_count()
 
 
 // push vnode to stack, reduce conflict count of vnode in conflicts
-void push_vnode_stack(Var_node* vnode)
+void push_vnode_stack(set<Var_node*>::iterator it)
 {
+    Var_node* vnode = *it;
     // push stack
     var_stack.push_front(vnode);
-    var_graph.erase(vnode);
+    var_graph.erase(it);
     // reduce conflict count
     vnode->cut_conflicts();
 }
@@ -438,10 +439,13 @@ bool repush_stack(int reg_max)
         Var_node* vnode = *it;
         if (vnode->conf_count < reg_max)
         {
-            push_vnode_stack(vnode);
+            push_vnode_stack(it++);
             put = true;
         }
-        it++;
+        else
+        {
+            it++;
+        }
     }
     return put;
 }
