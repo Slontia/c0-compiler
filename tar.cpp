@@ -261,6 +261,10 @@ string get_reg(string name, bool is_def)
     {
         return "$0";
     }
+    if (name == "$at")
+    {
+        return "$at";
+    }
     Reg_recorder* rec = NULL;
     // has register
     if (has_name(name))

@@ -62,8 +62,8 @@ int main()
         filename = dag_main(filename);
         filename = ass_main(filename, &line_count_cache[0]);
     } while (!output_is_stable());
-    filename = brjp_main(filename);
     filename = livevar_main(filename);
+    filename = brjp_main(filename);
     filename = tar_main(filename);
     return 0;
 }

@@ -64,6 +64,13 @@ bool try_store_conf(vector<string> conf_strs)
             conf_rec.tar = tar;
             conf_rec.branch_head = (string)"@bltz " + cal1;
         }
+        else
+        {
+            store = true;
+            conf_rec.tar = tar;
+            string sub_str = "$at = " + cal1 + " SUB " + cal2;
+            conf_rec.branch_head = sub_str + "\n@bltz $at";
+        }
     }
     else if (op == "LE")
     {
@@ -78,6 +85,13 @@ bool try_store_conf(vector<string> conf_strs)
             store = true;
             conf_rec.tar = tar;
             conf_rec.branch_head = (string)"@bgtz " + cal1;
+        }
+        else
+        {
+            store = true;
+            conf_rec.tar = tar;
+            string sub_str = "$at = " + cal1 + " SUB " + cal2;
+            conf_rec.branch_head = sub_str + "\n@bgtz $at";
         }
     }
     else if (op == "GT")

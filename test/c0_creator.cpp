@@ -5,10 +5,24 @@
 #include <time.h>
 #include <fstream>
 #include <sstream>
+
 #define ARRAY_LEN 2
 #define MAX_POINT 100
 #define IF_INS_COUNT 10
 #define FUNC_INS_COUNT 30
+
+#define PARA_COUNT_INPUT 2
+#if PARA_COUNT_INPUT > 1
+
+#else
+
+#endif
+#define FUNC_COUNT 4
+#define LOCAL_ARRAY_COUNT 2
+#define LOCAL_VAR_COUNT 3
+#define GLOBAL_ARRAY_COUNT 2
+#define GLOBAL_VAR_COUNT 3
+
 #define DEBUG 0
 #if DEBUG
 #define OUTPUT(stream) cout << stream;
@@ -17,17 +31,36 @@
 #endif
 using namespace std;
 
-string global_vars[] = {"glo_a", "glo_b", "glo_c"};
-string global_arrays[] = {"glo_array_a", "glo_array_b"};
-string local_vars[] = {"a", "b", "c"};
-string local_arrays[] = {"array_a", "array_b"};
 string cal_ops[] = {"+", "-", "*"};
 string comp_ops[] = {"<", ">", "<=", ">=", "==", "!="};
-string funcnames[] = {"foo1", "foo2", "foo3", "foo4"};
-string paras[] = {"para_a", "para_b"};
+string global_vars[GLOBAL_VAR_COUNT];
+string global_arrays[GLOBAL_ARRAY_COUNT];
+string local_vars[LOCAL_VAR_COUNT];
+string local_arrays[LOCAL_ARRAY_COUNT];
+string funcnames[FUNC_COUNT];
+string paras[PARA_COUNT];
 
 ofstream ftxt;
 ofstream fcpp;
+
+template<class T,int N>
+void init_string_array(T (&ar)[N], string head, char no = 'a')
+{
+	for (int i = 0; i < N; i++)
+	{
+		paras[i] = head + (char)(no + i);
+	}
+}
+
+void init()
+{
+	init_string_array(global_vars, "g_ar_")
+	init_string_array(global_arrays, "g_")
+	init_string_array(local_vars)
+	init_string_array(local_arrays, "")
+	init_string_array(funcnames, "foo", '0');
+	init_string_array(paras, "para_");
+}
 
 int get_random_num(int range, int lower = 0)
 {
@@ -40,7 +73,7 @@ bool get_random_bool()
 }
 
 template<class T,int N>
-T get_random_ele( T (&ia)[N])
+T get_random_ele(T (&ia)[N])
 {
     int index = get_random_num(N);
     return ia[index];
@@ -281,6 +314,12 @@ void print_function(string funcname)
     print_return();
     OUTPUT("}");
 }
+
+void print_parameters()
+{
+	OUTPUT("(")
+	for (int i = 0; i < ARRAY) 
+} 
 
 void print_main()
 {

@@ -41,7 +41,7 @@
 	<iostream>
 	<fstream>
 
-1515434113 source:d:\projects\console\c0-compiler\lexical.cpp
+1515668836 source:d:\projects\console\c0-compiler\lexical.cpp
 	<iostream>
 	<string.h>
 	<cstdlib>
@@ -51,7 +51,7 @@
 	<iostream>
 	<fstream>
 
-1515660879 source:d:\projects\console\c0-compiler\main.cpp
+1515665944 source:d:\projects\console\c0-compiler\main.cpp
 	<iostream>
 	<sstream>
 	"lexical.h"
@@ -111,7 +111,7 @@
 	<vector>
 	"vars.h"
 
-1515660879 source:d:\projects\console\c0-compiler\tar.cpp
+1515666695 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -399,7 +399,7 @@
 	<map>
 	<vector>
 
-1515664167 source:d:\projects\console\c0-compiler\ass_opt.cpp
+1515673933 source:d:\projects\console\c0-compiler\ass_opt.cpp
 	<iostream>
 	<map>
 	"vars.h"
@@ -444,7 +444,7 @@
 	<list>
 	"vars.h"
 
-1515575534 source:d:\projects\console\c0-compiler\rem_opt.cpp
+1515666640 source:d:\projects\console\c0-compiler\rem_opt.cpp
 	<iostream>
 	<list>
 	<vector>

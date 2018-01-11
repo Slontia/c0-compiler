@@ -29,7 +29,7 @@ void error_debug(string info)
 
 void error(string info)
 {
-    cout << "[ERROR] " << info << endl;
+    cout << "[ERROR] " << info << " in " << error_line << endl;
     success = false;
     if (OUTPUT_ERROR_C) cout << (int)cur_c;
     if (ERROR_EXIT) exit(0);

@@ -106,7 +106,7 @@ bool has_block(string name)
  *  usename == "" => nature = NULL
  *  usename != "" => nature = get_block(usename)
  */
-void def(int line, string defname, string usename = "")
+string def(int line, string defname, string usename = "")
 {
     Block* defblock = NULL;
     if (has_block(defname))
@@ -142,13 +142,18 @@ void def(int line, string defname, string usename = "")
     }
     else if (has_block(usename))    // assign
     {
+        //cout << usename << " ";
         defblock->nature = block_map[usename];
+        return defblock->get_nature()->name;
     }
     else    // assign
     {
+        //cout << usename << " ";
         defblock->nature = new Block(-1, usename);
         block_map[usename] = defblock->nature;
+        return defblock->get_nature()->name;
     }
+    return "";
 }
 
 /* @REQUIRES:
@@ -272,7 +277,7 @@ void snatch_new_temp(string oldtemp, string newtemp)
         }
         it++;
     }
-    cout << oldtemp << "\t" << newtemp << endl;
+    //cout << oldtemp << "\t" << newtemp << endl;
     temp_map.insert(TEMP_MAP::value_type(oldtemp, newtemp));
 }
 
@@ -419,6 +424,8 @@ void output_medis(bool is_return = false)
     code_storage.clear();
 }
 
+bool outed = false;
+
 // @REQUIRES: len(strs) == 5
 void expre_opt(vector<string>* strs)
 {
@@ -452,7 +459,7 @@ void expre_opt(vector<string>* strs)
         }
         else if (op == "MUL") result_value = num1 * num2;
         else if (op == "GT") result_value = (num1 > num2);
-        else if (op == "EG") result_value = (num1 >= num2);
+        else if (op == "GE") result_value = (num1 >= num2);
         else if (op == "LT") result_value = (num1 < num2);
         else if (op == "LE") result_value = (num1 <= num2);
         else if (op == "EQ") result_value = (num1 == num2);
@@ -498,8 +505,11 @@ void expre_opt(vector<string>* strs)
         strs->push_back(tar);
         strs->push_back("=");
         strs->push_back(result);
+        if (!outed) cout << tar <<" = " << result << endl;
     }
 }
+
+
 
 void ass_read_medis()
 {
@@ -638,9 +648,12 @@ void ass_read_medis()
         }
         else if (strs.size() == 3 && !skip)
         {
-            // def
+            // def | use
+            //strs[2] = use(strs[2]);
             line_map[lineno] = new Line(false);
-            def(lineno, strs[0], strs[2]);
+            strs[2] = def(lineno, strs[0], strs[2]);
+            if (!outed) cout << "GOT: " << strs[2] << endl;
+            //def(lineno, strs[0]);
             store_medi(strs);
         }
         else if (strs.size() == 5 && !skip)
@@ -664,6 +677,7 @@ void ass_read_medis()
             error_debug("cal len not 3 or 5 in ass");
         }
     }
+    outed = true;
 }
 
 string ass_main(string filename, int *lc)
