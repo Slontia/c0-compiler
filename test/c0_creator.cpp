@@ -10,18 +10,26 @@
 #define MAX_POINT 100
 #define IF_INS_COUNT 10
 #define FUNC_INS_COUNT 30
+#define VAR_MIN -5
+#define VAR_RANGE 10
+#define PARA_MIN -5
+#define PARA_RANGE 10
+#define IMMED_MIN -5
+#define IMMED_RANGE 10
+
 
 #define PARA_COUNT_INPUT 2
-#if PARA_COUNT_INPUT > 1
 
-#else
-
-#endif
 #define FUNC_COUNT 4
 #define LOCAL_ARRAY_COUNT 2
 #define LOCAL_VAR_COUNT 3
 #define GLOBAL_ARRAY_COUNT 2
 #define GLOBAL_VAR_COUNT 3
+#if (PARA_COUNT_INPUT > LOCAL_VAR_COUNT)
+#define PARA_COUNT LOCAL_VAR_COUNT
+#else
+#define PARA_COUNT PARA_COUNT_INPUT
+#endif
 
 #define DEBUG 0
 #if DEBUG
@@ -48,16 +56,16 @@ void init_string_array(T (&ar)[N], string head, char no = 'a')
 {
 	for (int i = 0; i < N; i++)
 	{
-		paras[i] = head + (char)(no + i);
+		ar[i] = head + (char)(no + i);
 	}
 }
 
 void init()
 {
-	init_string_array(global_vars, "g_ar_")
-	init_string_array(global_arrays, "g_")
-	init_string_array(local_vars)
-	init_string_array(local_arrays, "")
+	init_string_array(global_vars, "g_ar_");
+	init_string_array(global_arrays, "g_");
+	init_string_array(local_vars, "ar_");
+	init_string_array(local_arrays, "");
 	init_string_array(funcnames, "foo", '0');
 	init_string_array(paras, "para_");
 }
@@ -116,7 +124,8 @@ public:
 
 void print_immed()
 {
-    OUTPUT(get_random_num(10, 1))
+	int a = get_random_num(IMMED_RANGE, IMMED_MIN);
+    OUTPUT(a); 
 }
 
 int get_index()
@@ -132,22 +141,27 @@ string get_arrayname()
 
 void print_array()
 {
-	OUTPUT(get_arrayname() << "[" << get_index() << "]")
+	string array = get_arrayname();
+	int index = get_index();
+	OUTPUT(array << "[" << index << "]")
 }
 
 void print_global_var()
 {
-    OUTPUT(get_random_ele(global_vars))
+	string var = get_random_ele(global_vars);
+    OUTPUT(var)
 }
 
 void print_local_var()
 {
-    OUTPUT(get_random_ele(local_vars))
+	string var = get_random_ele(local_vars);
+    OUTPUT(var)
 }
 
 void print_para_var()
 {
-    OUTPUT(get_random_ele(paras))
+	string var = get_random_ele(paras);
+    OUTPUT(var)
 }
 
 void print_var()
@@ -176,7 +190,8 @@ void print_item(bool to_use)
 
 void print_cal_op()
 {
-    OUTPUT(get_random_ele(cal_ops))
+	string op = get_random_ele(cal_ops);
+    OUTPUT(op);
 }
 
 void print_expression()
@@ -191,6 +206,18 @@ void print_expression()
         print_item(true);
     }
     OUTPUT(")");
+}
+
+void print_parameters()
+{
+	OUTPUT("(")
+	print_expression();
+	for (int i = 0; i < PARA_COUNT; i++)
+	{
+		OUTPUT(", ")
+		print_expression();
+	}
+	OUTPUT(")")
 }
 
 void print_return()
@@ -224,8 +251,10 @@ void print_conf()
 
 void print_printf()
 {
-    OUTPUT("printf")
+    ftxt << "printf(\" \",";
+    fcpp << "cout << \" \" << ";
     print_expression();
+    ftxt << ")";
     OUTPUT(";" << endl)
 }
 
@@ -259,7 +288,8 @@ void print_init_vars(string (&ar)[N])
 {
     for (int i = 0; i < N; i++)
     {
-        OUTPUT(ar[i] << " = " << get_random_num(100) << ";" << endl)
+    	int num = get_random_num(VAR_RANGE, VAR_MIN);
+        OUTPUT(ar[i] << " = " << num << ";" << endl)
     }
 }
 
@@ -279,7 +309,8 @@ void print_init_arrays(string (&ar)[N])
     {
         for (int j = 0; j < ARRAY_LEN; j++)
         {
-            OUTPUT(ar[i] << "[" << j << "] = " << get_random_num(100) << ";" << endl)
+        	int num = get_random_num(VAR_RANGE, VAR_MIN);
+            OUTPUT(ar[i] << "[" << j << "] = " << num << ";" << endl)
         }
     }
 }
@@ -287,10 +318,61 @@ void print_init_arrays(string (&ar)[N])
 void print_call(string funcname)
 {
 	OUTPUT(funcname << "(")
-	print_expression();
+	print_immed();
 	OUTPUT(", ");
-	print_expression();
+	print_immed();
 	OUTPUT(");" << endl);
+}
+
+template <int N>
+void print_var_results(string (&ar)[N])
+{
+	for (int i = 0; i < N; i++)
+	{
+		ftxt << "printf(\" \", " << ar[i] << ");" << endl;
+		fcpp << "cout << \" \" << " << ar[i] << ";" << endl;
+	}
+}
+
+template <int N>
+void print_array_results(string (&ar)[N])
+{
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < ARRAY_LEN; j++)
+		{
+			ftxt << "printf(\" \", " << ar[i] << "[" << j << "]);" << endl;
+			fcpp << "cout << \" \" << " << ar[i] << "[" << j << "];" << endl;			
+		}
+	}
+}
+
+void print_println()
+{
+	ftxt << "printf(\"\\n\");" << endl;
+	fcpp << "cout << \"\\n\";" << endl;
+}
+
+void print_print_string(string str)
+{
+	ftxt << "printf(\"" << str << "\");" << endl;
+	fcpp << "cout << \"" << str << "\";" << endl;
+}
+
+void print_print_all()
+{
+	print_print_string("\\nglobal_vars:");
+	print_var_results(global_vars);
+	print_println();
+	print_print_string("global_arrays:");
+	print_array_results(global_arrays);
+	print_println();
+	print_print_string("local_vars:");
+	print_var_results(local_vars);
+	print_println();
+	print_print_string("local_arrays:");
+	print_array_results(local_arrays);
+	print_println();
 }
 
 void print_function(string funcname)
@@ -311,15 +393,10 @@ void print_function(string funcname)
     print_init_vars(local_vars);
     print_init_arrays(local_arrays);
     print_instructors(FUNC_INS_COUNT);
+    print_print_all(); 
     print_return();
     OUTPUT("}");
 }
-
-void print_parameters()
-{
-	OUTPUT("(")
-	for (int i = 0; i < ARRAY) 
-} 
 
 void print_main()
 {
@@ -328,7 +405,8 @@ void print_main()
 	OUTPUT("main()" << endl << "{" << endl)
 	print_init_vars(global_vars);
 	print_init_arrays(global_arrays);
-	OUTPUT("foo1(" << get_random_num(20, -10) << ", " << get_random_num(20, -10) << ");" << endl)
+	//OUTPUT(funcnames[0] << "(" << get_random_num(PARA_RANGE, PARA_MIN) << ", " << get_random_num(PARA_RANGE, PARA_MIN) << ");" << endl)
+	print_call(funcnames[0]);
 	OUTPUT("}")
 }
 
@@ -343,14 +421,13 @@ void print_if()
 }
 
 
-
-
 void print_prog()
 {
+	fcpp << "#include<iostream>\nusing namespace std;\n";
     print_declare_vars(global_vars);
     print_declare_arrays(global_arrays);
     OUTPUT(endl)
-	print_function("foo1");
+	print_function(funcnames[0]);
 	OUTPUT(endl)
 	print_main();
 }
@@ -365,7 +442,10 @@ int main()
 		ss_cpp << "prog_" << i << ".cpp";
 		ftxt.open(ss_txt.str().c_str());
 		fcpp.open(ss_cpp.str().c_str());
+		
+		init();
 		print_prog();
+		
 		ftxt.close();
 		fcpp.close();
 	}
