@@ -45,6 +45,7 @@ int para_read_count = 0;
 
 string cur_label = ""; // need not init
 vector<string> paras;
+set<string> free_temp_set;
 
 /*====================
 |       wheels       |
@@ -248,6 +249,12 @@ Reg_recorder* get_min_use_recorder()
     return rec_selected;
 }
 
+template <class T>
+bool set_has_ele(const set<T> &s, const T ele)
+{
+    return (s.find(ele) != s.end());
+}
+
 string get_reg(string name, bool is_def)
 {
     if (name == "0")
@@ -264,6 +271,10 @@ string get_reg(string name, bool is_def)
         if (rec->state == INACTIVE && is_def) // value may be modified
         {
             rec->state = MODIFIED;
+        }
+        if (set_has_ele(free_temp_set, name)) // @free
+        {
+            rec->state = INACTIVE;
         }
         return rec->regname;
     }
@@ -882,10 +893,7 @@ void readline()
         }
         else if (strs[0] == "@free")
         {
-            if (has_name(strs[1]))
-            {
-                name_regmap[strs[1]]->init();
-            }
+            free_temp_set.insert(strs[1]);
         }
         else
         {

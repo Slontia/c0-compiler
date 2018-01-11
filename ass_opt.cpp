@@ -240,6 +240,7 @@ void remove_temp(string tempname)
     TEMP_MAP::iterator it = temp_map.find(tempname);
     if (it != temp_map.end())
     {
+        MIPS_OUTPUT("@free " << it->second);
         temp_storage.push_back(it->second);
         temp_map.erase(it);
     }
@@ -271,6 +272,7 @@ void snatch_new_temp(string oldtemp, string newtemp)
         }
         it++;
     }
+    cout << oldtemp << "\t" << newtemp << endl;
     temp_map.insert(TEMP_MAP::value_type(oldtemp, newtemp));
 }
 
@@ -339,7 +341,15 @@ void output_medis(bool is_return = false)
             if (IS_TEMP(str))
             {
                 def_oldtemp = str;
-                def_got_temp = false;
+                if (has_key(temp_map, def_oldtemp))
+                {
+                    cur_temp_map.insert(TEMP_MAP::value_type(def_oldtemp, temp_map[def_oldtemp]));
+                    def_got_temp = true;
+                }
+                else
+                {
+                    def_got_temp = false;
+                }
             }
             // read line
             while (is >> str)
@@ -372,7 +382,7 @@ void output_medis(bool is_return = false)
                     cur_temp_map.insert(TEMP_MAP::value_type(def_oldtemp, new_temp));
                     def_got_temp = true;
                 }
-                else
+                else if (is_last_use(old_temp, l))
                 {
                     // remove key 'old temp' from temp map
                     remove_temp(old_temp);
