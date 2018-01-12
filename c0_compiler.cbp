@@ -47,8 +47,11 @@
 		<Unit filename="livevar_ana.cpp" />
 		<Unit filename="livevar_ana.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="main.h" />
 		<Unit filename="medi.cpp" />
 		<Unit filename="medi.h" />
+		<Unit filename="old_tar.cpp" />
+		<Unit filename="old_tar.h" />
 		<Unit filename="reg_recorder.cpp" />
 		<Unit filename="reg_recorder.h" />
 		<Unit filename="rem_opt.cpp" />

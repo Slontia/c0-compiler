@@ -3,16 +3,19 @@
 #include "lexical.h"
 #include "gram.h"
 #include "vars.h"
-#include "tar.h"
 #include "dag_opt.h"
 #include "ass_opt.h"
 #include "livevar_ana.h"
 #include "rem_opt.h"
 #include "c0_compiler.h"
-#define INPUT_FILENAME 1
+#include "main.h"
 #define CACHE_SIZE 3
 #define FILE_PATH "./output/"
-#define AUTO_TEST 0
+#if NEW_TAR
+#include "tar.h"
+#else
+#include "old_tar.h"
+#endif // NEW_TAR
 
 using namespace std;
 
@@ -44,9 +47,12 @@ string get_logname()
     return (string)FILE_PATH + "livevar_log.txt";
 }
 
-string get_tarname()
+string get_tarname(bool is_new = true)
 {
+    if (is_new)
     return (string)FILE_PATH + "target.asm";
+    else
+    return (string)FILE_PATH + "old_target.asm";
 }
 
 int main()
@@ -62,6 +68,8 @@ int main()
         filename = creator_main();
     }
     filename = gram_main(filename);
+
+    #if NEW_TAR
     if (!success) return 0;
     do
     {
@@ -70,6 +78,8 @@ int main()
     } while (!output_is_stable());
     filename = livevar_main(filename);
     filename = brjp_main(filename);
-    filename = tar_main(filename);
+    #endif
+
+    tar_main(filename);
     return 0;
 }

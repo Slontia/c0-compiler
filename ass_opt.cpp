@@ -20,7 +20,11 @@
 # define IS_TEMP(name) (name[0] == '#')
 # define IS_GLOBAL_VAR(name) (!cur_func_ASS->has_var(name) && global_vars.find(name) != global_vars.end())
 # define HAS_TEMP(tempname) temp_map.find(tempname) != temp_map.end()
+# include "main.h"
+
 using namespace std;
+
+#if NEW_TAR
 
 int line_count = 0;
 
@@ -690,3 +694,5 @@ string ass_main(string filename, int *lc)
     *lc = line_count;
     return ass_filename;
 }
+
+#endif

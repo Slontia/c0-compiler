@@ -31,6 +31,8 @@
 #else
 #define OUTPUT(stream) { ftxt << stream; fcpp << stream; }
 #endif
+
+#include "main.h"
 using namespace std;
 
 string cal_ops[] = {"+", "-", "*"};
@@ -318,6 +320,7 @@ void print_init_arrays(string (&ar)[N])
     }
 }
 
+
 void print_call(string funcname)
 {
 	OUTPUT(funcname << "(")
@@ -327,7 +330,19 @@ void print_call(string funcname)
     	OUTPUT(", ");
         print_immed();
     }
-	OUTPUT(");" << endl);
+	OUTPUT(")");
+}
+
+void print_call_call(string funcname)
+{
+	OUTPUT(funcname << "(")
+	print_call(funcname);
+	for (int i = 1; i < PARA_COUNT; i++)
+    {
+    	OUTPUT(", ");
+        print_immed();
+    }
+	OUTPUT(")");
 }
 
 template <int N>
@@ -406,7 +421,8 @@ void print_main()
 	print_init_vars(glo_vars);
 	print_init_arrays(global_arrays);
 	//OUTPUT(funcnames[0] << "(" << get_random_num(PARA_RANGE, PARA_MIN) << ", " << get_random_num(PARA_RANGE, PARA_MIN) << ");" << endl)
-	print_call(funcnames[0]);
+	print_call_call(funcnames[0]);
+	OUTPUT(";" << endl)
 	OUTPUT("}")
 }
 
@@ -434,6 +450,7 @@ void print_prog()
 
 string creator_main()
 {
+    #if (NEW_TAR && !LAST_AUTO_TEST)
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < 1; i++)
 	{
@@ -449,6 +466,7 @@ string creator_main()
 		ftxt.close();
 		fcpp.close();
 	}
+	#endif
 	return "prog_0.txt";
 }
 

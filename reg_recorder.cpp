@@ -16,6 +16,8 @@
 # define MIPS_OUTPUT(x) MIPS_LEFT << x << MIPS_RIGHT
 using namespace std;
 
+#if NEW_TAR
+
 int use_counter = 0;
 
 Reg_recorder::Reg_recorder(string regname)
@@ -239,3 +241,5 @@ void Reg_recorder::before_return()
     Reg_recorder::save_global_modi_regs();
     Reg_recorder::init_all();
 }
+
+#endif

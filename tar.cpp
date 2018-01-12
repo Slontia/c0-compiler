@@ -21,8 +21,11 @@
 #include "reg_recorder.h"
 #include "livevar_ana.h"
 # define OUTPUT_MEDI 1
+#include "main.h"
 
 using namespace std;
+
+#if NEW_TAR
 
 FILE* medif;
 ofstream fout;
@@ -966,7 +969,7 @@ void set_data_str()
 string tar_main(string filename)
 {
     fin.open(filename.c_str());
-    string tar_filename = get_tarname();
+    string tar_filename = get_tarname(true);
     fout.open(tar_filename.c_str());
 
     init_reg_map();
@@ -977,3 +980,5 @@ string tar_main(string filename)
     fin.close();
     return tar_filename;
 }
+
+#endif
