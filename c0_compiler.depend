@@ -41,7 +41,7 @@
 	<iostream>
 	<fstream>
 
-1515814173 source:d:\projects\console\c0-compiler\lexical.cpp
+1515828659 source:d:\projects\console\c0-compiler\lexical.cpp
 	<iostream>
 	<string.h>
 	<cstdlib>
@@ -114,7 +114,7 @@
 	<vector>
 	"vars.h"
 
-1515814772 source:d:\projects\console\c0-compiler\tar.cpp
+1515822473 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -386,7 +386,7 @@
 	"gram.h"
 	"medi.h"
 
-1515725503 source:d:\projects\console\c0-compiler\dag_opt.cpp
+1515816043 source:d:\projects\console\c0-compiler\dag_opt.cpp
 	<iostream>
 	<vector>
 	<fstream>
@@ -404,7 +404,7 @@
 	<map>
 	<vector>
 
-1515726429 source:d:\projects\console\c0-compiler\ass_opt.cpp
+1515817985 source:d:\projects\console\c0-compiler\ass_opt.cpp
 	<iostream>
 	<map>
 	"vars.h"
@@ -436,7 +436,7 @@
 	<iostream>
 	<set>
 
-1515727097 source:d:\projects\console\c0-compiler\reg_recorder.cpp
+1515815538 source:d:\projects\console\c0-compiler\reg_recorder.cpp
 	<iostream>
 	"tar.h"
 	"vars.h"
@@ -463,7 +463,7 @@
 1515725503 d:\projects\console\c0-compiler\c0_compiler.h
 	<iostream>
 
-1515728953 source:d:\projects\console\c0-compiler\c0_creator.cpp
+1515818765 source:d:\projects\console\c0-compiler\c0_creator.cpp
 	<iostream>
 	<map>
 	<vector>
@@ -473,7 +473,7 @@
 	<sstream>
 	"main.h"
 
-1515814784 d:\projects\console\c0-compiler\main.h
+1515825601 d:\projects\console\c0-compiler\main.h
 
 1515814173 source:d:\projects\console\c0-compiler\old_tar.cpp
 	<iostream>

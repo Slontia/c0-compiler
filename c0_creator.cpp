@@ -8,8 +8,8 @@
 
 #define ARRAY_LEN 2
 #define MAX_POINT 100
-#define IF_INS_COUNT 1
-#define FUNC_INS_COUNT 30
+#define IF_INS_COUNT 0
+#define FUNC_INS_COUNT 100
 #define VAR_MIN -5
 #define VAR_RANGE 10
 #define PARA_MIN -5
@@ -18,12 +18,12 @@
 #define IMMED_RANGE 10
 
 
-#define PARA_COUNT 5
-#define FUNC_COUNT 4
-#define LOCAL_ARRAY_COUNT 2
-#define LOCAL_VAR_COUNT 3
-#define GLOBAL_ARRAY_COUNT 2
-#define GLOBAL_VAR_COUNT 3
+#define PARA_COUNT 10
+#define FUNC_COUNT 4 // useless
+#define LOCAL_ARRAY_COUNT 5 // 2
+#define LOCAL_VAR_COUNT 10 // 3
+#define GLOBAL_ARRAY_COUNT 5 // 2
+#define GLOBAL_VAR_COUNT 10 // 3
 
 #define DEBUG 0
 #if DEBUG

@@ -114,14 +114,11 @@ NODE_MAP::iterator record_code(NODE_MAP::iterator it)
 {
     Node* node = it->second;
     string name = it->first;
+    node_map.erase(it++);
     if (name == get_name(node))      // must be certain
     {
-        node_map.erase(it++);
+
         set_name(node); // refresh node's name
-    }
-    else
-    {
-        it++;
     }
     return it;
 }
@@ -444,8 +441,8 @@ void read_medis()
         else if (strs[0] == "@get")
         {
             if (IS_VAR(strs[1])) refresh_vars();
-            string name = use_new_name(strs[1]);
             remove_var(strs[1]);    // var <- function return value
+            string name = use_new_name(strs[1]);
             MIPS_OUTPUT("@get " << name);
         }
         else if (strs[0] == "@ret")

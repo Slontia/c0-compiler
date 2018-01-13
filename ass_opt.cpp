@@ -102,6 +102,8 @@ bool has_block(string name)
     return (block_map.find(name) != block_map.end());
 }
 
+string use(string usename);
+
 /* @REQUIRES:
  * @MODIFIES: block_map
  * @EFFECTS:
@@ -148,6 +150,7 @@ string def(int line, string defname, string usename = "")
     {
         //cout << usename << " ";
         defblock->nature = block_map[usename];
+        use(usename);
         return defblock->get_nature()->name;
     }
     else    // assign

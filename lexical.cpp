@@ -29,7 +29,7 @@ void error_debug(string info)
 
 void error(string info)
 {
-    cout << "[ERROR] " << info << " in " << error_line << endl;
+    cout << "[ERROR] " << info << " in " << error_line - (cur_c == '\n') << " " << cur_c << endl;
     success = false;
     if (OUTPUT_ERROR_C) cout << (int)cur_c;
     if (ERROR_EXIT) exit(0);
@@ -197,6 +197,7 @@ void retract()
 {
     if (cur_c != 0)
     {
+        if (cur_c == '\n') error_line--;
         ungetc(cur_c, progf);
         cur_c = 0;
         return;

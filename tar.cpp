@@ -289,7 +289,7 @@ string get_reg(string name, bool is_def)
         }
         if (set_has_ele(free_temp_set, name)) // @free
         {
-            // rec->state = INACTIVE;
+            rec->state = INACTIVE;
             //free_temp_set.erase(name);
             free_name = name;
         }
@@ -739,6 +739,8 @@ void call_tar(string funcname)
     }
 }
 
+bool meet_free = false;
+
 void readline()
 {
     string line;
@@ -752,6 +754,13 @@ void readline()
         {
             strs.push_back(str);
         }
+
+        if (line == "#0 = #0 SUB #1")
+        {
+            cout << "THE WORLD!!" << endl;
+        }
+        cout << "\n";
+
         // para: 从基址中按顺序读取数值，存储至参数对应的地址中(fp之前) OK
         if (strs[0] == "@var" || strs[0] == "@array")
         {
@@ -917,19 +926,25 @@ void readline()
         }
         else if (strs[0] == "@free")
         {
-            if (!is_temp(strs[0]) || get_temp_no(strs[0]) >= temp_max)
-            free_temp_set.insert(strs[1]);
+            /*if (!is_temp(strs[1]) || get_temp_no(strs[1]) >= temp_max)
+            {
+                cout << "FREE " << get_temp_no(strs[0]) << " " << temp_max << endl;
+            }*/
+            //free_temp_set.insert(strs[1]);
+            continue;
         }
         else
         {
             name_handle(strs);
         }
-        if (free_name != "")
+        set<string>::iterator it = free_temp_set.begin();
+        while (it != free_temp_set.end())
         {
-            free_temp_set.erase(free_name);
-            name_regmap.erase(free_name);
-            free_name = "";
+            name_regmap.erase(*it);
+            it++;
         }
+        free_temp_set.clear();
+        //free_name = "";
     }
 }
 
