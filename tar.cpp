@@ -247,17 +247,14 @@ Reg_recorder* get_min_use_recorder()
     while (it != reg_regmap.end())
     {
         Reg_recorder* rec = it->second;
-        // cout << rec->regname << " " << rec->use_count << (rec->state == OCCUPIED ? " OCC" : "" + rec->name) << endl;
         if (rec->state != OCCUPIED &&
             (min_use_count == -1 || rec->use_count < min_use_count))
         {
-            cout << rec->regname;
             min_use_count = rec->use_count;
             rec_selected = rec;
         }
         it++;
     }
-    cout << "SEL" << rec_selected->regname << endl;
     return rec_selected;
 }
 
@@ -271,11 +268,6 @@ string free_name = "";
 
 string get_reg(string name, bool is_def)
 {
-    if (name == "#9")
-    {
-        cout << (reg_regmap["$t0"]->state == OCCUPIED);
-        cout << "WAIT" << endl;
-    }
     if (name == "0")
     {
         return "$0";
@@ -297,12 +289,7 @@ string get_reg(string name, bool is_def)
         }
         if (set_has_ele(free_temp_set, name)) // @free
         {
-            cout << name << " " << rec->regname << endl;
-            if (rec->regname == "$t0")
-            {
-                cout << " " ;
-            }
-            //rec->state = INACTIVE;
+            // rec->state = INACTIVE;
             //free_temp_set.erase(name);
             free_name = name;
         }
@@ -313,8 +300,6 @@ string get_reg(string name, bool is_def)
     if (is_temp(name) &&
         (regno = get_temp_no(name)) < temp_max)
     {
-        if (name == "#0")
-            cout << "YES" << endl;
         stringstream ss;
         ss << "$t" << regno;
         // cout << "========" << ss.str() << "========\n";
@@ -384,8 +369,6 @@ string get_reg(string name, bool is_def)
     {
         rec->load();
     }
-    if (name == "#9") cout << rec->regname << " " << (rec->state == OCCUPIED) << endl;
-    cout << ((reg_regmap["$t0"]->state == OCCUPIED) ? "true" : "false") << endl;
     name_regmap.insert(REG_MAP::value_type(name, rec));
     return rec->regname;
 }
@@ -728,15 +711,14 @@ void call_tar(string funcname)
         MIPS_OUTPUT("addi $sp, $sp, -" << stack_offset);
         MIPS_OUTPUT("sw $ra, 0($sp)");
         Reg_recorder::save_occu_regs(&reg_save_list, store_count * 4);
-        Reg_recorder::save_global_modi_regs();
-        Reg_recorder::init_all();
+        //Reg_recorder::save_global_modi_regs();
+        Reg_recorder::clear_and_init_all();
 
         // refresh $fp
         int fp_offset = round_up(cur_addr, 4) + len * 4;
         MIPS_OUTPUT("addi $fp, $fp, " << fp_offset);
         // jump
         MIPS_OUTPUT("jal " << funcname << "_E");
-        //MIPS_OUTPUT("nop");
         // load regs
 
         MIPS_OUTPUT("addi $fp, $fp, -" << fp_offset);

@@ -13,96 +13,108 @@ int ar_b;
 int ar_c;
 int a[2];
 int b[2];
-ar_a = -2;
-ar_b = -5;
-ar_c = 0;
+ar_a = -1;
+ar_b = 0;
+ar_c = 4;
 a[0] = 3;
-a[1] = 3;
-b[0] = 0;
-b[1] = -3;
+a[1] = -4;
+b[0] = 4;
+b[1] = -1;
 
 {
-para_e = (ar_c);
-if ((ar_c) <= ((g_ar_a) * (ar_a + (ar_b + g_a[0])) * b[1]))
+g_b[0] = (a[1] * a[1] - -4 * 0);
+if ((4) == (ar_c + g_b[0]))
 {
+a[1] = (ar_a * ar_b);
+}
+else
+{
+b[1] = (ar_c);
+}
+g_a[1] = (g_ar_b);
+a[1] = (-3);
+ar_b = (g_ar_a * 4 - 1);
+b[1] = ((ar_a + g_a[1] + ((b[1]) + ar_b + ((g_b[1])) + -4 + (b[1] + 1))));
+b[0] = (a[0] - g_b[1]);
+cout << " " << (g_ar_c * -5 * -1 - ar_a);
+ar_a = (((g_ar_b - g_ar_b - ((g_ar_c))) * -4));
+ar_c = (-3);
+g_ar_b = (1);
+a[1] = (3);
+if ((3 + 4 * b[1] - (ar_b + para_d) * -2) <= (4 * a[0] * g_a[0] * (0) + a[1] * a[0] * ((a[0])) * g_a[0] + -3))
+{
+g_b[1] = (g_a[1] + ar_b);
+}
+else
+{
+if ((a[1]) < (g_b[0]))
+{
+cout << " " << (b[1] + -2);
+}
+else
+{
+ar_c = (g_b[0] - g_ar_b + g_a[1]);
+}
+}
+if ((ar_a + ar_a) < (g_ar_b))
+{
+b[0] = (-2);
+}
+else
+{
+cout << " " << (g_a[1]);
+}
+if ((ar_a) < (-4 + -3 + 3))
+{
+g_a[1] = (2);
+}
+else
+{
+b[0] = (4 + -5 + ar_a);
+}
+ar_c = ((para_b) * a[0]);
+ar_b = (2);
+if ((b[1]) > (b[1]))
+{
+if ((g_ar_c - 1 * g_ar_a) < (ar_b))
+{
+b[1] = (-5);
+}
+else
+{
+cout << " " << (para_a);
+}
+}
+else
+{
+a[1] = (ar_c);
+}
+a[1] = (a[1] * 0 - ar_a + -4 - 0);
+g_ar_a = (ar_a - -1 * ar_b);
+g_b[1] = (1 * para_d);
+cout << " " << (-1 * g_a[1]);
+if ((g_ar_a - 1) != (-4))
+{
+b[1] = (g_b[1] + g_ar_b * ar_c);
+}
+else
+{
+g_a[1] = (b[1] + -4 * g_ar_a);
+}
+g_b[0] = (g_ar_a);
+a[1] = (0 + g_ar_b + ar_b - -4);
+g_ar_b = ((a[1]) * ((ar_a)) - g_a[0] + b[0] + 4 + a[1] * ar_a);
+a[0] = (b[0] - g_a[0]);
+if ((para_c - 0 - (2)) < (g_a[1] * a[1] * ar_a * -2 - -2 - (((ar_a)) * g_a[0] + g_b[0] * (g_a[1] * -5))))
+{
+g_b[0] = (-1 * 1 + a[1]);
+}
+else
+{
+ar_c = (g_a[1] + 0);
+}
+cout << " " << (para_d * para_b - ((2 + g_b[1] - para_e)) + (a[0]));
 a[0] = (b[1]);
-}
-else
-{
-g_a[0] = ((4 + g_b[0] + g_a[1] * 0) - (3 + g_b[1]));
-}
-g_a[0] = (((-3 * -2 * g_ar_b) - 0));
-ar_c = (g_b[0] * 4 - g_b[1] + ar_c * (a[1] + 2) * ar_c * para_d * g_a[1]);
-if ((-5) >= (a[1]))
-{
-para_d = (g_ar_b);
-}
-else
-{
-g_a[1] = (b[1] + para_c - (0) - (ar_a * (g_b[0]) * (g_b[0] * -1)));
-}
-ar_b = (g_a[0]);
-ar_b = (g_b[1] - -1 + 2);
-if ((g_ar_a) == (2 * g_ar_a))
-{
-cout << " " << (ar_b);
-}
-else
-{
-b[1] = ((b[1]) + g_b[1] * g_b[1] - g_a[0]);
-}
-g_ar_b = ((ar_c) + (g_a[1] * g_a[1]));
-g_a[0] = ((g_b[0]));
-b[1] = (ar_a);
-g_a[1] = (g_ar_a + g_ar_a);
-g_ar_b = ((1) + -2);
-b[0] = (a[0] - (2));
-g_a[1] = (a[0]);
-para_a = (ar_b * ar_c + ar_c);
-if ((b[1]) < (-2))
-{
-if (((ar_c - (g_ar_b) - 3 + g_a[1] * -4)) < (-3 * (g_a[1] - g_a[1] + b[1] + a[0])))
-{
-b[0] = (ar_b);
-}
-else
-{
-ar_a = ((-3 + 2 * a[0] + -3 + -4) - (b[1] + a[0] * ar_a + 4));
-}
-}
-else
-{
-if (((ar_a) - g_b[0] + -1) < (g_b[0] + -3))
-{
-g_ar_c = (ar_c * -3);
-}
-else
-{
-if ((b[0] - g_b[0] * -1) != ((1 * (para_b)) + ar_b))
-{
-g_ar_b = (g_ar_a);
-}
-else
-{
-b[1] = (ar_a);
-}
-}
-}
-g_b[1] = (ar_a - g_b[0]);
-g_ar_b = ((a[1]));
-g_b[1] = (g_ar_c);
-b[1] = (g_a[0]);
-cout <<endl << ar_a << endl;
-ar_a = (-1 - (ar_b * g_b[1] + para_e - a[1]));
-cout <<endl << ar_a << endl;
-g_a[1] = ((g_b[0] + -5 * g_b[1] - g_b[1]));
-g_a[1] = (g_b[0] * g_ar_c);
-b[1] = (b[1] + (0 * para_e - (0) * (-2 - a[1] * 0 + g_a[0])));
-g_b[0] = (g_b[0] * 0 + ar_b);
-g_b[0] = (b[0] - b[1] + g_b[1]);
-g_b[1] = (para_e * (a[0] * g_a[1]) * ar_c);
-g_b[1] = (-1);
-para_a = (ar_b);
 }
 cout << "\nglo_vars:";
 cout << " " << g_ar_a;
@@ -126,16 +138,16 @@ cout << " " << a[1];
 cout << " " << b[0];
 cout << " " << b[1];
 cout << "\n";
-return (g_ar_b);
+return (ar_b);
 }
 int main()
 {
 g_ar_a = -3;
-g_ar_b = 1;
-g_ar_c = -3;
-g_a[0] = -3;
-g_a[1] = 4;
-g_b[0] = -3;
-g_b[1] = -4;
-foo0(foo0(-3, 4, 2, 1, -2), -2, -5, -4, 2);
+g_ar_b = 4;
+g_ar_c = 2;
+g_a[0] = -5;
+g_a[1] = -5;
+g_b[0] = -4;
+g_b[1] = -5;
+foo0(foo0(3, -1, -3, -1, 2), 1, 3, 1, -3);
 }
