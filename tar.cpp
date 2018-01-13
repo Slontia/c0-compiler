@@ -169,7 +169,15 @@ void init_var(VarItem* var_item)
             {
                 char_ptr = int_ptr;
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = char_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = char_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
             char_ptr += var_item->get_len();
         }
         else if (var_item->get_type() == INT)
@@ -178,7 +186,15 @@ void init_var(VarItem* var_item)
             {
                 int_ptr = round_up(char_ptr, 4);
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = int_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = int_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
             int_ptr += 4 * var_item->get_len();
         }
         else
@@ -194,7 +210,15 @@ void init_var(VarItem* var_item)
             {
                 char_ptr = int_ptr;
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = char_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = char_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
             char_ptr += 1;
         }
         else if (var_item->get_type() == INT)
@@ -203,7 +227,15 @@ void init_var(VarItem* var_item)
             {
                 int_ptr = round_up(char_ptr, 4);
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = int_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = int_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
             int_ptr += 4;
         }
         else
@@ -783,7 +815,7 @@ void readline()
         else if (strs[0] == "@label")
         {
             cur_label = strs[1];
-            init_global_regs();
+            //init_global_regs();
         }
         else if (strs[0] == "@push")     // 将参数保存至vector中（不直接存储是因为还要走表达式）   OK
         {

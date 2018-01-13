@@ -126,37 +126,87 @@ void init_func(string funcname) {
     MIPS_OUTPUT(funcname << "_E:");
 }
 
-void init_var(VarItem* var_item) {
-    if (var_item->isarray()) {
-        if (var_item->get_type() == CHAR) {
-            if (int_ptr > char_ptr) {
+void init_var(VarItem* var_item)
+{
+    if (var_item->isarray())
+    {
+        if (var_item->get_type() == CHAR)
+        {
+            if (int_ptr > char_ptr)
+            {
                 char_ptr = int_ptr;
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = char_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = char_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
             char_ptr += var_item->get_len();
-        } else if (var_item->get_type() == INT) {
-            if (char_ptr > int_ptr) {
+        }
+        else if (var_item->get_type() == INT)
+        {
+            if (char_ptr > int_ptr)
+            {
                 int_ptr = round_up(char_ptr, 4);
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = int_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = int_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
             int_ptr += 4 * var_item->get_len();
-        } else {
+        }
+        else
+        {
             error_debug("unknown type");
         }
-    } else {
-        if (var_item->get_type() == CHAR) {
-            if (char_ptr % 4 == 0 && int_ptr > char_ptr) {
+    }
+    else
+    {
+        if (var_item->get_type() == CHAR)
+        {
+            if (char_ptr % 4 == 0 && int_ptr > char_ptr)
+            {
                 char_ptr = int_ptr;
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = char_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = char_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), char_ptr));
             char_ptr += 1;
-        } else if (var_item->get_type() == INT) {
-            if (char_ptr > int_ptr) {
+        }
+        else if (var_item->get_type() == INT)
+        {
+            if (char_ptr > int_ptr)
+            {
                 int_ptr = round_up(char_ptr, 4);
             }
-            (cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
+            if (cur_func == NULL)
+            {
+                global_addr_map[var_item->get_name()] = int_ptr;
+            }
+            else
+            {
+                offset_map[var_item->get_name()] = int_ptr;
+            }
+            //(cur_func == NULL ? global_addr_map : offset_map).insert(STRINT_MAP::value_type(var_item->get_name(), int_ptr));
             int_ptr += 4;
-        } else {
+        }
+        else
+        {
             error_debug("unknown type");
         }
     }
