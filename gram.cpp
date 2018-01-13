@@ -1,4 +1,4 @@
-#define INT2CHAR 1
+#define INT2CHAR 0
 #include "lexical.h"
 #include <cstdlib>
 #include "vars.h"
@@ -182,6 +182,11 @@ Type item(int* value, bool* certain, string* name)
             it_type = INT;
         }
         *certain &= cur_certain;
+        if (cur_op == DIV && cur_certain && cur_value == 0)
+        {
+            error("division by zero");
+            cur_value = 1;  // [ERROR HANDLE] set division by 1
+        }
         if (*certain)
         {
             switch(cur_op)
@@ -190,11 +195,6 @@ Type item(int* value, bool* certain, string* name)
                 *value *= cur_value;
                 break;
             case DIV:
-                if (cur_value == 0)
-                {
-                    error("division by zero");
-                    cur_value = 1;  // [ERROR HANDLE] set division by 1
-                }
                 *value /= cur_value;
                 break;
             default:
@@ -296,7 +296,7 @@ Item* read_ident(string* index_name)    // address of the pointer to temp_name
     name = token;
     if ((item = get_item(name)) == NULL)
     {
-        error((string)"unexpected sign \'" + name + "\'");
+        error((string)"unexpected token \'" + name + "\'");
         return NULL;
     }
     getsym_check();
@@ -481,7 +481,7 @@ Type factor(int* value, bool* certain, string* name)
         break;
 
     default:
-        error((string)"unexpected symbol " + symbol2string(symbol) + " in [factor]");
+        error((string)"unexpected token \'" + symbol2string(symbol) + "\' in factor");
         *certain = true;
         *value = 0;
         return CHAR;
@@ -583,7 +583,6 @@ void statement()
         bool cond_certain;
         cond(&cond_value, &cond_certain, cond_name); // identify condition
         mate(RPAR); // ')'
-//cout << this_func->get_name();
         else_label = new_label(this_func, "else_begin");   // set label
         over_label = new_label(this_func, "else_over");   // set label
 
@@ -665,7 +664,7 @@ void statement()
                 break;
 
             default:
-                error((string)"unexpected symbol " + symbol2string(symbol) + " after [case]");
+                error((string)"unexpected token \'" + symbol2string(symbol) + "\' after [case]");
             }
             num *= sign;    // pos / nega
             mate(COLON);    // :
@@ -802,8 +801,8 @@ void statement()
             Type ex_type = expr(&expr_value, &expr_certain, return_name);
             if (ex_type != this_func->get_type())
             {
-                error((string)"expected return type \'" + type2string(this_func->get_type()) +
-                      "\', actual '" + type2string(ex_type) + "\'");
+                error((string)"expected type \'" + type2string(this_func->get_type()) +
+                      "\', got '" + type2string(ex_type) + "\'");
             }
             if (expr_certain)
             {
@@ -882,7 +881,7 @@ void statement()
                 Item* item = get_item(name);
                 if (item == NULL)
                 {
-                    error("unexpected identifier \'" + name + "\'");
+                    error("unexpected token \'" + name + "\' in scanf");
                 }
                 else if (item->get_kind() != VAR || ((VarItem*)item)->isarray())
                 {
@@ -926,7 +925,7 @@ void statement()
             output_info("This is a function invoking statement!");
             if (item->get_kind() != FUNC)
             {
-                error((string)"meaning less " + kind2string(item->get_kind()) + " \'" + item->get_name() + "\'");
+                error((string)"meaningless " + kind2string(item->get_kind()) + " \'" + item->get_name() + "\'");
             }
             else
             {
@@ -985,7 +984,7 @@ void statement()
         break;
 
     default:
-        error((string)"unexpected symbol " + symbol2string(symbol) + " in the beginning of the statement");
+        error((string)"unexpected token \'" + symbol2string(symbol) + "\' in the beginning of the statement");
         getsym_check();
         break;
     }
@@ -1006,6 +1005,13 @@ bool defined(string name)
         error("redefinition of '" + name + "\'");
         return true;
     }
+    FUNC_MAP::iterator itf = funcs.find(name);
+    if (itf != funcs.end())
+    {
+        error("redefinition of '" + name + "\'");
+        return true;
+    }
+
     return false;
 }
 
@@ -1142,6 +1148,10 @@ void declare_var(FuncItem* func = NULL)
         is_first = true;
         switch (symbol)
         {
+        case CONSTSY:
+            error("const defination after var");
+            skip(SEMI);
+            continue;
         case INTSY:
             type = INT;
             break;
@@ -1296,9 +1306,13 @@ void declare_func()
                 getsym_check();
                 type = CHAR;
                 break;
+            case CONSTSY:
+                error("const defination after function");
+                skip(SEMI);
+                continue;
             default:
-                error((string)"unexpected return type " + symbol2string(symbol));
-                return;
+                error((string)"invalid returning type " + symbol2string(symbol));
+                getsym_check();
             }
             mate(IDENT, &record_name, IDENT);
         }
@@ -1306,6 +1320,15 @@ void declare_func()
         this_func = new FuncItem(name, type);
         declare_func_medi(this_func);
         funcs.insert(FUNC_MAP::value_type(name, this_func));
+        if (symbol == SEMI)
+        {
+            error("var defination after function");
+            if (!getsym())
+            {
+                error("undefined reference \'main\'");
+            }
+            continue;
+        }
 
         if (symbol == LPAR)
         {
@@ -1323,7 +1346,7 @@ void declare_func()
                     getsym_check();
                     break;
                 default:
-                    error((string)"Unexpected parameter type " + symbol2string(symbol));
+                    error((string)"invalid parameter type " + symbol2string(symbol));
                 }
                 if (mate(IDENT, &record_name))
                 {

@@ -7,6 +7,7 @@
 #define DEBUG 0
 #define OUTPUT_ERROR_C 0
 #define OUTPUT_PROG 0
+#define OUTPUT_DEBUG_ERROR 0
 
 using namespace std;
 
@@ -23,13 +24,13 @@ int error_line = 1;
 
 void error_debug(string info)
 {
-    cout << "[D_ERROR] " << info << " in " << error_line << endl;
+    if (OUTPUT_DEBUG_ERROR) cout << "[D_ERROR] " << info << " in " << error_line << endl;
     if (ERROR_EXIT) exit(0);
 }
 
 void error(string info)
 {
-    cout << "[ERROR] " << info << " in " << error_line - (cur_c == '\n') << " " << cur_c << endl;
+    cout << "[ERROR] " << info << " in " << error_line << endl;
     success = false;
     if (OUTPUT_ERROR_C) cout << (int)cur_c;
     if (ERROR_EXIT) exit(0);
@@ -448,8 +449,6 @@ void sym_handle(Symbol sym, char* sign)
     string sym_str = symbol2string(sym);
     if (OUTPUT_LEX)
         cout << sym_str << ' ' << sign << endl;
-    //fout << sym_str << ' ' << sign << endl;
-    //fprintf(outf, "%s %s\n", sym_str, sign);
 }
 
 void sym_handle(Symbol sym, char sign)
@@ -457,8 +456,6 @@ void sym_handle(Symbol sym, char sign)
     string sym_str = symbol2string(sym);
     if (OUTPUT_LEX)
         cout << sym_str << ' ' << sign << endl;
-    //fout << sym_str << ' ' << sign << endl;
-    //fprintf(outf, "%s %s\n", sym_str, sign);
 }
 
 void sym_handle(Symbol sym, int num)
@@ -466,8 +463,6 @@ void sym_handle(Symbol sym, int num)
     string sym_str = symbol2string(sym);
     if (OUTPUT_LEX)
         cout << sym_str << ' ' << num << endl;
-    //fout << sym_str << ' ' << num << endl;
-    //fprintf(outf, "%s %s\n", sym_str, sign);
 }
 
 bool getsym()
@@ -548,7 +543,7 @@ bool getsym()
         }
         else
         {
-            error("unexpected char");
+            error("invalid char");
         }
 
         // mate '
@@ -582,7 +577,7 @@ bool getsym()
             }
             else if (!is_string_char())
             {
-                error("unexpected char in string");
+                error("invalid char in string");
                 continue;
             }
             else
@@ -606,7 +601,7 @@ bool getsym()
         else
         {
             retract();
-            error("unexpected char \'!\'");
+            error("unexpected token \'!\'");
         }
 
     }
@@ -729,7 +724,7 @@ bool getsym()
     }
     else
     {
-        error((string)"unexpected character \'" + cur_c + "\'");
+        error((string)"unexpected token \'" + cur_c + "\'");
         return getsym();    // skip
     }
     return true;

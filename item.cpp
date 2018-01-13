@@ -1,6 +1,7 @@
 # include "item.h"
 # include "vars.h"
 # include "medi.h"
+# include "gram.h"
 # include <iostream>
 using namespace std;
 
@@ -138,6 +139,11 @@ void FuncItem::put_para(string name, Type type)
         error("redefinition of '" + name + "\'");
         return;
     }
+    else if (get_func(name) != NULL)
+    {
+        error((string)"conflicting declaration with function name");
+        return;
+    }
     func_size += 4;
     VarItem* var_item = new VarItem(name, type);
     vars.insert(VAR_MAP::value_type(name, var_item));
@@ -152,7 +158,7 @@ void FuncItem::put_const(string name, Type type, int value)
         error("redefinition of '" + name + "\'");
         return;
     }
-    else if (name == get_name())
+    else if (get_func(name) != NULL)
     {
         error((string)"conflicting declaration with function name");
         return;
@@ -168,7 +174,7 @@ void FuncItem::put_var(string name, Type type, int len)
         error("redefinition of '" + name + "\'");
         return;
     }
-    else if (name == get_name())
+    else if (get_func(name) != NULL)
     {
         error((string)"conflicting declaration with function name");
         return;
