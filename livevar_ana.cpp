@@ -456,7 +456,7 @@ bool repush_stack(int reg_max)
 void select_vnode_without_reg()
 {
     Var_node* vnode_remove = *(var_graph.begin()); // select one
-    cout << "REMOVE: " << vnode_remove->name << endl;
+    // cout << "REMOVE: " << vnode_remove->name << endl;
     flog << "=============\n" << vnode_remove->name
          << "\t" << vnode_remove->conflicts.size() << "\t" << vnode_remove->regno << "\n=============\n" << endl;
     var_graph.erase(vnode_remove); // remove from graph

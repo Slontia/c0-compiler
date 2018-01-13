@@ -289,7 +289,7 @@ string get_reg(string name, bool is_def)
         }
         if (set_has_ele(free_temp_set, name)) // @free
         {
-            rec->state = INACTIVE;
+            // rec->state = INACTIVE;
             //free_temp_set.erase(name);
             free_name = name;
         }
@@ -754,12 +754,6 @@ void readline()
         {
             strs.push_back(str);
         }
-
-        if (line == "#0 = #0 SUB #1")
-        {
-            cout << "THE WORLD!!" << endl;
-        }
-        cout << "\n";
 
         // para: 从基址中按顺序读取数值，存储至参数对应的地址中(fp之前) OK
         if (strs[0] == "@var" || strs[0] == "@array")
