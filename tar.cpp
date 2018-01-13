@@ -723,7 +723,11 @@ void call_tar(string funcname)
 
         MIPS_OUTPUT("addi $fp, $fp, -" << fp_offset);
         MIPS_OUTPUT("lw $ra, 0($sp)");
+        init_global_regs(); // [fix]
         Reg_recorder::load_occu_regs(&reg_save_list, store_count * 4);
+        MIPS_OUTPUT("# BEGIN");
+
+        MIPS_OUTPUT("#END");
         MIPS_OUTPUT("addi $sp, $sp, " << stack_offset);
     }
     else

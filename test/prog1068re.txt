@@ -14,8 +14,8 @@ int _aSfunc_1(int a,char c)
     {
         switch(cc-'i')
         {
-            case 0:return (a*_aSfunc_1(aa-bb,'i'));
-            default:{return (a*_aSfunc_1(aa-1,'c'));}    
+            case 0:{printf("a");return (a*_aSfunc_1(aa-bb,'i'));}
+            default:{printf("b");return (a*_aSfunc_1(aa-1,'c'));}    
         }
     }
     else
@@ -146,7 +146,11 @@ void main()
 
     }
     resultI = _aSfunc_1(ni,'i');
+printf(" ",ni);
     resultC = _aSfunc_1(nc,'c');
+printf(" ",nc);
+printf(" ",resultI);
+printf(" ",resultC);
     print1(resultI,resultC);
     no_Sfc(resultI,resultC);
     print2;
