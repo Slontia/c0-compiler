@@ -34,6 +34,9 @@ int isLetter(char c1) {
 
 int choose_pivot(int i, int j)
 {
+printf("CHOOSE:\n", i);
+printf(" ", j);
+printf("\n");
     return((i + j) / 2);
 }
 
@@ -49,6 +52,11 @@ void printlist(int n)
 void quicksort(int m, int n)
 {
     int key, x, y, z, tmp;
+
+printf("SORT:\n");
+printf(m);
+printf(" ", n);
+printf("END\n");
 
     key = list[choose_pivot(m, n)];
     x = m;

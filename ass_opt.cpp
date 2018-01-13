@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <list>
 #include "vars.h"
 #include "tar.h"
 #include "gram.h"
@@ -517,6 +518,8 @@ void expre_opt(vector<string>* strs)
 }
 
 
+list<string> call_stack;
+
 
 void ass_read_medis()
 {
@@ -552,11 +555,19 @@ void ass_read_medis()
             // use
             line_map[lineno] = new Line(true);
             strs[1] = use(strs[1]);
+            call_stack.push_back(strs[1]);
             store_medi(strs);
         }
         else if (strs[0] == "@call" && !skip)
         {
-            //
+            // use paras
+            int len = get_func(strs[1])->get_para_count();
+            for (int i = 0; i < len; i++)
+            {
+                use(call_stack.front());
+                call_stack.pop_front();
+            }
+            // store line
             line_map[lineno] = new Line(true);
             BLOCK_MAP::iterator it = block_map.begin();
             while (it != block_map.end())

@@ -263,10 +263,6 @@ void set_name(Node* node)
         while (it != node_map.end()) {
             if (IS_VAR(it->first) && it->second == node)
             {
-                if (it->first == "temp")
-                {
-                    cout << "THE WORLD!!" << endl;
-                }
                 node->name = it->first;
                 node->make_certain();
                 node->content = it->first;

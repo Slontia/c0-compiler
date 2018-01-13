@@ -115,7 +115,7 @@
 	<vector>
 	"vars.h"
 
-1515874574 source:d:\projects\console\c0-compiler\tar.cpp
+1515878192 source:d:\projects\console\c0-compiler\tar.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -405,9 +405,10 @@
 	<map>
 	<vector>
 
-1515817985 source:d:\projects\console\c0-compiler\ass_opt.cpp
+1515878137 source:d:\projects\console\c0-compiler\ass_opt.cpp
 	<iostream>
 	<map>
+	<list>
 	"vars.h"
 	"tar.h"
 	"gram.h"
@@ -437,7 +438,7 @@
 	<iostream>
 	<set>
 
-1515872237 source:d:\projects\console\c0-compiler\reg_recorder.cpp
+1515875282 source:d:\projects\console\c0-compiler\reg_recorder.cpp
 	<iostream>
 	"tar.h"
 	"vars.h"
@@ -474,7 +475,7 @@
 	<sstream>
 	"main.h"
 
-1515874582 d:\projects\console\c0-compiler\main.h
+1515875984 d:\projects\console\c0-compiler\main.h
 
 1515814173 source:d:\projects\console\c0-compiler\old_tar.cpp
 	<iostream>

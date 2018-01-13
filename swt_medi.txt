@@ -1,15 +1,6 @@
-main_L_11_case :
-nc = 1
-@j main_L_10_switch_over
-main_L_12_case :
-nc = 2
-@j main_L_10_switch_over
 main_L_13_case :
-nc = 3
-@j main_L_10_switch_over
+@printf string S_23
+@j main_L_12_switch_over
 main_L_14_case :
-nc = 4
-@j main_L_10_switch_over
-main_L_15_default :
-nc = 5
-@j main_L_10_switch_over
+@printf string S_23
+@j main_L_12_switch_over
