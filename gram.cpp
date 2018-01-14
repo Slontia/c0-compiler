@@ -831,13 +831,17 @@ void statement()
     case PRTFST:
     {
         bool is_expr = false;
+        bool is_str = false; // [add]
+        string str = "";  // [add]
         output_info("This is a print statement!");
         getsym_check();
         mate(LPAR); // '('
         if (symbol == STRCON)   // string
         {
             token[token_len] = 0;
-            printf_medi(STRING, token);
+            // printf_medi(STRING, token);
+            is_str = true; // [add]
+            str = token; // [add]
             getsym_check();
             if (symbol == COMMA)    // ','
             {
@@ -849,12 +853,22 @@ void statement()
         {
             is_expr = true;
         }
+        // [add]
+        if (is_str && !is_expr)
+        {
+            printf_medi(STRING, str);
+        }
         if (is_expr)
         {
             string* print_name = new string();
             int print_value;
             bool print_certain;
             Type print_type = expr(&print_value, &print_certain, print_name);
+            // [add]
+            if (is_str)
+            {
+                printf_medi(STRING, str);
+            }
             if (print_certain)
             {
                 printf_medi(print_type, print_value);

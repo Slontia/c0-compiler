@@ -321,7 +321,7 @@ string get_reg(string name, bool is_def)
         }
         if (set_has_ele(free_temp_set, name)) // @free
         {
-            // rec->state = INACTIVE;
+            rec->state = INACTIVE;
             //free_temp_set.erase(name);
             free_name = name;
         }
@@ -960,7 +960,7 @@ void readline()
             {
                 cout << "FREE " << get_temp_no(strs[0]) << " " << temp_max << endl;
             }*/
-            //free_temp_set.insert(strs[1]);
+            free_temp_set.insert(strs[1]);
             continue;
         }
         else
