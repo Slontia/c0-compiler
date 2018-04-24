@@ -1,0 +1,23 @@
+const int a = 5;
+const int a;
+int b;
+const int c = 6;
+
+void foo {
+	int s;
+	int a = 5;
+	const int a = 6;
+}
+
+const int e  =5;
+int d;
+
+void main()
+{
+	int a;
+	printf("BAKABAKABAKA!!")
+	a = 5;
+	int b;
+}
+
+void foo2 {}

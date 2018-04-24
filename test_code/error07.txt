@@ -1,0 +1,24 @@
+
+	void expr()
+	{
+		const int con = 7;
+		int a[100];
+		int b;
+		con = 5;
+		4 = 1;
+		a = 5;
+		a[100] = 0;
+		a[-1] = 0;
+		a[b] = 0;
+		a[50 * 2] = 0;
+		b = b / 0;
+		printf("ERROR: ", 0 / 0);
+		b = 6 5;
+		c = a;
+	}
+
+	void main()
+	{
+		int b;
+		b = b / 0;
+	}

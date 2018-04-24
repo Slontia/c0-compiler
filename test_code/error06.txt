@@ -1,0 +1,36 @@
+	void foo1 {}
+
+	void foo1
+	{
+		int a;
+		return (5);
+		a = a + 1;
+		a = a + 1;
+	}
+
+	int foo2
+	{
+		const int foo1 = 5;
+		int a;
+		a = a + foo1;
+	}
+
+	int foo3
+	{
+		int foo2;
+		int foo3;
+		int a;
+		a = 3;
+		return;
+	}
+
+	int foo4(int foo4, int foo3)
+	{
+
+	}
+
+	void main()
+	{
+	foo4(3, 'a');
+	return;
+	}

@@ -1,0 +1,18 @@
+const char a = 'b' ,;
+int a, ;
+
+void foo(int, int a) {}
+
+void main
+{
+	const;
+	int;
+	int a,;
+	a = 5;
+	printf();
+	scanf();
+	foo(2, );
+
+}
+
+void main() {}

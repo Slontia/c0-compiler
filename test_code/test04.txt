@@ -1,0 +1,50 @@
+const int len = 100;
+
+int find_array[100];
+
+void init_array {
+	int a;
+	a = 0;
+	while (a < len) {
+		find_array[a] = a;
+		a = a+1;
+	}
+}
+
+void find(int begin, int end, int num) {
+	int mid;
+	
+	if (begin == end) {
+		if (find_array[begin] == num) {
+			printf ("Found: ");
+			printf (begin);
+			printf ("\n");
+		} else {
+			printf ("[ 404 Not Found ]\n");
+		}
+		return;
+	}else;
+	mid = (begin + end) / 2;
+	if (find_array[mid] < num) {
+		find(mid+1, end, num);
+	} else if (find_array[mid] > num) {
+		find(begin, mid, num);
+	} else if (find_array[mid] == num) {
+		printf ("Found: ");
+		printf (mid);
+		printf ("\n");
+	} else {
+		printf ("You got a bug!");
+	}
+}
+
+void main()
+{
+int num;
+init_array;
+while(1>=1){
+				printf ("Please enter a number:");
+				scanf (num);
+if(num == 12450) return;else;
+				find(0,len-1, num);
+}}

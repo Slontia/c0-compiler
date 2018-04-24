@@ -1,0 +1,22 @@
+int foo2 { return (1); }
+char foo3 { return ('0'); }
+
+int cal
+{
+	int a;
+	char b;
+	a = 007;
+	a = 6 * 007;
+	a = b;
+	b = a;
+	b = foo2;
+	a = foo3;
+	b = '&';
+	printf("	");
+	b = '';
+	b = 'WTMSB';
+	printf("");
+}
+
+int b;
+const int c;

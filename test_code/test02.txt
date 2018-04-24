@@ -1,0 +1,39 @@
+int result;
+
+void foo{}
+
+void cal(int value)
+{
+result = result * 2 + value;
+}
+
+void cond(int a, int b)
+{
+if (a > 0)cal(0);else cal(1);
+if (a < 0)cal(0);else cal(1);
+if (a >= 0)cal(0);else cal(1);
+if (a <= 0)cal(0);else cal(1);
+if (a != 0)cal(0);else cal(1);
+if (a == 0)cal(0);else cal(1);
+if (a == b)cal(0);else cal(1);
+if (a != b)cal(0);else cal(1);
+if (a >= b)cal(0);else cal(1);
+if (a <= b)cal(0);else cal(1);
+if (a > b)cal(0);else cal(1);
+if (a < b)cal(0);else cal(1);
+if (a == a)cal(0);else cal(1);
+printf(" ", result);
+result = 0;
+}
+
+void main()
+{
+cond(0,1);
+cond(0,0);
+cond(1,0);
+cond(1,1);
+cond(-1,1);
+cond(-1,0);
+cond(1,-1);
+cond(0,-1);
+}

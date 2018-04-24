@@ -1,0 +1,71 @@
+	int get_index(int size, int row, int col) {
+		return ((row-1)*size + (col-1));
+	}
+
+	void Zigzag {
+		int a;
+		int i;char temp;
+		int tempi;
+		char matrix[100];
+		int row, col;
+		printf ("Please enter the length of the matrix: ");
+		scanf (a);
+		while(a<=0){		printf ("It's too small, my friend! Please enter again: ");
+			scanf (a);
+		while (a >=10) {
+			printf ("It's too small, my friend! Please enter again: ");
+			scanf (a);
+		}}
+		i = 0;
+		printf ("Got it! Please enter the matrix:\n");
+		while (i<a*a){
+			scanf (temp);
+			matrix[i] = temp;
+			i = i+1;
+			if ((i)/a*a==i) {
+				printf ("\n");
+			}else;
+		}
+		printf ("ZIGZAG!\n");
+		row = 1;
+		col = 1;
+		printf (matrix[get_index(a, row, col)]);
+		while (row * col != a * a) {
+			if (col == a) {
+				row = row + 1;
+			} else {
+				col = col +1;
+			}
+			i=0;
+			printf (matrix[get_index(a, row, col)]);
+			tempi = col-row;
+			while (i < tempi) {
+				i = i+1;
+				col = col -1;
+				row = row + 1;
+				printf (matrix[get_index(a, row, col)]);
+			}
+			
+			
+			if (row == a) {
+				col = col + 1;
+			} else {
+				row = row +1;
+			}
+			i=0;
+			printf (matrix[get_index(a, row, col)]);
+			tempi = -col+row;
+			while (i < tempi) {
+				i = i+1;
+				row = row -1;
+				col = col + 1;
+				printf (matrix[get_index(a, row, col)])
+				;
+			}
+		}
+	}
+
+	void main()
+	{
+	zigzag;
+	}
